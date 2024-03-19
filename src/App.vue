@@ -8,20 +8,41 @@ import SignUp from './components/SignUp.vue';
 
 <template>
   <div id="app">
-    <nav>
+    <nav id="navbar">
       <router-link to="/">Home</router-link> 
       <router-link to="/About">About</router-link> 
-      <router-link to="Resources">Resources</router-link> |
+      <router-link to="Resources">Resources</router-link> 
       <router-link to="Login">Login</router-link>
-      <router-link to="/SignUp">SignUp</router-link>
+      <router-link to="/SignUp">Sign Up</router-link>
     </nav>
     <router-view></router-view>
   </div>
 </template>
 
 <style>
-/* Add styles for active router link */
+/* ohno this was supp to change the curr tab to another colour but it doesnt work now */
 .router-link-active {
-  color: grey;
+  color: green;
 }
+
+#navbar {
+  position: fixed; /* Fix the navbar at the top of the page */
+  top: 0; 
+  right: 0;
+  z-index: 1000; /* Ensure the navbar stays on top of other content */
+  display: flex;
+  flex-direction: row; 
+  align-items: flex-end; 
+  padding: 10px; 
+  margin-left: 10px;
+}
+
+#navbar a {
+  color: white;
+  text-decoration: none;
+  padding: 20px 0; 
+  width: fit-content; 
+  margin-right: 10px; /* Spacing between links */
+}
+
 </style>
