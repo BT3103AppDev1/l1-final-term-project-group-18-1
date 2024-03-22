@@ -56,8 +56,8 @@ import Settings from './components/Settings.vue';
 /* all these for infographics and bluebinlocator*/
 .nav-item {
   position: relative;
-  padding: 20px; 
-  
+  margin-bottom: 20px; 
+  margin-right: 10px;
 }
 
 .dropdown-menu {
