@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LandingPage from './components/LandingPage.vue'
 import About from './components/About.vue'
-import Resources from './components/Resources.vue'
+import Infographics from './components/Infographics.vue'
+import BlueBinLocator from './components/BlueBinLocator.vue'
 import Login from './components/Login.vue'
 import SignUp from './components/SignUp.vue'
+import Settings from './components/Settings.vue'
 
 const routes = [
     {
@@ -19,9 +21,15 @@ const routes = [
     },
 
     {
-        path: '/Resources',
-        name: 'Resources',
-        component: Resources,
+        path: '/resources/Infographics',
+        name: 'Infographics',
+        component: Infographics, 
+    },
+
+    {
+        path: '/resources/BlueBinLocator',
+        name: 'BlueBinLocator',
+        component: BlueBinLocator, 
     },
 
     {
@@ -34,6 +42,12 @@ const routes = [
         path: '/SignUp',
         name: 'Sign Up',
         component: SignUp,
+    },
+
+    {
+        path: '/Settings',
+        name: 'Settings',
+        component: Settings,
     },
 ]
 
