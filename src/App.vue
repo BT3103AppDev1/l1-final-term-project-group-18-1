@@ -4,6 +4,7 @@ import About from './components/About.vue';
 import Resources from './components/Resources.vue';
 import Login from './components/Login.vue';
 import SignUp from './components/SignUp.vue';
+import Settings from './components/Settings.vue'
 </script>
 
 <template>
@@ -11,9 +12,10 @@ import SignUp from './components/SignUp.vue';
     <nav id="navbar">
       <router-link to="/">Home</router-link> 
       <router-link to="/About">About</router-link> 
-      <router-link to="Resources">Resources</router-link> 
       <router-link to="Login">Login</router-link>
       <router-link to="/SignUp">Sign Up</router-link>
+      <router-link to="Resources">Resources</router-link> 
+      <router-link to="/Settings">Settings</router-link>
     </nav>
     <router-view></router-view>
   </div>
