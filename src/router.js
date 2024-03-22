@@ -35,6 +35,13 @@ const routes = [
         name: 'Sign Up',
         component: SignUp,
     },
+
+    {
+        path: '/verify-email',
+        name: 'verify-email',
+        component: () => import('@/components/EmailVerification.vue'),
+        props: route => ({ email: route.query.email })
+    }
 ]
 
 const router = createRouter({
