@@ -1,5 +1,10 @@
 // src/firebaseConfig.js
 import { initializeApp } from 'firebase/app';
+// import firebase from "firebase/app";
+// import "firebase/firestore";
+// import "firebase/auth";
+// import "firebase/storage";
+
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -11,5 +16,13 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
+// firebase.initializeApp(firebaseConfig);
+
+// init services
+// const projectFirestore = firebase.firestore();
+// const projectAuth = firebase.auth();
+// const projectStorage = firebase.storage();
+
+// export { projectFirestore, projectAuth, projectStorage };
 
 export default firebaseApp;

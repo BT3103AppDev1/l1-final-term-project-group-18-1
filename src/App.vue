@@ -15,8 +15,10 @@ import SignUp from './views/SignUpPage.vue'
       <router-link to="Login">Login</router-link>
       <router-link to="/SignUp">Sign Up</router-link>
     </nav>
-    <router-view></router-view>
+    <router-view/>
+    <!-- <Login /> -->
   </div>
+
 </template>
 
 <style>

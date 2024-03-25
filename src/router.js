@@ -4,6 +4,8 @@ import About from './views/About.vue'
 import Resources from './views/Resources.vue'
 import Login from './views/LoginPage.vue'
 import SignUp from './views/SignUpPage.vue'
+import Home from './views/HomePage.vue'
+import ForgetPassword from './views/ForgetPasswordPage.vue'
 
 const routes = [
     {
@@ -34,6 +36,16 @@ const routes = [
         path: '/SignUp',
         name: 'Sign Up',
         component: SignUp,
+    },
+    {
+        path: '/Home',
+        name: 'Home',
+        component: Home,
+    },
+    {
+        path: '/ForgetPassword',
+        name: 'ForgetPassword',
+        component: ForgetPassword,
     },
 ]
 
