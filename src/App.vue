@@ -27,8 +27,10 @@ import ContactUs from './views/Settings/ContactUs.vue'
       </div> 
       <router-link to="/Settings">Settings</router-link>
     </nav>
-    <router-view></router-view>
+    <router-view/>
+    <!-- <Login /> -->
   </div>
+
 </template>
 
 <style>

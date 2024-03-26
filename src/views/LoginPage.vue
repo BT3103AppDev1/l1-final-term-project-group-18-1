@@ -1,50 +1,64 @@
+<script>
+  import Login from '../components/Login.vue'
+
+  export default {
+    components: {
+      Login
+    },
+    methods: {
+      goToForgotPassword() {
+        this.$router.push({ name: 'ForgetPassword' }); // Use the route name or path
+      },
+      goToSignup() {
+        this.$router.push({ name: 'Sign Up' });
+      }
+    }
+  }
+</script>
+
 <template>
-    <div>
-        <div>
-            nav banner
-        </div>
-        <div style="text-align: center;">
-            <h1 style="color:#457247;">Welcome Back to EcoHarbour</h1>
-            Thank you for your efforts in protecting our environment and paving the way for a sustainable
-            future where the well-being of our planet is at the forefront of our actions and decisions.
-        </div>
-        <div>
-            <form @submit.prevent="login">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required v-model="email">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required v-model="password">
-                <button type="submit">Login</button>
-            </form>
-        </div>
+  <div id="main">
+    <div id="welcome" style="text-align: center;">
+      <h1 style="color:#457247;">Welcome Back to EcoHarbour</h1>
+      <p style="color:#457247;">
+        Thank you for your efforts in protecting our environment and paving the way for a sustainable
+        future where the well-being of our planet is at the forefront of our actions and decisions.
+      </p>
+      <br>
     </div>
+    <Login />
+    <div style="text-align: center;">
+      <a href="#" class="forgot-password" @click.prevent="goToForgotPassword">Forgot your password?</a>
+      <p>Don't have an account? <a href="#" @click.prevent="goToSignup">Sign up</a></p>
+    </div>
+  </div>
 </template>
 
-<script>
-    import firebaseApp from '../firebaseConfig.js'
-    import { getFirestore } from 'firebase/firestore'
-    import { getAuth, signInWithEmailAndPassword } from 'firebase/auth' // firebase authentication
-    const auth = getAuth(firebaseApp);
-
-    export default {
-        name: 'Login',
-        data() {
-            return {
-                email: '',
-                password: '',
-                error: null
-            }
-        },
-        methods: {
-            async login() {
-                try {
-                    console.log('successful')
-                    await signInWithEmailAndPassword(auth, this.email, this.password);
-                    this.$router.push('/Home');
-                } catch (error) {
-                    this.error = error.message;
-                }
-            }
-        }
+<style>
+    #main {
+        display: block;
+        justify-content: center;
+        align-items: center;
+        width: 60%;
+        margin: 0 auto;
     }
-</script>
+    input {
+        margin: 5px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #457247;
+    }
+    button {
+        margin: 5px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #457247;
+        background-color: #457247;
+        color: white;
+    }
+    #show {
+        display: flex;
+        justify-content: flex-end;
+        margin: 5px;
+    }
+</style>
