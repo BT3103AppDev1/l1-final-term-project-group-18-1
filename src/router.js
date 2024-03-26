@@ -3,13 +3,16 @@ import LandingPage from './views/LandingPage.vue'
 import About from './views/About.vue'
 import Login from './views/LoginPage.vue'
 import SignUp from './views/SignUpPage.vue'
+import HomePage from './views/HomePage.vue'
+import ForgetPassword from './views/ForgetPasswordPage.vue'
+import Farm from './views/FarmPage.vue';
+import Calendar from './views/CalendarPage.vue';
 import Infographics from './views/Resource/Infographics.vue'
 import BlueBinLocator from './views/Resource/BlueBinLocator.vue'
 import Settings from './views/Settings/Settings.vue'
-import EditProfile from './views/Settings/EditProfile.vue' 
-import Notifications from './views/Settings/Notifications.vue' 
-import ContactUs from './views/Settings/ContactUs.vue' 
-import Home from './components/Home.vue'
+import EditProfile from './views/Settings/EditProfile.vue'
+import Notifications from './views/Settings/Notifications.vue'
+import ContactUs from './views/Settings/ContactUs.vue'
 
 const routes = [
     {
@@ -35,32 +38,45 @@ const routes = [
         name: 'Sign Up',
         component: SignUp,
     },
-  
+
     {
         path: '/verify-email',
         name: 'verify-email',
         component: () => import('@/components/EmailVerification.vue'),
         props: route => ({ email: route.query.email })
     },
-
     {
         path: '/Home',
         name: 'Home',
-        component: Home,
+        component: HomePage,
+    },
+    {
+        path: '/ForgetPassword',
+        name: 'ForgetPassword',
+        component: ForgetPassword,
     },
 
     {
+        path: '/Farm',
+        name: 'Farm',
+        component: Farm,
+    },
+    {
+        path: '/Calendar',
+        name: 'Calendar',
+        component: Calendar,
+    },
+    {
         path: '/resources/Infographics',
         name: 'Infographics',
-        component: Infographics, 
+        component: Infographics,
     },
 
     {
         path: '/resources/BlueBinLocator',
         name: 'BlueBinLocator',
-        component: BlueBinLocator, 
+        component: BlueBinLocator,
     },
-
     {
         path: '/Settings',
         name: 'Settings',
