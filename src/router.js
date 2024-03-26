@@ -78,7 +78,8 @@ const routes = [
             path: '/ContactUs',
             component: ContactUs,
             },
-   
+        ]
+    }
 ]
 
 const router = createRouter({
