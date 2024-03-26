@@ -1,11 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LandingPage from './views/LandingPage.vue'
 import About from './views/About.vue'
-import Resources from './views/Resources.vue'
 import Login from './views/LoginPage.vue'
 import SignUp from './views/SignUpPage.vue'
 import Home from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
+import Infographics from './views/Resource/Infographics.vue'
+import BlueBinLocator from './views/Resource/BlueBinLocator.vue'
+import Settings from './views/Settings/Settings.vue'
+import EditProfile from './views/Settings/EditProfile.vue'
+import Notifications from './views/Settings/Notifications.vue'
+import ContactUs from './views/Settings/ContactUs.vue'
+import Home from './components/Home.vue'
 
 const routes = [
     {
@@ -21,12 +27,6 @@ const routes = [
     },
 
     {
-        path: '/Resources',
-        name: 'Resources',
-        component: Resources,
-    },
-
-    {
         path: '/Login',
         name: 'Login',
         component: Login,
@@ -36,6 +36,13 @@ const routes = [
         path: '/SignUp',
         name: 'Sign Up',
         component: SignUp,
+    },
+
+    {
+        path: '/verify-email',
+        name: 'verify-email',
+        component: () => import('@/components/EmailVerification.vue'),
+        props: route => ({ email: route.query.email })
     },
     {
         path: '/Home',
@@ -47,6 +54,38 @@ const routes = [
         name: 'ForgetPassword',
         component: ForgetPassword,
     },
+
+    {
+        path: '/resources/Infographics',
+        name: 'Infographics',
+        component: Infographics,
+    },
+
+    {
+        path: '/resources/BlueBinLocator',
+        name: 'BlueBinLocator',
+        component: BlueBinLocator,
+    },
+
+    {
+        path: '/Settings',
+        name: 'Settings',
+        component: Settings,
+        children: [
+            {
+              path: '/EditProfile',
+              component: EditProfile,
+            },
+            {
+                path: '/Notifications',
+                component: Notifications,
+              },
+            {
+            path: '/ContactUs',
+            component: ContactUs,
+            },
+        ]
+    }
 ]
 
 const router = createRouter({
