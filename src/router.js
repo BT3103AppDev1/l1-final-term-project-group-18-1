@@ -6,6 +6,9 @@ import Login from './views/LoginPage.vue'
 import SignUp from './views/SignUpPage.vue'
 import Home from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
+import Farm from './views/FarmPage.vue';
+import Calendar from './views/CalendarPage.vue';
+import Settings from './views/SettingsPage.vue';
 
 const routes = [
     {
@@ -46,6 +49,23 @@ const routes = [
         path: '/ForgetPassword',
         name: 'ForgetPassword',
         component: ForgetPassword,
+    },
+
+
+    {
+        path: '/Farm',
+        name: 'Farm',
+        component: Farm,
+    },
+    {
+        path: '/Calendar',
+        name: 'Calendar',
+        component: Calendar,
+    },
+    {
+        path: '/Settings',
+        name: 'Settings',
+        component: Settings,
     },
 ]
 
