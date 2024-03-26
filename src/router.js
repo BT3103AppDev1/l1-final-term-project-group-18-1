@@ -9,6 +9,7 @@ import Settings from './views/Settings/Settings.vue'
 import EditProfile from './views/Settings/EditProfile.vue' 
 import Notifications from './views/Settings/Notifications.vue' 
 import ContactUs from './views/Settings/ContactUs.vue' 
+import Home from './components/Home.vue'
 
 const routes = [
     {
@@ -33,6 +34,19 @@ const routes = [
         path: '/SignUp',
         name: 'Sign Up',
         component: SignUp,
+    },
+  
+    {
+        path: '/verify-email',
+        name: 'verify-email',
+        component: () => import('@/components/EmailVerification.vue'),
+        props: route => ({ email: route.query.email })
+    },
+
+    {
+        path: '/Home',
+        name: 'Home',
+        component: Home,
     },
 
     {
@@ -64,8 +78,7 @@ const routes = [
             path: '/ContactUs',
             component: ContactUs,
             },
-        ]
-    },
+   
 ]
 
 const router = createRouter({
