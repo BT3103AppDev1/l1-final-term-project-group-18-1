@@ -6,28 +6,24 @@ import SignUp from './views/SignUpPage.vue'
 import Infographics from './views/Resource/Infographics.vue'
 import BlueBinLocator from './views/Resource/BlueBinLocator.vue'
 import Settings from './views/Settings/Settings.vue'
-import EditProfile from './views/Settings/EditProfile.vue' 
-import Notifications from './views/Settings/Notifications.vue' 
-import ContactUs from './views/Settings/ContactUs.vue' 
+import EditProfile from './views/Settings/EditProfile.vue'
+import Notifications from './views/Settings/Notifications.vue'
+import ContactUs from './views/Settings/ContactUs.vue'
 import NavigationBar from './components/NavigationBar.vue';
 </script>
 
 <template>
   <div id="app">
-    <nav id="navbar">
-      <router-link to="/">Home</router-link>
-      <router-link to="/About">About</router-link>
-      <router-link to="Login">Login</router-link>
-      <router-link to="/SignUp">Sign Up</router-link>
+    <!-- <nav id="navbar">
       <div class="nav-item resources">
         Resources
         <div class="dropdown-menu">
           <router-link to="/resources/Infographics">Infographics</router-link>
           <router-link to="/resources/BlueBinLocator">Blue Bin Locator</router-link>
         </div>
-      </div> 
+      </div>
       <router-link to="/Settings">Settings</router-link>
-    </nav>
+    </nav> -->
     <NavigationBar />
     <router-view/>
   </div>
@@ -45,7 +41,7 @@ body {
 /* all these for infographics and bluebinlocator*/
 .nav-item {
   position: relative;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
   margin-right: 10px;
 }
 .dropdown-menu {
