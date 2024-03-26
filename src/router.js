@@ -3,7 +3,7 @@ import LandingPage from './views/LandingPage.vue'
 import About from './views/About.vue'
 import Login from './views/LoginPage.vue'
 import SignUp from './views/SignUpPage.vue'
-import Home from './views/HomePage.vue'
+import HomePage from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
 import Calendar from './views/CalendarPage.vue';
@@ -13,7 +13,6 @@ import Settings from './views/Settings/Settings.vue'
 import EditProfile from './views/Settings/EditProfile.vue'
 import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
-import Home from './components/Home.vue'
 
 const routes = [
     {
@@ -49,7 +48,7 @@ const routes = [
     {
         path: '/Home',
         name: 'Home',
-        component: Home,
+        component: HomePage,
     },
     {
         path: '/ForgetPassword',
