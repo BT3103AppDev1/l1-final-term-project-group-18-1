@@ -9,6 +9,7 @@ import Settings from './views/Settings/Settings.vue'
 import EditProfile from './views/Settings/EditProfile.vue' 
 import Notifications from './views/Settings/Notifications.vue' 
 import ContactUs from './views/Settings/ContactUs.vue' 
+import NavigationBar from './components/NavigationBar.vue';
 </script>
 
 <template>
@@ -27,38 +28,20 @@ import ContactUs from './views/Settings/ContactUs.vue'
       </div> 
       <router-link to="/Settings">Settings</router-link>
     </nav>
+    <NavigationBar />
     <router-view/>
-    <!-- <Login /> -->
   </div>
+ </template>
 
-</template>
 
 <style>
-/* ohno this was supp to change the curr tab to another colour but it doesnt work now */
-.router-link-active {
-  color: green;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
-
-#navbar {
-  position: fixed; /* Fix the navbar at the top of the page */
-  top: 0;
-  right: 0;
-  z-index: 1000; /* Ensure the navbar stays on top of other content */
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  padding: 10px;
-  margin-left: 10px;
+#app {
+  text-align: center;
 }
-
-#navbar a {
-  color: white;
-  text-decoration: none;
-  padding: 20px 0;
-  width: fit-content;
-  margin-right: 10px; /* Spacing between links */
-}
-
 /* all these for infographics and bluebinlocator*/
 .nav-item {
   position: relative;
@@ -78,5 +61,5 @@ import ContactUs from './views/Settings/ContactUs.vue'
 .resources:hover .dropdown-menu {
   display: grid;
 }
-
 </style>
+

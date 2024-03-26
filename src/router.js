@@ -5,6 +5,8 @@ import Login from './views/LoginPage.vue'
 import SignUp from './views/SignUpPage.vue'
 import Home from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
+import Farm from './views/FarmPage.vue';
+import Calendar from './views/CalendarPage.vue';
 import Infographics from './views/Resource/Infographics.vue'
 import BlueBinLocator from './views/Resource/BlueBinLocator.vue'
 import Settings from './views/Settings/Settings.vue'
@@ -56,6 +58,16 @@ const routes = [
     },
 
     {
+        path: '/Farm',
+        name: 'Farm',
+        component: Farm,
+    },
+    {
+        path: '/Calendar',
+        name: 'Calendar',
+        component: Calendar,
+    },
+    {
         path: '/resources/Infographics',
         name: 'Infographics',
         component: Infographics,
@@ -66,7 +78,6 @@ const routes = [
         name: 'BlueBinLocator',
         component: BlueBinLocator,
     },
-
     {
         path: '/Settings',
         name: 'Settings',
