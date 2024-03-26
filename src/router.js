@@ -4,6 +4,7 @@ import About from './views/About.vue'
 import Resources from './views/Resources.vue'
 import Login from './views/LoginPage.vue'
 import SignUp from './views/SignUpPage.vue'
+import Home from './components/Home.vue'
 
 const routes = [
     {
@@ -34,6 +35,19 @@ const routes = [
         path: '/SignUp',
         name: 'Sign Up',
         component: SignUp,
+    },
+    
+    {
+        path: '/verify-email',
+        name: 'verify-email',
+        component: () => import('@/components/EmailVerification.vue'),
+        props: route => ({ email: route.query.email })
+    },
+
+    {
+        path: '/Home',
+        name: 'Home',
+        component: Home,
     },
 ]
 
