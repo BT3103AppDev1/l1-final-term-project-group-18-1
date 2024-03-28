@@ -1,14 +1,4 @@
 <script setup>
-import LandingPage from './views/LandingPage.vue'
-import About from './views/About.vue'
-import Login from './views/LoginPage.vue'
-import SignUp from './views/SignUpPage.vue'
-import Infographics from './views/Resource/Infographics.vue'
-import BlueBinLocator from './views/Resource/BlueBinLocator.vue'
-import Settings from './views/Settings/Settings.vue'
-import EditProfile from './views/Settings/EditProfile.vue'
-import Notifications from './views/Settings/Notifications.vue'
-import ContactUs from './views/Settings/ContactUs.vue'
 import NavigationBar from './components/NavigationBar.vue';
 </script>
 

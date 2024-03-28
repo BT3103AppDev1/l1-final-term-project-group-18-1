@@ -42,7 +42,7 @@ const routes = [
     {
         path: '/verify-email',
         name: 'verify-email',
-        component: () => import('@/components/EmailVerification.vue'),
+        component: () => import('@/views/EmailVerificationPage.vue'),
         props: route => ({ email: route.query.email })
     },
     {

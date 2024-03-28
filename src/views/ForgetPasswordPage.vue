@@ -4,7 +4,7 @@
     <h1>Forgot Password</h1>
     <h3>Enter your email and we'll send you a link to rest your password.</h3><br>
     <form @submit.prevent="submitForm">
-      <input type="email" v-model="email" placeholder="Enter your email" required>
+      <input class="email" type="email" v-model="email" placeholder="Enter your email" required>
       <button type="submit">Submit</button>
     </form>
     <p v-if="message">{{ message }}</p>
@@ -37,7 +37,7 @@ export default {
 </script>
 
 <style>
-  input {
+  .email {
     width: 20%;
   }
   img {
