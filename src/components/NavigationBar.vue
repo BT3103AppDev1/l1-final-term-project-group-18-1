@@ -4,7 +4,7 @@
 
     <div class="nav-links">
       <!-- Common links -->
-      <router-link to="/" class="nav-item">Home</router-link>
+      <router-link to="/Home" class="nav-item">Home</router-link>
       <router-link to="/About" class="nav-item">About</router-link>
 
       <!-- Dropdown for Resources -->
