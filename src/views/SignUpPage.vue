@@ -58,7 +58,8 @@ methods: {
         email: this.email,
       });
 
-      console.log("Signup successful. Please check your email for verification.");
+      alert("Signup successful");
+      console.log("Signup successful.");
       this.$router.push({ name: 'verify-email' }).catch(err => {
         console.error(err);
       });
