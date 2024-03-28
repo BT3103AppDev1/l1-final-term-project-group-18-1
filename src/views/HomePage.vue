@@ -1,11 +1,11 @@
 <template>
     <SearchBar />
-    <LogOut />
+    <Logout />
 </template>
 
 <script>
 import SearchBar from '../components/SearchBar.vue'
-import LogOut from '../components/LogOut.vue'
+import Logout from '../components/Logout.vue'
 
 export default {
   components: {
