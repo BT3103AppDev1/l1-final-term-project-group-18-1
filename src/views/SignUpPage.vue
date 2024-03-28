@@ -15,3 +15,16 @@
   </div>
   <SignUp />
 </template>
+
+<style>
+    #container {
+        display: block;
+        justify-content: center;
+        align-items: center;
+        width: 60%;
+        margin: 0 auto;
+    }
+    h1, h3 {
+      color: #457247;
+    }
+</style>
