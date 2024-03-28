@@ -1,9 +1,11 @@
 // src/firebaseConfig.js
 import { initializeApp } from 'firebase/app';
+import {getFirestore} from 'firebase/firestore';
 // import firebase from "firebase/app";
 // import "firebase/firestore";
 // import "firebase/auth";
 // import "firebase/storage";
+import { getAuth } from 'firebase/auth';
 
 
 const firebaseConfig = {
@@ -16,6 +18,7 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
 // firebase.initializeApp(firebaseConfig);
 
 // init services
@@ -25,4 +28,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 
 // export { projectFirestore, projectAuth, projectStorage };
 
+const auth = getAuth(firebaseApp);
+
 export default firebaseApp;
+export {db, auth};

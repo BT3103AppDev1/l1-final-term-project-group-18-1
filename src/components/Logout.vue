@@ -40,3 +40,10 @@ export default {
   }
 };
 </script>
+
+<style>
+  #btn{
+    width:180px;
+    font-weight: bold;
+  }
+</style>
