@@ -3,8 +3,8 @@
       <div class="page-header">
         <h1>Farm Page</h1>
         <div class="header-buttons">
-          <router-link to="/social" class="button">Social</router-link>
-          <router-link to="/shop" class="button">Shop</router-link>
+          <router-link to="/Social" class="button">Social</router-link>
+          <router-link to="/Shop" class="button">Shop</router-link>
         </div>
       </div>
     </div>
