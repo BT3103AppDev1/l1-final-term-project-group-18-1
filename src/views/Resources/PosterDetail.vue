@@ -1,12 +1,22 @@
 <template>
   <div v-if="poster">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb">
+      <router-link to="/resources/ResourcesPage">Resources</router-link> 
+      >
+      <router-link to="/resources/Infographics">Infographics</router-link> 
+      > 
+      {{ poster.title }}
+    </nav>
+
     <h2>{{ poster.title }}</h2>
     <img :src="poster.imageURL" :alt="poster.title" class="poster-image" />
-    <!-- Add more details if you have -->
   </div>
+
   <div v-else>
     Loading...
   </div>
+  
 </template>
 
 <script>
@@ -43,18 +53,35 @@ export default {
 </script>
 
 <style scoped>
-
-@media (min-width: 768px) { /* Adjust for larger screens */
-  .poster-image {
-    width: 500px; /* Fixed width on larger screens */
-  }
+.poster-image {
+  width: 100%; /* Make the image responsive to its container's width */
+  max-width: 800px; /* Maximum width the image can grow to */
+  max-height: 600px; /* Maximum height the image can grow to, helps with very tall images */
+  height: auto; /* Maintain the aspect ratio */
+  object-fit: contain; /* Cover the frame; can use 'contain' to avoid cropping */
+  display: block; /* Remove inline element spacing */
+  margin: 0 auto; /* Center the image horizontally */
 }
-
 
 /* Style for the title */
 h2 {
   text-align: center; /* Centers the title text */
   margin-top: 20px; /* Adds space above the title */
+}
+
+/* Style for the breadcrumb */
+.breadcrumb {
+  padding: 10px 0;
+  font-size: 16px;
+}
+
+.breadcrumb a {
+  color: #007bff; /* Adjust color as needed */
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
 }
 
 </style>

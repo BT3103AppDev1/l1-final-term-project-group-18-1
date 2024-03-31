@@ -1,10 +1,19 @@
 <template>
   <div>
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb">
+      <router-link to="/resources/ResourcesPage">Resources</router-link> 
+      >
+      Infographics
+    </nav>
+
     <h1>Infographics</h1>
+    
     <div v-for="poster in posters" :key="poster.id" class="poster-item">
       <button @click="goToPosterDetail(poster.id)" class="poster-button">
         {{ poster.title }}
       </button>
+   
     </div>
   </div>
 </template>
@@ -47,9 +56,6 @@ export default {
 </script>
 
 <style scoped>
-.h1 {
-  
-}
 .poster-item {
   display: inline;
 }
@@ -57,16 +63,33 @@ export default {
 .poster-button {
   margin-top: 20px;
   padding: 10px 15px;
-  background-color: #2b7b2d; /* Green background */
+  background-color: #4CAF50; /* Green background */
   color: white; /* Text color */
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-size: 20px;
 }
 
 .poster-button:hover {
-  background-color: #69d46f; /* Darker green on hover */
+  background-color: #27792b; /* Darker green on hover */
 }
+
+/* Style for the breadcrumb */
+.breadcrumb {
+  padding: 10px 0;
+  font-size: 16px;
+}
+
+.breadcrumb a {
+  color: #007bff; /* Adjust color as needed */
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
 
 </style>
