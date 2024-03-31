@@ -8,9 +8,10 @@ import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
 import Calendar from './views/CalendarPage.vue';
 import Infographics from './views/Resource/Infographics.vue'
+import PosterDetail from './views/Resource/PosterDetail.vue'
 import BlueBinLocator from './views/Resource/BlueBinLocator.vue'
 import Settings from './views/Settings/Settings.vue'
-import EditProfile from './views/Settings/EditProfile.vue'
+import Profile from './views/Settings/Profile.vue'
 import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import Social from './views/SocialPage.vue'
@@ -80,6 +81,12 @@ const routes = [
     },
 
     {
+        path: '/infographics/:id',
+        name: 'PosterDetail',
+        component: () => import('@/views/Resource/PosterDetail.vue')
+    },
+
+    {
         path: '/resources/BlueBinLocator',
         name: 'BlueBinLocator',
         component: BlueBinLocator,
@@ -90,8 +97,8 @@ const routes = [
         component: Settings,
         children: [
             {
-              path: '/EditProfile',
-              component: EditProfile,
+              path: '/Profile',
+              component: Profile,
             },
             {
                 path: '/Notifications',

@@ -1,12 +1,12 @@
 <template>
     <div>
-      <h1>Edit Profile Page</h1>
+      <h1>Profile Page</h1>
     </div>
 </template>
 
 <script>
 export default {
-  name: 'EditProfile',
+  name: 'Profile',
   // Component logic here
 }
 </script>
