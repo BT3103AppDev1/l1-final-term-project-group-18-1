@@ -10,7 +10,7 @@ import Calendar from './views/CalendarPage.vue';
 import Infographics from './views/Resource/Infographics.vue'
 import BlueBinLocator from './views/Resource/BlueBinLocator.vue'
 import Settings from './views/Settings/Settings.vue'
-import EditProfile from './views/Settings/EditProfile.vue'
+import Profile from './views/Settings/Profile.vue'
 import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import Social from './views/SocialPage.vue'
@@ -90,8 +90,8 @@ const routes = [
         component: Settings,
         children: [
             {
-              path: '/EditProfile',
-              component: EditProfile,
+              path: '/Profile',
+              component: Profile,
             },
             {
                 path: '/Notifications',
