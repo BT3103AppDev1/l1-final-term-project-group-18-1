@@ -9,7 +9,7 @@
 
       <!-- Dropdown for Resources -->
       <div class="nav-item resources">
-        Resources
+        <router-link to="/resources/ResourcesPage" class="dropdown-item">Resources</router-link>
         <div class="dropdown-menu">
           <router-link to="/resources/Infographics" class="dropdown-item">Infographics</router-link>
           <router-link to="/resources/BlueBinLocator" class="dropdown-item">Blue Bin Locator</router-link>
