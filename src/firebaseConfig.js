@@ -6,6 +6,8 @@ import {getFirestore} from 'firebase/firestore';
 // import "firebase/auth";
 // import "firebase/storage";
 import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
+
 
 
 const firebaseConfig = {
@@ -19,6 +21,8 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
+const storage = getStorage(firebaseApp);
+
 // firebase.initializeApp(firebaseConfig);
 
 // init services
@@ -31,4 +35,4 @@ const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
 
 export default firebaseApp;
-export {db, auth};
+export {db, auth, storage};

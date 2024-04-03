@@ -7,8 +7,10 @@ import HomePage from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
 import Calendar from './views/CalendarPage.vue';
-import Infographics from './views/Resource/Infographics.vue'
-import BlueBinLocator from './views/Resource/BlueBinLocator.vue'
+import ResourcesPage from './views/Resources/ResourcesPage.vue'
+import Infographics from './views/Resources/Infographics.vue'
+import PosterDetail from './views/Resources/PosterDetail.vue'
+import BlueBinLocator from './views/Resources/BlueBinLocator.vue'
 import Settings from './views/Settings/Settings.vue'
 import Profile from './views/Settings/Profile.vue'
 import Notifications from './views/Settings/Notifications.vue'
@@ -74,9 +76,20 @@ const routes = [
         component: Calendar,
     },
     {
+        path: '/resources/ResourcesPage',
+        name: 'ResourcesPage',
+        component: ResourcesPage,
+    },
+    {
         path: '/resources/Infographics',
         name: 'Infographics',
         component: Infographics,
+    },
+
+    {
+        path: '/infographics/:id',
+        name: 'PosterDetail',
+        component: () => import('@/views/Resources/PosterDetail.vue')
     },
 
     {

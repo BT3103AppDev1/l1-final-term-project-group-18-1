@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       currentComponent: 'Profile', // Default component
+
     };
   },
   components: {
