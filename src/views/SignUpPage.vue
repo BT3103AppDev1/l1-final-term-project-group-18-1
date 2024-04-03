@@ -16,6 +16,81 @@
 </template>
 
 <script>
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import firebaseApp from '../firebaseConfig.js';
+
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+
+export default {
+  data() {
+    return {
+      name: '',
+      username: '',
+      email: '',
+      password: '',
+      cfmpassword: '',
+    };
+  },
+  methods: {
+    async isUsernameUnique(username) {
+      try {
+        const usernameRef = doc(db, "uniqueUsernames", username);
+        const docSnap = await getDoc(usernameRef);
+        return !docSnap.exists();
+      } catch (error) {
+        console.error("Error checking username uniqueness:", error);
+        // Handle the error appropriately
+        return false; // If there's an error, handle it as if the username is not unique for safety
+      }
+    },
+
+    async signup() {
+      if (this.password !== this.cfmpassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      const unique = await this.isUsernameUnique(this.username);
+      if (!unique) {
+        alert("This username is already taken. Please choose another one.");
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
+        const user = userCredential.user;
+        await sendEmailVerification(user);
+
+        await setDoc(doc(db, "users", user.uid), {
+          name: this.name,
+          username: this.username,
+          email: this.email,
+          fertiliser: 0
+        });
+
+        await setDoc(doc(db, "uniqueUsernames", this.username), {
+          userId: user.uid
+        });
+
+        alert("Signup successful. Please check your email for verification.");
+        this.$router.push({ name: 'Home' }); // Replace 'Home' with the actual route name you have for the home page
+      } catch (error) {
+        console.error("Error signing up:", error);
+        alert("Error signing up. Please try again.");
+      }
+    },
+  }
+}
+</script>
+
+
+<!-- Rest of your component -->
+
+
+
+<!-- <script>
 import firebaseApp from '../firebaseConfig.js'
 import { getFirestore, doc, setDoc } from 'firebase/firestore'
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth' // firebase authentication
@@ -70,7 +145,7 @@ methods: {
   }
 }
 }
-</script>
+</script> -->
 
 
 <style>
