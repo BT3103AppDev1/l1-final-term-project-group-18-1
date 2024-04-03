@@ -1,37 +1,23 @@
 <template>
-    <div>
-      <div class="page-header">
-        <h1>Farm Page</h1>
-        <div class="header-buttons">
-          <router-link to="/Social" class="button">Social</router-link>
-          <router-link to="/Shop" class="button">Shop</router-link>
-        </div>
-      </div>
-    </div>
-  </template>
-  
-  
-  <style scoped>
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .header-buttons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .button {
-    padding: 10px;
-    background-color: #3498db;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-  }
-  
-  </style>
-  
+  <div>
+    <h1>Social Features</h1>
+    <FindFriends />
+    <FriendRequests />
+    <FriendsList />
+  </div>
+</template>
+
+<script>
+import FindFriends from '@/components/Social/FindFriends.vue'
+import FriendRequests from '@/components/Social/FriendRequests.vue'
+import FriendsList from '@/components/Social/FriendsList.vue'
+
+export default {
+  components: {
+    FindFriends,
+    FriendRequests,
+    FriendsList
+  },
+}
+</script>
+

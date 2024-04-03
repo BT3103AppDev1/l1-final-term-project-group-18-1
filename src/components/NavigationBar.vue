@@ -16,38 +16,54 @@
         </div>
       </div>
 
-      <!-- Conditional links -->
-      <template v-if="showAuthButtons">
-        <router-link to="/Login" class="nav-item nav-item-button">Log In</router-link>
-        <router-link to="/SignUp" class="nav-item nav-item-button">Sign Up</router-link>
-      </template>
+      <!-- Conditional links for authenticated users -->
+      <router-link to="/Farm" class="nav-item" v-if="isAuthenticated">Farm</router-link>
+      <router-link to="/Calendar" class="nav-item" v-if="isAuthenticated">Calendar</router-link>
+      <router-link to="/Settings" class="nav-item" v-if="isAuthenticated">Settings</router-link>
+      <span class="vertical-line"></span>
     </div>
 
-    <!-- Links to show when signed in -->
-    <template v-if="isAuthenticated">
-      <div class="nav-links">
-        <router-link to="/Farm" class="nav-item">Farm</router-link>
-        <router-link to="/Calendar" class="nav-item">Calendar</router-link>
-        <router-link to="/Settings" class="nav-item">Settings</router-link>
-        <!-- Omit the user info display for now -->
+    <!-- User info and fertiliser details to show when signed in -->
+    <div class="user-info">
+      <div class="user-details">
+        <img src="@/assets/usericon.png" class="user-icon" />
+        <span class="username">{{ username }}</span>
       </div>
-    </template>
+      <div class="fertiliser-info">
+        <img src="@/assets/fertiliser.png" class="fertiliser-icon" />
+        <span class="fertiliser-amount">{{ fertiliser }}</span>
+      </div>
+    </div>
   </nav>
 </template>
 
+
 <script>
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '@/firebaseConfig';
 
 export default {
   data() {
     return {
       isAuthenticated: false,
+      username: '',
     };
   },
-  created() {
-    onAuthStateChanged(auth, (user) => {
+  async created() {
+    onAuthStateChanged(auth, async (user) => {
       this.isAuthenticated = !!user;
+      if (user) {
+        const userDocRef = doc(db, 'users', user.uid); 
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          this.username = userData.username;
+          this.fertiliser = userData.fertiliser || 0; 
+        } else {
+          console.log('No such document!');
+        }
+      }
     });
   },
   computed: {
@@ -92,6 +108,7 @@ export default {
   align-items: center;
   list-style-type: none;
   padding: 15px 0;
+  margin-left: 400px;
 }
 
 .nav-item,
@@ -154,6 +171,51 @@ export default {
 .resources:hover .dropdown-menu {
   display: block;
 }
+.user-info {
+  display: flex;
+  flex-direction: column; 
+  align-items: left; 
+  margin-right: 50px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+  margin-bottom: 4px; 
+}
+
+.username {
+  margin-left: 8px; 
+}
+
+.fertiliser-amount {
+  margin-left: 8px; 
+}
+
+.fertiliser-info {
+  display: flex;
+  flex-direction: row; 
+  align-items: left;
+}
+
+.user-icon, .fertiliser-icon {
+  width: 25px; 
+  height: 25px;
+}
+
+.vertical-line {
+  display: inline-block;
+  margin-left: 40px;
+  margin-right: 10px;
+  height: 50px; 
+  width: 2px;
+  background-color: var(--primary-color);
+  vertical-align: middle; 
+}
+
+
+
 
 @media (max-width: 768px) {
   .nav-links {

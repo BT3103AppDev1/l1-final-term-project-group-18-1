@@ -15,7 +15,7 @@ import Settings from './views/Settings/Settings.vue'
 import Profile from './views/Settings/Profile.vue'
 import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
-import Social from './views/SocialPage.vue'
+import SocialPage from './views/SocialPage.vue'
 
 const routes = [
     {
@@ -63,12 +63,11 @@ const routes = [
         path: '/Farm',
         name: 'Farm',
         component: Farm,
-        children: [
-            {
-              path: '/Social',
-              component: Social,
-            },
-        ]
+    },
+    {
+        path: '/SocialPage',
+        name: 'SocialPage',
+        component: SocialPage,
     },
     {
         path: '/Calendar',

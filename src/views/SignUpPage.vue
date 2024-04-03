@@ -1,31 +1,86 @@
-<script>
-  import SignUp from '../components/Signup.vue'
-
-  export default {
-    components: {
-      SignUp
-    }
-  }
-</script>
-
 <template>
   <div class = "container">
     <h1>Welcome to EcoHarbour</h1>
     <h3>Join us in protecting our environment and paving the way for a sustainable future where the well-being of our planet is at the forefront of our actions and decisions.</h3>
+  
+    <form id="signupform" @submit.prevent="signup">
+      <input type="text" id="name" required="" placeholder="Name" v-model="name">
+      <input type="text" id="username" required="" placeholder="Username" v-model="username">
+      <input type="email" id="email" required="" placeholder="Email" v-model="email">
+      <input type="password" id="password" required="" placeholder="Password" v-model="password">
+      <input type="password" id="cfmpassword" required="" placeholder="Confirm Password" v-model="cfmpassword">
+    </form>
+
+    <button id = "signupbutton" type="button" v-on:click="signup">Sign Up</button>
   </div>
-  <SignUp />
 </template>
 
-<style>
-    #container {
-        display: block;
-        justify-content: center;
-        align-items: center;
-        width: 60%;
-        margin: 0 auto;
-    }
-    h1, h3 {
-      color: #457247;
-    }
+<script>
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import firebaseApp from '../firebaseConfig.js';
 
-</style>
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+
+export default {
+  data() {
+    return {
+      name: '',
+      username: '',
+      email: '',
+      password: '',
+      cfmpassword: '',
+    };
+  },
+  methods: {
+    async isUsernameUnique(username) {
+      try {
+        const usernameRef = doc(db, "uniqueUsernames", username);
+        const docSnap = await getDoc(usernameRef);
+        return !docSnap.exists();
+      } catch (error) {
+        console.error("Error checking username uniqueness:", error);
+        // Handle the error appropriately
+        return false; // If there's an error, handle it as if the username is not unique for safety
+      }
+    },
+
+    async signup() {
+      if (this.password !== this.cfmpassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      const unique = await this.isUsernameUnique(this.username);
+      if (!unique) {
+        alert("This username is already taken. Please choose another one.");
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
+        const user = userCredential.user;
+        await sendEmailVerification(user);
+
+        await setDoc(doc(db, "users", user.uid), {
+          name: this.name,
+          username: this.username,
+          email: this.email,
+          fertiliser: 0
+        });
+
+        await setDoc(doc(db, "uniqueUsernames", this.username), {
+          userId: user.uid
+        });
+
+        alert("Signup successful. Please check your email for verification.");
+        this.$router.push({ name: 'Home' }); // Replace 'Home' with the actual route name you have for the home page
+      } catch (error) {
+        console.error("Error signing up:", error);
+        alert("Error signing up. Please try again.");
+      }
+    },
+  }
+}
+</script>
