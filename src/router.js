@@ -6,9 +6,9 @@ import SignUp from './views/SignUpPage.vue'
 import HomePage from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
-import Calendar from './views/CalendarPage.vue';
-import Infographics from './views/Resource/Infographics.vue'
-import BlueBinLocator from './views/Resource/BlueBinLocator.vue'
+import Calendar from './views/Calendar/CalendarPage.vue';
+import Infographics from './views/Resources/Infographics.vue'
+import BlueBinLocator from './views/Resources/BlueBinLocator.vue'
 import Settings from './views/Settings/Settings.vue'
 import Profile from './views/Settings/Profile.vue'
 import Notifications from './views/Settings/Notifications.vue'
