@@ -6,7 +6,7 @@
     </div>
 
     <div class="settings-menu">
-      <button @click="changeComponent('EditProfile')">Edit Profile</button>
+      <button @click="changeComponent('Profile')">Profile</button>
       <button @click="changeComponent('Notifications')">Notifications</button>
       <button @click="changeComponent('ContactUs')">Contact Us</button>
     </div>
@@ -18,18 +18,18 @@
 </template>
 
 <script>
-import EditProfile from './EditProfile.vue';
+import Profile from './Profile.vue';
 import Notifications from './Notifications.vue';
 import ContactUs from './ContactUs.vue';
 export default {
   data() {
     return {
-      currentComponent: 'EditProfile', // Default component
+      currentComponent: 'Profile', // Default component
       breadcrumb: 'Edit Profile', // Default breadcrumb
     };
   },
   components: {
-    EditProfile,
+    Profile,
     Notifications,
     ContactUs,
   },
@@ -38,8 +38,8 @@ export default {
       this.currentComponent = component;
       // Update breadcrumb based on the component
       switch (component) {
-        case 'EditProfile':
-          this.breadcrumb = 'Edit Profile';
+        case 'Profile':
+          this.breadcrumb = 'Profile';
           break;
         case 'Notifications':
           this.breadcrumb = 'Notifications';
