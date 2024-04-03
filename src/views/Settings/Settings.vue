@@ -1,12 +1,8 @@
 <template>
   <div class="settings-wrapper">
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-      Settings > {{ breadcrumb }}
-    </div>
 
     <div class="settings-menu">
-      <button @click="changeComponent('EditProfile')">Edit Profile</button>
+      <button @click="changeComponent('Profile')">Profile</button>
       <button @click="changeComponent('Notifications')">Notifications</button>
       <button @click="changeComponent('ContactUs')">Contact Us</button>
     </div>
@@ -14,40 +10,29 @@
     <div class="settings-content">
       <component :is="currentComponent"></component>
     </div>
+
   </div>
 </template>
 
 <script>
-import EditProfile from './EditProfile.vue';
+import Profile from './Profile.vue';
 import Notifications from './Notifications.vue';
 import ContactUs from './ContactUs.vue';
 export default {
   data() {
     return {
-      currentComponent: 'EditProfile', // Default component
-      breadcrumb: 'Edit Profile', // Default breadcrumb
+      currentComponent: 'Profile', // Default component
+
     };
   },
   components: {
-    EditProfile,
+    Profile,
     Notifications,
     ContactUs,
   },
   methods: {
     changeComponent(component) {
       this.currentComponent = component;
-      // Update breadcrumb based on the component
-      switch (component) {
-        case 'EditProfile':
-          this.breadcrumb = 'Edit Profile';
-          break;
-        case 'Notifications':
-          this.breadcrumb = 'Notifications';
-          break;
-        case 'ContactUs':
-          this.breadcrumb = 'Contact Us';
-          break;
-      }
     },
   },
 };
@@ -55,24 +40,39 @@ export default {
 
 <style>
 /* Add your styles here */
-.breadcrumb {
-  /* Breadcrumb styling */
-  margin-bottom: 20px; /* Add some space below the breadcrumb */
-}
 .settings-wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 .settings-menu {
   display: flex;
   flex-direction: column;
-  width: 200px; /* Adjust based on your design */
+  /* Assuming a fixed width sidebar */
+  width: 200px;
+  padding: 20px;
+  border-right: 2px solid #bebebe; /* Border between menu and content */
+  height: 50vh;
 }
+
 .settings-menu button {
-  margin-bottom: 10px;
+  background: none;
+  border: none;
+  color: #000; /* Set to your preferred text color */
+  padding: 10px 0;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
 }
+
+.settings-menu button:hover {
+  color: #028a0f; /* Change to the color you want on hover */
+}
+
+
 .settings-content {
+  padding: 20px;
   flex-grow: 1;
-  min-width: 600px;
+  min-width: 800px;
 }
 </style>
