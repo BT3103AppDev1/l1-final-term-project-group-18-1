@@ -67,18 +67,29 @@
   width: 800px;
   padding: 1.2rem;
   border: 1px solid #ccc;
-  border-radius: 4px 0 0 4px;
+  border-radius: 20px;
   border-right: none;
-  background: white url('@/assets/searchIcon.jpg');
+  background: white url('@/assets/searchIcon.png');
   background-repeat:no-repeat;
   background-position: 10px center;
-  background-size: 25px 25px;
+  background-size: 40px 40px;
   text-align:center;
 }
-.search-button{
- background-image: url('@/assets/recycleIcon.jpg');
- background-size: contain;
- background-repeat: no-repeat;
+.search-button {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  padding:20px 20px; /*padding around the content*/
+  font-weight:bold;
+  font-size: 1rem;
+  width: 250px;
+  height: 70px;
+  border-radius: 20px;
+  background-image: url('@/assets/recycleIcon.png');
+  background-repeat: no-repeat;
+  background-position: 10px center; 
+  background-size: 40px 40px; /*to scale the image */
+  cursor:pointer;
 }
 
 </style>

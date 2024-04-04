@@ -45,5 +45,6 @@ export default {
   #btn{
     width:180px;
     font-weight: bold;
+    cursor: pointer;
   }
 </style>
