@@ -6,7 +6,8 @@ import SignUp from './views/SignUpPage.vue'
 import HomePage from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
-import Calendar from './views/Calendar/CalendarPage.vue';
+import CalendarPage from './views/Calendar/CalendarPage.vue';
+import EventsPage from './views/Calendar/EventsPage.vue'
 import Infographics from './views/Resources/Infographics.vue'
 import BlueBinLocator from './views/Resources/BlueBinLocator.vue'
 import Settings from './views/Settings/Settings.vue'
@@ -70,7 +71,12 @@ const routes = [
     {
         path: '/Calendar',
         name: 'Calendar',
-        component: Calendar,
+        component: CalendarPage,
+    },
+    {
+        path: '/Events',
+        name: 'Events',
+        component: EventsPage,
     },
     {
         path: '/resources/Infographics',
