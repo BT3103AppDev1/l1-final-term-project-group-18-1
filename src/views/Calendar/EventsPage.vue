@@ -1,30 +1,44 @@
+
 <template>
-    <div>
-      <h1>Your Events</h1>
-      <ul v-if="events.length">
-        <li v-for="event in events" :key="event.id">
-          {{ event.summary }} - {{ event.start.dateTime }}
-        </li>
-      </ul>
-      <p v-else>No events found.</p>
+    <br><br>
+    <h1>Your Events</h1>
+    <div class="calendar-container">
+      <FullCalendar :options="calendarOptions" />
     </div>
-  </template>
+</template>
+
+<script>
+  import FullCalendar from '@fullcalendar/vue3';
+  import dayGridPlugin from '@fullcalendar/daygrid';
   
-  <script>
   export default {
     name: 'EventsPage',
+    components: {
+      FullCalendar // register the FullCalendar component
+    },
     data() {
       return {
-        events: []
+        // FullCalendar options
+        calendarOptions: {
+          plugins: [dayGridPlugin], // use the dayGridPlugin
+          initialView: 'dayGridMonth', // show the calendar in monthly view
+          events: [], // we will populate this array with our events
+          eventTimeFormat: { 
+            hour: '2-digit',
+            minute: '2-digit',
+            meridiem: 'short',
+          },
+        },
       };
     },
     mounted() {
-      this.listEvents();
+      this.loadEvents(); // load events after the component mounts
     },
     methods: {
-      listEvents() {
-        // Ensure the Google API client is loaded and signed in
-        if (window.gapi && window.gapi.client) {
+      loadEvents() {
+        // Check if gapi is loaded and if the user is authenticated
+        if (window.gapi && window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
+          // Fetch events from Google Calendar
           window.gapi.client.calendar.events.list({
             'calendarId': 'primary',
             'timeMin': (new Date()).toISOString(),
@@ -33,16 +47,43 @@
             'maxResults': 10,
             'orderBy': 'startTime'
           }).then(response => {
-            this.events = response.result.items;
+            // Map over the events and adjust them for FullCalendar
+            const events = response.result.items.map(event => ({
+              title: event.summary,
+              start: event.start.dateTime || event.start.date, // All-day events may not have a dateTime
+              end: event.end.dateTime || event.end.date, // All-day events may not have a dateTime
+              allDay: !event.start.dateTime // All-day event if there's no dateTime
+            }));
+            
+            // Update calendar options with the fetched events
+            this.calendarOptions = { ...this.calendarOptions, events };
           }).catch(error => {
-            console.error("Error fetching events:", error);
+            console.error("Error fetching events: ", error);
           });
         } else {
-          console.error("The Google API client is not loaded or the user is not authenticated.");
-          // Handle the error case here. Redirect back to login page or show error message.
+          // Handle the user not being signed in or gapi not being loaded
+          console.error("The user is not signed in or the Google API client is not loaded.");
         }
       }
     }
-  }
-  </script>
-  
+  };
+</script>
+
+<style>
+#app, .content, .container {
+  width: 100%;
+  max-width: none;
+}
+
+.calendar-container {
+  padding: 0;
+  margin: 0;
+  height: calc(100vh - 100px) /* Minus off height of navbar */
+}
+.fc {
+  /* Allow the calendar to expand fully within its container */
+  width: 100% !important;
+  height: 100% !important;
+}
+
+</style>

@@ -10,6 +10,8 @@
     "start-server": "node server/index.js"
   },
   "dependencies": {
+    "@fullcalendar/daygrid": "^6.1.11",
+    "@fullcalendar/vue3": "^6.1.11",
     "axios": "^1.6.8",
     "dotenv": "^16.4.5",
     "firebase": "^10.9.0",
