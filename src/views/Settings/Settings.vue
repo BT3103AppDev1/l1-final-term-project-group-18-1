@@ -2,10 +2,16 @@
   <div class="settings-wrapper">
 
     <div class="settings-menu">
-      <button @click="changeComponent('Profile')">Profile</button>
-      <button @click="changeComponent('Notifications')">Notifications</button>
-      <button @click="changeComponent('ContactUs')">Contact Us</button>
+      <div class="profile-notifications-contactus-buttons"> 
+        <button @click="changeComponent('Profile')">Profile</button>
+        <button @click="changeComponent('Notifications')">Notifications</button>
+        <button @click="changeComponent('ContactUs')">Contact Us</button>
+      </div>
+      <div class="logout-button"> 
+        <Logout/>
+      </div>
     </div>
+    
 
     <div class="settings-content">
       <component :is="currentComponent"></component>
@@ -18,6 +24,7 @@
 import Profile from './Profile.vue';
 import Notifications from './Notifications.vue';
 import ContactUs from './ContactUs.vue';
+import Logout from '@/components/Logout.vue'
 export default {
   data() {
     return {
@@ -29,6 +36,7 @@ export default {
     Profile,
     Notifications,
     ContactUs,
+    Logout,
   },
   methods: {
     changeComponent(component) {
@@ -38,12 +46,20 @@ export default {
 };
 </script>
 
-<style>
-/* Add your styles here */
+<style scoped>
+/* Styles for the layout of settings page  */
 .settings-wrapper {
   display: flex;
   flex-direction: row;
 }
+
+.settings-content {
+  padding: 20px;
+  flex-grow: 1;
+  min-width: 800px;
+}
+
+/* specific style for the buttons */ 
 .settings-menu {
   display: flex;
   flex-direction: column;
@@ -54,7 +70,7 @@ export default {
   height: 50vh;
 }
 
-.settings-menu button {
+.profile-notifications-contactus-buttons button {
   background: none;
   border: none;
   color: #000; /* Set to your preferred text color */
@@ -65,14 +81,22 @@ export default {
   font-size: 16px;
 }
 
-.settings-menu button:hover {
-  color: #028a0f; /* Change to the color you want on hover */
+.profile-notifications-contactus-buttons button:hover {
+  color: #457247; /* Change to the color you want on hover */
 }
 
-
-.settings-content {
-  padding: 20px;
-  flex-grow: 1;
-  min-width: 800px;
+.logout-button {
+  margin: 5px;
+  margin-top: 20vh;
 }
+
+.logout-button button {
+  border-radius: 5px;
+  border: 1px solid #457247;
+  background-color: #457247;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
 </style>
