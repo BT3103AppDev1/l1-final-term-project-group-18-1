@@ -55,6 +55,11 @@
         border: 1px solid #457247;
         background-color: #457247;
         color: white;
+        cursor: pointer;
+        transition: background-color 0.1s;
+    }
+    button:active {
+        background-color: #3b5e3b;
     }
     #show {
         display: flex;
