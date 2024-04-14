@@ -12,7 +12,7 @@
         <router-link to="/resources/ResourcesPage" class="dropdown-item">Resources</router-link>
         <div class="dropdown-menu">
           <router-link to="/resources/Infographics" class="dropdown-item">Infographics</router-link>
-          <router-link to="/resources/BlueBinLocator" class="dropdown-item">Blue Bin Locator</router-link>
+          <router-link to="/resources/ThriftLocator" class="dropdown-item">Thrift Locator</router-link>
         </div>
       </div>
 
@@ -47,19 +47,20 @@ export default {
   data() {
     return {
       isAuthenticated: false,
-      username: '',
+      username: this.username || '',
+      fertiliser: this.fertiliser || 0,
     };
   },
   async created() {
     onAuthStateChanged(auth, async (user) => {
       this.isAuthenticated = !!user;
       if (user) {
-        const userDocRef = doc(db, 'users', user.uid); 
+        const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
           const userData = userDoc.data();
           this.username = userData.username;
-          this.fertiliser = userData.fertiliser || 0; 
+          this.fertiliser = userData.fertiliser || 0;
         } else {
           console.log('No such document!');
         }
@@ -173,34 +174,34 @@ export default {
 }
 .user-info {
   display: flex;
-  flex-direction: column; 
-  align-items: left; 
+  flex-direction: column;
+  align-items: left;
   margin-right: 50px;
 }
 
 .user-details {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: center;
-  margin-bottom: 4px; 
+  margin-bottom: 4px;
 }
 
 .username {
-  margin-left: 8px; 
+  margin-left: 8px;
 }
 
 .fertiliser-amount {
-  margin-left: 8px; 
+  margin-left: 8px;
 }
 
 .fertiliser-info {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: left;
 }
 
 .user-icon, .fertiliser-icon {
-  width: 25px; 
+  width: 25px;
   height: 25px;
 }
 
@@ -208,10 +209,10 @@ export default {
   display: inline-block;
   margin-left: 40px;
   margin-right: 10px;
-  height: 50px; 
+  height: 50px;
   width: 2px;
   background-color: var(--primary-color);
-  vertical-align: middle; 
+  vertical-align: middle;
 }
 
 
@@ -221,7 +222,7 @@ export default {
   .nav-links {
     flex-direction: column;
     align-items: center;
-    padding-top: 65px; 
+    padding-top: 65px;
   }
 
   .nav-item {
