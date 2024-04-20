@@ -102,7 +102,13 @@ const routes = [
             component: ContactUs,
             },
         ]
-    }
+    },
+    {
+        path: '/searchResult /:searchQuery', //passing searchQuery as well as a route parameter 
+        name: 'searchResult',
+        component: () => import('./views/home/searchResult.vue'), // this allow for java modules to load asynchronously, the component is loaded only when route is actually visited by user
+        props: true // Enables the route to accept props, allowing the passing of searchQuery directly as a prop
+      },
 ]
 
 const router = createRouter({

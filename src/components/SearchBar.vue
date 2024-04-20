@@ -8,7 +8,7 @@
         @input="fetchSuggestions" 
         @focus="showPlaceholder = false"
         @blur = "showPlaceholder = !searchQuery">
-        <button @click="fetchSuggestions" class="search-button">Recycle Item Now</button>
+        <button @click="searchItem" class="search-button">Recycle Item Now</button>
         <!-- : is short for v-bind so that vue won't register the whole thing as a string -->
         <!-- button that manually triggers the fetch suggestions method -->
         <ul v-if="suggestions.length" class="suggestions-dropdown">
@@ -86,6 +86,14 @@
           this.isAutofilling = false; //set it back to false
         })
       },
+      searchItem(){
+        if (this.searchQuery.trim()) {
+          // Use the router to navigate to the search result page of the item with the searchQuery as a parameter, 
+          this.$router.push({ name: 'searchResult', params: { searchQuery: this.searchQuery } });
+        } else {
+          alert("Please enter an item to recycle in the search bar.");
+        }
+      }
     }
   }
 </script>
