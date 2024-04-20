@@ -19,6 +19,8 @@ import NavigationBar from './components/NavigationBar.vue';
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: white; /*so that bg is whtie no matter light or dark mode*/
+  color: black; /*so that text and icons are default black no matter light or dark mode*/
 }
 #app {
   text-align: center;
