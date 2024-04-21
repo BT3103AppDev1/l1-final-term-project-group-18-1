@@ -20,7 +20,7 @@
       <router-link to="/Farm" class="nav-item" v-if="isAuthenticated">Farm</router-link>
       <router-link to="/Calendar" class="nav-item" v-if="isAuthenticated">Calendar</router-link>
       <router-link to="/Settings" class="nav-item" v-if="isAuthenticated">Settings</router-link>
-      <span class="vertical-line"></span>
+      <span class="vertical-line" v-if="isAuthenticated"></span>
       
       <!-- Log In and Sign Up buttons for non-authenticated users -->
       <router-link to="/Login" class="auth-item-button" v-if="!isAuthenticated">Log In</router-link>
@@ -105,7 +105,9 @@ export default {
 }
 
 .navbar-logo {
-  max-height: 50px;
+  max-height: 90px;
+  min-width: 200px;
+  height: auto;
 }
 
 .nav-links {
