@@ -5,7 +5,8 @@ import SignUp from './views/SignUpPage.vue'
 import HomePage from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
-import Calendar from './views/Calendar/CalendarPage.vue';
+import CalendarPage from './views/Calendar/CalendarPage.vue';
+import EventsPage from './views/Calendar/EventsPage.vue'
 import Infographics from './views/Resources/Infographics.vue'
 import ThriftLocator from './views/Resources/ThriftLocator.vue'
 import Settings from './views/Settings/Settings.vue'
@@ -14,6 +15,7 @@ import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import SearchResult from './views/home/searchResult.vue'
 import SocialPage from './views/SocialPage.vue'
+import AddReminderModal from '@/components/AddReminderModal.vue';
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 
 const routes = [
@@ -65,7 +67,19 @@ const routes = [
     {
         path: '/Calendar',
         name: 'Calendar',
-        component: Calendar,
+        component: CalendarPage,
+    },
+    {
+        path: '/Events',
+        name: 'Events',
+        component: EventsPage,
+        children: [
+            {
+                path: 'add-reminder',
+                name: 'AddReminder',
+                component: AddReminderModal,
+            }
+        ]
     },
     {
         path: '/resources/Infographics',

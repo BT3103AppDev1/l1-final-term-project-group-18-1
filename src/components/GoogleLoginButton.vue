@@ -1,5 +1,5 @@
 <template>
-  <button @click="handleAuthClick">Continue with Google</button>
+  <button @click="handleAuthClick">Login with Google</button>
 </template>
 
 <script>
