@@ -4,7 +4,7 @@
          @input adds an event listener for the input event, everytime user types something 'fetchSuggestion' method is called
          focus event hides the placeholder, blur eveent checks if searchQuery is empty and toggle the visibility of the placeholder-->
         <input type="text" v-model="searchQuery" class="search-input" 
-        :placeholder="showPlaceholder ? 'What will you be recycling today?':'' "
+        :placeholder="placeholderText"
         @input="fetchSuggestions" 
         @focus="showPlaceholder = false"
         @blur = "showPlaceholder = !searchQuery">
@@ -34,6 +34,15 @@
         suggestions: [], //store suggestions here
         isAutofilling: false, //boolean to indicate autofill so it won't fetch suggestions again
       };
+    },
+    computed: {
+      placeholderText() {
+        if (this.showPlaceholder) {
+          return "What will you be recycling today?";
+        } else {
+          return this.searchQuery; //use the route param as a placeholder
+        } 
+      }
     },
     watch: { //watch to remove dropdown list when user clears the search field 
     searchQuery(value) {
@@ -74,7 +83,6 @@
           console.log ('waiting for more input before suggesting to optimise suggestion function')
         }
       },
-  
       selectItem(suggestion) {
         this.isAutofilling = true, //change to isautofill
         console.log("Suggestion selected:", suggestion);
