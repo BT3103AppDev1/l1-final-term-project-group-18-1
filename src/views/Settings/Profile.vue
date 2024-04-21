@@ -86,9 +86,13 @@
   };
   </script>
   
-  <style scoped>
-  
+  <style>
   /* Styles for the email display */
+  .settings-wrapper h1 {
+    margin-right: 690px;
+    margin-bottom: 30px;
+  }
+
   .user-email {
     padding: 10px 0;
     font-size: 0.9rem;
