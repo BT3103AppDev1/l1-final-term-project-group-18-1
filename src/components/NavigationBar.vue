@@ -21,10 +21,14 @@
       <router-link to="/Calendar" class="nav-item" v-if="isAuthenticated">Calendar</router-link>
       <router-link to="/Settings" class="nav-item" v-if="isAuthenticated">Settings</router-link>
       <span class="vertical-line"></span>
+      
+      <!-- Log In and Sign Up buttons for non-authenticated users -->
+      <router-link to="/Login" class="auth-item-button" v-if="!isAuthenticated">Log In</router-link>
+      <router-link to="/SignUp" class="auth-item-button" v-if="!isAuthenticated">Sign Up</router-link>
     </div>
 
     <!-- User info and fertiliser details to show when signed in -->
-    <div class="user-info">
+    <div class="user-info" v-if="isAuthenticated">
       <div class="user-details">
         <img src="@/assets/usericon.png" class="user-icon" />
         <span class="username">{{ username }}</span>
@@ -36,6 +40,7 @@
     </div>
   </nav>
 </template>
+
 
 
 <script>
@@ -79,7 +84,6 @@ export default {
 <style>
  :root {
   --primary-color: #457247;
-  --hover-color: #345830;
   --background-color: #ffffff;
 }
 
@@ -124,8 +128,9 @@ export default {
 
 .nav-item:hover,
 .nav-item-button:hover {
-  color: var(--hover-color);
-  text-decoration: underline;
+  color: var(--background-color);
+  background-color: var(--primary-color);
+  padding: 10px 20px;
 }
 
 .nav-item-button {
@@ -141,8 +146,9 @@ export default {
 }
 
 .nav-item-button:hover {
-  background-color: var(--primary-color);
-  color: var(--background-color);
+  color: var(--background-color); 
+  background-color: var(--primary-color); 
+  border-color: var(--primary-color); 
 }
 
 .dropdown-item {
@@ -169,8 +175,9 @@ export default {
   z-index: 1;
 }
 
-.resources:hover .dropdown-menu {
-  display: block;
+.nav-item.resources:hover > .dropdown-item {
+  color: var(--background-color);
+  background-color: var(--primary-color);
 }
 .user-info {
   display: flex;
@@ -215,6 +222,29 @@ export default {
   vertical-align: middle;
 }
 
+.auth-item-button {
+  margin: 0 1rem;
+  font-size: 1.2em;
+  color: var(--primary-color); 
+  text-decoration: none;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+  padding: 10px 20px;
+  border: 2px solid var(--primary-color); 
+  border-radius: 20px; 
+  background-color: transparent; 
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-item-button:hover {
+  color: var(--background-color); 
+  background-color: var(--primary-color); 
+  border-color: var(--primary-color); 
+}
+
+
 
 
 
@@ -232,6 +262,7 @@ export default {
   .dropdown-menu {
     left: 50%;
     transform: translateX(-50%);
+    border: 1px solid var(--primary-color);
   }
 }
   </style>
