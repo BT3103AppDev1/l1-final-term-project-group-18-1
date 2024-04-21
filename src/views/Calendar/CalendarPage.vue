@@ -7,8 +7,11 @@
 </template>
 
 <script>
-import GoogleLoginButton from '@/components/GoogleLoginButton.vue';
+import { auth, db } from '@/firebaseConfig';
+import { doc, setDoc , getDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'vue-router';
+import GoogleLoginButton from '@/components/GoogleLoginButton.vue';
 
 export default {
   name: 'CalendarPage',
@@ -17,12 +20,34 @@ export default {
   },
   setup() {
     const router = useRouter();
-    
-    const handleAuthentication = () => {
-      router.push({ name: 'Events' });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Check if the user has already synced their calendar
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists() && userDoc.data().calendarSynced) {
+          // User has synced, redirect them
+          router.push({ name: 'Events' });
+        }
+      }
+    });
+
+    const handleAuthentication = async () => {
+      // This function is called after Google authentication is successful
+      const user = auth.currentUser;
+      if (user) {
+        // Set the calendarSynced flag in Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, { calendarSynced: true }, { merge: true });
+
+        // Redirect to Events page
+        router.push({ name: 'Events' });
+      }
     };
 
     return { handleAuthentication };
   },
-}
+};
 </script>
+

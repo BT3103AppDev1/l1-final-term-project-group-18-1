@@ -18,6 +18,9 @@ import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { initGoogleAPI } from '@/utils/googleApi';
 import AddReminderModal from '@/components/AddReminderModal.vue';
+import { auth, db } from '@/firebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore'
 
 export default {
   name: 'EventsPage',
@@ -40,9 +43,27 @@ export default {
       },
       pollInterval: null,
       showAddReminderModal: false,
+      userHasSyncedCalendar: false,
     };
   },
   mounted() {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Fetch user profile to check if they have synced their calendar
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists() && userDocSnap.data().calendarSynced) {
+          // User has synced their calendar
+          this.userHasSyncedCalendar = true;
+          this.initializeAndLoadEvents();
+        } else {
+          // User needs to sync their calendar
+          this.$router.push({ name: 'Calendar' });
+        }
+      }
+    }
+    )
     this.initializeAndLoadEvents();
   },
   beforeDestroy() {
