@@ -27,6 +27,7 @@
             </div>
         </div>
         <p v-if="!isLoading && !item">No items found.</p>
+        <itemLogger :item="item"></itemLogger>
     </div>
 </template>
 
@@ -36,13 +37,15 @@
     import { db } from '../../firebaseConfig.js';
     import { collection, where, getDocs, query} from 'firebase/firestore';
     import SearchBarWoBtn from '@/components/SearchBarWoBtn.vue';
+    import itemLogger from '@/components/itemLogger.vue';
   
     export default {
         props: {
             searchQuery: String // declare search query as a prop of type string 
         },
         components: {
-            SearchBarWoBtn
+            SearchBarWoBtn,
+            itemLogger,
         },
         mounted() {
             this.fetchData();
