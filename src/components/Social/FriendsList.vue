@@ -87,7 +87,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 480px; /* Adjust width as needed */
+  max-width: 480px; 
   margin: auto;
 }
 
@@ -104,12 +104,12 @@ export default {
 .friend-item {
   background-color: #79BCD9;
   margin-bottom: 10px;
-  border-radius: 20px; /* Rounded corners */
+  border-radius: 20px; 
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .friend-info {
@@ -131,9 +131,9 @@ export default {
   padding: 5px;
   margin-left: 15px;
   background-color: transparent;
-  color: black; /* Red color for the delete icon */
+  color: black; 
   border: none;
-  font-size: 1.2em; /* Larger font size for the delete icon */
+  font-size: 1.2em; 
   cursor: pointer;
 }
 
@@ -141,5 +141,4 @@ export default {
   color: #333333;
 }
 
-/* If you need to add a specific size or style for the icons, you can add it here */
 </style>
