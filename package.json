@@ -22,8 +22,8 @@
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.2"
-    "vue-browser-geolocation": "^1.8.0",
+    "vue-router": "^4.3.2",
+    "vue-browser-geolocation": "^1.8.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
