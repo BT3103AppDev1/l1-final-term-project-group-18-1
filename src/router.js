@@ -15,6 +15,7 @@ import Profile from './views/Settings/Profile.vue'
 import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import SocialPage from './views/SocialPage.vue'
+import AddReminderModal from '@/components/AddReminderModal.vue';
 
 const routes = [
     {
@@ -77,6 +78,13 @@ const routes = [
         path: '/Events',
         name: 'Events',
         component: EventsPage,
+        children: [
+            {
+                path: 'add-reminder',
+                name: 'AddReminder',
+                component: AddReminderModal,
+            }
+        ]
     },
     {
         path: '/resources/Infographics',
