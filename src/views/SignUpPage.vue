@@ -41,8 +41,7 @@ export default {
         return !docSnap.exists();
       } catch (error) {
         console.error("Error checking username uniqueness:", error);
-        // Handle the error appropriately
-        return false; // If there's an error, handle it as if the username is not unique for safety
+        return false; 
       }
     },
 
@@ -75,7 +74,7 @@ export default {
         });
 
         alert("Signup successful. Please check your email for verification.");
-        this.$router.push({ name: 'Home' }); // Replace 'Home' with the actual route name you have for the home page
+        this.$router.push({ name: 'Home' }); 
       } catch (error) {
         console.error("Error signing up:", error);
         alert("Error signing up. Please try again.");
