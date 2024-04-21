@@ -1,30 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LandingPage from './views/LandingPage.vue'
 import About from './views/About.vue'
 import Login from './views/LoginPage.vue'
 import SignUp from './views/SignUpPage.vue'
 import HomePage from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
-import Calendar from './views/CalendarPage.vue';
-import Infographics from './views/Resource/Infographics.vue'
-import BlueBinLocator from './views/Resource/BlueBinLocator.vue'
+import Calendar from './views/Calendar/CalendarPage.vue';
+import Infographics from './views/Resources/Infographics.vue'
+import ThriftLocator from './views/Resources/ThriftLocator.vue'
 import Settings from './views/Settings/Settings.vue'
-import EditProfile from './views/Settings/EditProfile.vue'
+import Profile from './views/Settings/Profile.vue'
 import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
-import Social from './views/SocialPage.vue'
 import SearchResult from './views/home/searchResult.vue'
+import SocialPage from './views/SocialPage.vue'
+import ResourcesPage from './views/Resources/ResourcesPage.vue'
 
 const routes = [
     {
         path: '/',
-        name: 'LandingPage',
-        component: LandingPage,
-    },
-
-    {
-        path: '/About',
         name: 'About',
         component: About,
     },
@@ -62,12 +56,11 @@ const routes = [
         path: '/Farm',
         name: 'Farm',
         component: Farm,
-        children: [
-            {
-              path: '/Social',
-              component: Social,
-            },
-        ]
+    },
+    {
+        path: '/SocialPage',
+        name: 'SocialPage',
+        component: SocialPage,
     },
     {
         path: '/Calendar',
@@ -81,18 +74,30 @@ const routes = [
     },
 
     {
-        path: '/resources/BlueBinLocator',
-        name: 'BlueBinLocator',
-        component: BlueBinLocator,
+        path: '/infographics/:id',
+        name: 'PosterDetail',
+        component: () => import('@/views/Resources/PosterDetail.vue')
     },
+
+    {
+        path: '/resources/ThriftLocator',
+        name: 'ThriftLocator',
+        component: ThriftLocator,
+    },
+    {
+        path: '/resources/ResourcesPage',
+        name: 'ResourcesPage',
+        component: ResourcesPage,
+    }
+    ,
     {
         path: '/Settings',
         name: 'Settings',
         component: Settings,
         children: [
             {
-              path: '/EditProfile',
-              component: EditProfile,
+              path: '/Profile',
+              component: Profile,
             },
             {
                 path: '/Notifications',

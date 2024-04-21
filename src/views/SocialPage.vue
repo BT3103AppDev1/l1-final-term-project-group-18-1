@@ -1,37 +1,65 @@
 <template>
-    <div>
-      <div class="page-header">
-        <h1>Farm Page</h1>
-        <div class="header-buttons">
-          <router-link to="/Social" class="button">Social</router-link>
-          <router-link to="/Shop" class="button">Shop</router-link>
-        </div>
+  <div class="social-container">
+    <div class="friends-section">
+      <h2>FRIENDS</h2>
+      <FriendsList />
+    </div>
+    <div class="divider"></div>
+    <div class="interaction-area">
+      <div class="find-friends">
+        <FindFriends />
+      </div>
+      <div class="friend-requests">
+        <FriendRequests />
       </div>
     </div>
-  </template>
-  
-  
-  <style scoped>
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .header-buttons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .button {
-    padding: 10px;
-    background-color: #3498db;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-  }
-  
-  </style>
-  
+  </div>
+</template>
+
+<script>
+import FindFriends from '@/components/Social/FindFriends.vue'
+import FriendRequests from '@/components/Social/FriendRequests.vue'
+import FriendsList from '@/components/Social/FriendsList.vue'
+
+export default {
+  components: {
+    FindFriends,
+    FriendRequests,
+    FriendsList
+  },
+}
+</script>
+
+<style scoped>
+.social-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.friends-section {
+  flex: 1;
+  padding: 10px;
+  text-align: left;
+}
+
+.divider {
+  width: 1px;
+  background-color: #ccc;
+  height: 100%;
+}
+
+.interaction-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 10px;
+}
+
+.find-friends {
+  margin-bottom: 20px;
+}
+
+.friend-requests {
+  flex-grow: 1;
+}
+</style>
