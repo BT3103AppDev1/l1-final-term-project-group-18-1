@@ -4,18 +4,13 @@ import NavigationBar from './components/NavigationBar.vue';
 
 <template>
   <div id="app">
-    <!-- <nav id="navbar">
-      <div class="nav-item resources">
-        Resources
-        <div class="dropdown-menu">
-          <router-link to="/resources/Infographics">Infographics</router-link>
-          <router-link to="/resources/BlueBinLocator">Blue Bin Locator</router-link>
-        </div>
-      </div>
-      <router-link to="/Settings">Settings</router-link>
-    </nav> -->
-    <NavigationBar />
-    <router-view/>
+    <div id = "nav">
+      <NavigationBar />
+    </div>
+
+    <div>
+      <router-view/>
+    </div>
   </div>
  </template>
 
@@ -24,11 +19,16 @@ import NavigationBar from './components/NavigationBar.vue';
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: white; /*so that bg is whtie no matter light or dark mode*/
+  color: black; /*so that text and icons are default black no matter light or dark mode*/
 }
 #app {
   text-align: center;
 }
-/* all these for infographics and bluebinlocator*/
+#nav {
+  padding: 35px;
+}
+/* all these for infographics and locator*/
 .nav-item {
   position: relative;
   margin-bottom: 20px;

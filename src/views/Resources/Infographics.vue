@@ -63,7 +63,7 @@ export default {
 .poster-button {
   margin-top: 20px;
   padding: 10px 15px;
-  background-color: #4CAF50; /* Green background */
+  background-color: #457247; /* Green background */
   color: white; /* Text color */
   border: none;
   border-radius: 4px;
@@ -83,7 +83,7 @@ export default {
 }
 
 .breadcrumb a {
-  color: #007bff; /* Adjust color as needed */
+  color: #457247; /* Adjust color as needed */
   text-decoration: none;
 }
 

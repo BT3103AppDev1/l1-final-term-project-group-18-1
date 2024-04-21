@@ -4,10 +4,10 @@
       <!-- Infographics Button -->
       <router-link to="/resources/Infographics" class="resource-button">Infographics</router-link>
       <!-- Blue Bin Locator Button -->
-      <router-link to="/resources/BlueBinLocator" class="resource-button">Blue Bin Locator</router-link>
+      <router-link to="/resources/ThriftLocator" class="resource-button">Thrift Locator</router-link>
     </div>
   </template>
-  
+
   <style>
   .resource-button {
     display: inline-block;
@@ -22,9 +22,8 @@
     cursor: pointer; /* Cursor on hover */
     transition: background-color 0.3s; /* Smooth background color change on hover */
   }
-  
+
   .resource-button:hover {
     background-color: #27792b; /* Darker shade of green on hover */
   }
   </style>
-  

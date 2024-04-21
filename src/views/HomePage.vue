@@ -1,6 +1,13 @@
 <template>
-    <SearchBar />
-    <Logout />
+    <div>
+      <header>
+        <Logout />
+      </header>
+      <main>
+        <h1>Home Page</h1>
+        <SearchBar />
+      </main>
+    </div>
 </template>
 
 <script>
@@ -9,8 +16,17 @@ import Logout from '../components/Logout.vue'
 
 export default {
   components: {
-    SearchBar,
-    Logout
+    Logout,
+    SearchBar
   }
 }
 </script>
+
+<style>
+  header{
+    position:fixed;
+    bottom:0;
+    left:90;
+    width:100%;
+  }
+</style>

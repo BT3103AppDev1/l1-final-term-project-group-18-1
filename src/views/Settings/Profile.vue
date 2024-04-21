@@ -86,9 +86,13 @@
   };
   </script>
   
-  <style scoped>
-  
+  <style>
   /* Styles for the email display */
+  .settings-wrapper h1 {
+    margin-right: 690px;
+    margin-bottom: 30px;
+  }
+
   .user-email {
     padding: 10px 0;
     font-size: 0.9rem;
@@ -118,7 +122,7 @@
   
   /* Style for the save button */
   .btn {
-    background-color: green;
+    background-color: #457247;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -130,7 +134,7 @@
   /* Additional styling for success message */
   .success-message {
     margin-top: 0.3rem;
-    color: green;
+    color:#457247;
     font-size: 16px;
   }
 

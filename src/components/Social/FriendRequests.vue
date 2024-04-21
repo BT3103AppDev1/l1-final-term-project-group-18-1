@@ -2,17 +2,23 @@
   <div class="friend-requests">
     <h2>Incoming Friend Requests</h2>
     <ul v-if="requests.length > 0">
-      <li v-for="request in requests" :key="request.id">
-        {{ request.fromUsername }} wants to be friends.
-        <button @click="acceptRequest(request.id)">Accept</button>
-        <button @click="rejectRequest(request.id)">Reject</button>
+      <li v-for="request in requests" :key="request.id" class="request-item">
+        <div class="request-info">
+          <div class="request-name">{{ request.fromName }}</div>
+          <div class="request-username">@{{ request.fromUsername }}</div>
+        </div>
+        <div class="request-actions">
+          <button @click="acceptRequest(request.id)" class="accept-btn">✔</button>
+          <button @click="rejectRequest(request.id)" class="reject-btn">✖</button>
+        </div>
       </li>
     </ul>
-    <div v-else>
+    <div v-else class="no-requests">
       No incoming friend requests.
     </div>
   </div>
 </template>
+
 
 <script>
 import { db } from '@/firebaseConfig';
@@ -134,22 +140,60 @@ export default {
   align-items: center;
 }
 
+.friend-requests h2 {
+  color: #333;
+}
+
 .friend-requests ul {
   list-style-type: none;
   padding: 0;
+  width: 100%;
 }
 
-.friend-requests li {
+.request-item {
+  background-color: #F2D74A;
   margin-bottom: 10px;
+  border-radius: 20px; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
 }
 
-button {
-  margin-left: 5px;
-  padding: 5px 10px;
+.request-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.request-name, .request-username {
+  margin: 0; 
+}
+
+.request-actions {
+  display: flex;
+  align-items: center;
+}
+
+.accept-btn, .reject-btn {
+  background-color: transparent; 
+  color: black;
+  border: none; 
   cursor: pointer;
+  font-size: 1.2rem; 
+  margin-left: 8px;
 }
 
-button:hover {
-  opacity: 0.8;
+.accept-btn:before, .reject-btn:before {
+  content: ""; 
+  display: inline-block;
+  width: 20px; 
+  height: 20px;
+  background-size: contain;
 }
+
+.no-requests {
+  color: #333;
+  margin-top: 20px;
+}
+
 </style>
