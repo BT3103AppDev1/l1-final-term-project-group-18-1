@@ -1,22 +1,53 @@
 <template>
   <div>
-    <h1>Calendar Page</h1>
-    <button @click="signInWithGoogle">Sign in with Google</button>
-    <button @click="goToSyncedCalendar">Go to Synced Calendar</button>
+    <h1>Sync your Google Calendar with Eco Harbour</h1>
+    <h3>Unlock a seamless integration of eco-friendly reminders to encourage sustainable living in your faily activities.</h3>
+    <GoogleLoginButton @authenticated="handleAuthentication"/>
   </div>
 </template>
 
 <script>
-import GoogleCalendar from '../../GoogleCalendar.js';
+import { auth, db } from '@/firebaseConfig';
+import { doc, setDoc , getDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
+import { useRouter } from 'vue-router';
+import GoogleLoginButton from '@/components/GoogleLoginButton.vue';
 
 export default {
-  methods: {
-    signInWithGoogle() {
-      window.location = GoogleCalendar.getAuthUrl();
-    },
-    goToSyncedCalendar() {
-      this.$router.push({ name: 'SyncedCalendar' });
-    },
+  name: 'CalendarPage',
+  components: {
+    GoogleLoginButton
   },
-}
+  setup() {
+    const router = useRouter();
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Check if the user has already synced their calendar
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists() && userDoc.data().calendarSynced) {
+          // User has synced, redirect them
+          router.push({ name: 'Events' });
+        }
+      }
+    });
+
+    const handleAuthentication = async () => {
+      // This function is called after Google authentication is successful
+      const user = auth.currentUser;
+      if (user) {
+        // Set the calendarSynced flag in Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, { calendarSynced: true }, { merge: true });
+
+        // Redirect to Events page
+        router.push({ name: 'Events' });
+      }
+    };
+
+    return { handleAuthentication };
+  },
+};
 </script>
+
