@@ -34,8 +34,9 @@ export default {
         eventTimeFormat: {
           hour: '2-digit',
           minute: '2-digit',
-          meridiem: 'short',
+          hour12: false
         },
+        eventContent: this.renderEventContent // Custom render method for events
       },
       pollInterval: null,
       showAddReminderModal: false,
@@ -65,7 +66,7 @@ export default {
         window.gapi.client.calendar.events.list({
           'calendarId': 'primary',
           'timeMin': (new Date()).toISOString(),
-          'showDeleted': false,
+          'showDeleted': true,
           'singleEvents': true,
           'maxResults': 10,
           'orderBy': 'startTime'
@@ -74,10 +75,11 @@ export default {
             title: event.summary,
             start: event.start.dateTime || event.start.date,
             end: event.end.dateTime || event.end.date,
-            allDay: !event.start.dateTime
+            allDay: !event.start.dateTime,
+            type: event.extendedProperties?.private?.type || 'event'
           }));
           this.calendarOptions.events = [...new Map(fetchedEvents.concat(this.calendarOptions.events)
-            .map(event => [event['start'], event])).values()];
+            .map(event => [event['start'].toString(), event])).values()];
         }).catch(error => {
           console.error("Error fetching events: ", error);
         });
@@ -98,11 +100,16 @@ export default {
         summary: reminder.title,
         start: {
           dateTime: new Date(reminder.start).toISOString(),
-          timeZone: 'Asia/Singapore' // Set to Singapore timezone
+          timeZone: 'Asia/Singapore'
         },
         end: {
-          dateTime: new Date(reminder.end || new Date(reminder.start).setHours(new Date(reminder.start).getHours() + 1)).toISOString(), // Ensure 'end' is after 'start'
-          timeZone: 'Asia/Singapore' // Set to Singapore timezone
+          dateTime: new Date(reminder.end || new Date(reminder.start).setHours(new Date(reminder.start).getHours() + 1)).toISOString(),
+          timeZone: 'Asia/Singapore'
+        },
+        extendedProperties: {
+          private: {
+            type: 'reminder'
+          }
         }
       };
 
@@ -110,12 +117,12 @@ export default {
         'calendarId': 'primary',
         'resource': event
       }).then(response => {
-        console.log("Event created: ", response);
         this.calendarOptions.events.push({
           title: response.result.summary,
           start: response.result.start.dateTime,
           end: response.result.end.dateTime,
-          allDay: !response.result.start.dateTime
+          allDay: !response.result.start.dateTime,
+          type: 'reminder'
         });
         this.scheduleNotification(reminder);
         this.showAddReminderModal = false;
@@ -124,13 +131,28 @@ export default {
         alert("Failed to add event to Google Calendar: " + error.result.error.message);
       });
     },
-
+    renderEventContent(arg) {
+      let timeString = new Date(arg.event.start).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      let element = document.createElement('div');
+      if (arg.event.extendedProps.type === 'reminder') {
+        element.innerHTML = `<span class="reminder-icon">&#x1F514;</span> ${timeString} ${arg.event.title}`;
+        element.classList.add('reminder-event');
+      } else {
+        element.innerHTML = `<span class="event-icon">&#x1F4C5;</span> ${timeString} ${arg.event.title}`;
+        element.classList.add('regular-event');
+      }
+      return { domNodes: [element] };
+    },
     scheduleNotification(reminder) {
       if ("Notification" in window) {
         Notification.requestPermission().then((permission) => {
           if (permission === "granted") {
-            const localTimeOfReminder = new Date(reminder.start); // Already in local time if your system clock is set to Singapore
-            const timeUntilReminder = localTimeOfReminder.getTime() - new Date().getTime(); // Calculate the time until the reminder in milliseconds
+            const localTimeOfReminder = new Date(reminder.start);
+            const timeUntilReminder = localTimeOfReminder.getTime() - new Date().getTime();
             setTimeout(() => {
               new Notification(reminder.title);
             }, timeUntilReminder);
@@ -138,7 +160,6 @@ export default {
         });
       }
     }
-
   }
 }
 </script>
@@ -156,5 +177,14 @@ export default {
 .fc {
   width: 100% !important;
   height: 100% !important;
+}
+.reminder-event {
+  color: #d9534f; /* Styling for reminders */
+}
+.regular-event {
+  color: #5bc0de; /* Styling for regular events */
+}
+.reminder-icon, .event-icon {
+  padding-right: 5px;
 }
 </style>
