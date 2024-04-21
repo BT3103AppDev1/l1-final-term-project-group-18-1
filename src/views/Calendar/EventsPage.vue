@@ -29,10 +29,15 @@
             meridiem: 'short',
           },
         },
+        pollInterval: null,
       };
     },
     mounted() {
-      this.loadEvents(); // load events after the component mounts
+      this.loadEvents(); // initially loading of events after the component mounts
+      this.startPolling(); // auto-loading of data
+    },
+    beforeDestroy() {
+      this.stopPolling(); // auto-loading of data
     },
     methods: {
       loadEvents() {
@@ -60,13 +65,20 @@
           }).catch(error => {
             console.error("Error fetching events: ", error);
           });
-        } else {
-          // Handle the user not being signed in or gapi not being loaded
-          console.error("The user is not signed in or the Google API client is not loaded.");
+        } 
+      },
+      startPolling() {
+          this.pollInterval = setInterval(() => {
+            this.loadEvents();
+          }, 10000); // Poll every 10 seconds * (TBC)
+      },
+      stopPolling() {
+        if (this.pollInterval) {
+          clearInterval(this.pollInterval)
         }
       }
     }
-  };
+  }
 </script>
 
 <style>
@@ -85,5 +97,4 @@
   width: 100% !important;
   height: 100% !important;
 }
-
 </style>
