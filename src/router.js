@@ -12,7 +12,7 @@ import Settings from './views/Settings/Settings.vue'
 import Profile from './views/Settings/Profile.vue'
 import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
-import SearchResult from './views/home/searchResult.vue'
+import SearchPage from './views/home/SearchPage.vue'
 import SocialPage from './views/SocialPage.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 
@@ -110,10 +110,9 @@ const routes = [
         ]
     },
     {
-        path: '/searchResult /:searchQuery', //passing searchQuery as well as a route parameter 
-        name: 'searchResult',
-        component: SearchResult,
-        //component: () => import('./views/home/searchResult.vue'), // this allow for java modules to load asynchronously, the component is loaded only when route is actually visited by user
+        path: '/SearchPage/:searchQuery',
+        name: 'SearchPage',
+        component: SearchPage,
         props: true // Enables the route to accept props, allowing the passing of searchQuery directly as a prop
       },
 ]
