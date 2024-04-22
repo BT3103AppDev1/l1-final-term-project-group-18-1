@@ -19,7 +19,7 @@
   
   <script>
   import { db } from '../firebaseConfig'; 
-  import { collection, addDoc, doc, getDoc } from 'firebase/firestore'; 
+  import { collection, addDoc, doc, getDoc, query, updateDoc, where, getDocs } from 'firebase/firestore'; 
   import { getAuth } from 'firebase/auth';  // Import getAuth function to access authentication
   
   export default {
@@ -28,13 +28,18 @@
         itemCount: 1, // Default to 1, assuming they are recycling at least one item
         errorMessage: '', // Initialize error message as empty
         isClean: false, // Tracks the state of the checkbox
-        username: '',
-        item: null,
+        username: ''
       };
     },
     props: {
         searchQuery: String,
         item: Object,
+    },
+    //debugging
+    watch: {
+    item(newVal) {
+        console.log("New item received in itemLogger:", newVal);
+    }
     },
     computed: {
         isInputValid() {
@@ -60,29 +65,89 @@
                 console.log("No user is signed in.");
             }
      },
-      async logItem() {
-            // Check if item is available and has a name
-            console.log("received item as" + this.item)
-            if (!this.item || !this.item.name) {
-                //this.errorMessage = 'Item details are not available. Please try again.';
-                return; // Stop further execution if no item or item name
-            }
-            if (this.isInputValid) {
-                await addDoc(collection(db, "recycledDatabase"), {
-                    itemName: this.item.name, // Assuming you have the item's name
-                    quantity: this.itemCount,
-                    isClean: this.isClean,
-                    username: this.username, // Use the username from data
-                });
-            console.log("Item logged successfully.");
-            this.itemCount = ''; // Reset the itemCount
-            this.errorMessage = ''; // Clear any error message
-            this.isClean = false; //reset the status
-        } else {
-            this.errorMessage = !this.itemCount || this.itemCount <= 0 ? 'Please enter a valid quantity (at least 1).' : 
-                                !this.isClean ? 'Please ensure the item is clean/rinsed before logging.' : '';
+     
+     async logItem() {
+        console.log("Received item as:", this.item);
+
+        // Basic validation for item details
+        if (!this.item || !this.item.name) {
+            this.errorMessage = 'Item details are not available. Please try again.';
+            return; // Stop further execution if no item or item name
         }
-        },
+
+        // Validation for user inputs
+        if (!this.isClean) {
+            this.errorMessage = 'Please ensure that all items are clean/rinsed.';
+            return;
+        }
+
+        if (!this.itemCount) {
+            this.errorMessage = 'Please do not leave the quantity field empty.';
+            return;
+        }
+
+        if (this.itemCount <=0) {
+            this.errorMessage = 'Please enter a quantity more than 1.';
+            return;
+        }
+
+          // construct a query to find existing document
+            const itemsRef = collection(db, "recycledDatabase");
+            const q = query(itemsRef, where("username", "==", this.username), where("itemName", "==", this.item.name));
+
+        // try {
+        //     // Proceed with Firestore logging
+        //     await addDoc(collection(db, "recycledDatabase"), {
+        //         itemName: this.item.name,
+        //         quantity: this.itemCount,
+        //         isClean: this.isClean,
+        //         username: this.username,
+        //     });
+
+        //     console.log("Item logged successfully.");
+        //     this.resetInputs();
+        //     alert("Item logged successfully!"); // Provide user feedback
+        // } catch (error) {
+        //     console.error("Error logging item:", error);
+        //     this.errorMessage = 'Failed to log the item. Please try again.';
+        // }
+        
+        try {
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+            await addDoc(itemsRef, {
+                itemName: this.item.name,
+                quantity: this.itemCount,
+                isClean: this.isClean,
+                username: this.username,
+            });
+            console.log("New item logged successfully.");
+        } else {
+            querySnapshot.forEach(async (doc) => {
+                const newQuantity = doc.data().quantity + this.itemCount;
+                await updateDoc(doc.ref, {
+                    quantity: newQuantity,
+                    isClean: this.isClean
+                });
+            });
+            console.log("Item quantity updated successfully.");
+        }
+        
+        this.resetInputs();
+        alert("Item logged successfully!");
+        } catch (error) {
+            console.error("Error logging item:", error);
+            this.errorMessage = 'Failed to log the item. Please try again.';
+        }
+    },
+
+    // Reset input fields after successful logging
+    resetInputs() {
+        this.itemCount = 1; // Reset to default value
+        this.isClean = false; // Reset checkbox
+        this.errorMessage = ''; // Clear any error messages
+    },
+
     },
   };
   </script>
