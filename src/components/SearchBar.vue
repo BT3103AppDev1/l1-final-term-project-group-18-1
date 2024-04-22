@@ -10,22 +10,24 @@
         @blur = "showPlaceholder = !searchQuery">
         <!-- : is short for v-bind so that vue won't register the whole thing as a string -->
         <!-- button that manually triggers the fetch suggestions method -->
-        <ul v-if="suggestions.length" class="suggestions-dropdown">
-          <!-- Show "No result found" if there are no suggestions and the searchQuery is not empty FIX ITTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT-->
-          <li v-if="suggestions.length === 0 && searchQuery" class="no-results"> 
-            No result found
-          </li>
-         <!-- List items for each suggestion -->
-          <li v-for="suggestion in suggestions" :key="suggestion.id"
-            @click="selectItem(suggestion)">
-            {{ suggestion.name }}
-          </li>
-        </ul>
+  
+        <ul v-if="searchQuery" class="suggestions-dropdown">
+            <!-- Show "No result found" if there are no suggestions -->
+            <li v-if="suggestions.length === 0" class="no-results">
+                No result found (Please contact us if you think there is an issue)
+            </li>
+            <!-- List items for each suggestion -->
+            <li v-else v-for="suggestion in suggestions" :key="suggestion.id"
+                  @click="selectItem(suggestion)">
+                    {{ suggestion.name }}
+            </li>
+          </ul>
     </div>
 </template>
 
 <script>
-  import { db } from '../firebaseConfig.js'; // imports the firebase configuration 
+  import { compileScript } from 'vue/compiler-sfc';
+import { db } from '../firebaseConfig.js'; // imports the firebase configuration 
   import { collection, query, where, getDocs } from 'firebase/firestore';
   
   export default {
@@ -58,6 +60,7 @@
 
     methods:{
       async fetchSuggestions() {
+        console.log("fetching suggestions")
          if(this.isAutofilling){
            return; //do not fetch anything if it is autofilling     
          }
@@ -77,6 +80,7 @@
           } else {
             console.log ('waiting for more input before suggesting to optimise suggestion function')
           }
+          console.log("current suggestion length" + this.suggestions.length)
       },
   
       selectItem(suggestion) {
@@ -162,14 +166,15 @@
   background-color: #f9f9f9;
 }
 
-.no-results {
-  padding: 10px;
-  color: #999;
-  cursor: default;
+ul.suggestions-dropdown li.no-results {
+    padding: 10px;
+    color: #999;
+    cursor: default; /* More specific, should override other cursor settings */
+    background-color: transparent;
 }
 
-.no-results:hover {
-  background-color: transparent; /* Ensures that hovering over this item does not change its background */
+ul.suggestions-dropdown li.no-results:hover {
+    background-color: transparent;
 }
 
 
