@@ -87,20 +87,19 @@ export default {
         window.gapi.client.calendar.events.list({
           'calendarId': 'primary',
           'timeMin': (new Date()).toISOString(),
-          'showDeleted': true,
+          'showDeleted': false,
           'singleEvents': true,
           'maxResults': 10,
           'orderBy': 'startTime'
         }).then(response => {
-          const fetchedEvents = response.result.items.map(event => ({
+          const fetchedEvents = response.result.items.filter(event => event.status !== 'cancelled').map(event => ({
             title: event.summary,
             start: event.start.dateTime || event.start.date,
             end: event.end.dateTime || event.end.date,
             allDay: !event.start.dateTime,
             type: event.extendedProperties?.private?.type || 'event'
           }));
-          this.calendarOptions.events = [...new Map(fetchedEvents.concat(this.calendarOptions.events)
-            .map(event => [event['start'].toString(), event])).values()];
+          this.calendarOptions.events = fetchedEvents; // so events deleted from google calendar will be remmoved on the web-app automatically too
         }).catch(error => {
           console.error("Error fetching events: ", error);
         });
