@@ -27,7 +27,7 @@
             </div>
         </div>
         <p v-if="!isLoading && !item">No items found.</p>
-        <itemLogger :item="item"></itemLogger>
+        <itemLogger v-if="item && item.recyclable" :item="item"></itemLogger>
     </div>
 </template>
 
@@ -88,6 +88,8 @@
 
                 if (!querySnapshot.empty) {
                     this.item = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()};
+                    // DEBUGGING
+                    console.log("Fetched item:", this.item);
                 } else {
                     this.error = "No results found";
                     this.item = null; //set to null if no results found
