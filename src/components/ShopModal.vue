@@ -7,7 +7,7 @@
       <div class="item-container" v-for="item in shopItems" :key="item.id">
         <div class="item-box">
           <img :src="item.imageURL" :alt="item.name" class="item-image"/>
-          <p>{{ item.funfact }}</p>
+          <p>Fun Fact: {{ item.funfact }}</p><br>
           <p>Fertiliser: {{ item.fertiliser }}</p>
         </div>
         <div class="buy-item">
@@ -140,7 +140,7 @@ h2 {
 }
 
 p {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .items-container {
