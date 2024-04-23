@@ -16,7 +16,6 @@
       <button @click="logItem">Let's Recycle</button>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> <!-- Error message will show up if it exists -->   
      </div>
-  
   </template>
   
   <script>
@@ -28,7 +27,7 @@
   export default {
     data() {
       return {
-        itemCount: 1, // Default to 1, assuming they are recycling at least one item
+        itemCount: '', 
         errorMessage: '', // Initialize error message as empty
         isClean: false, // Tracks the state of the checkbox
         username: ''
@@ -84,15 +83,16 @@
             return;
         }
 
-        if (!this.itemCount) {
+        if (this.itemCount === '' || this.itemCount === null) {
             this.errorMessage = 'Please do not leave the quantity field empty.';
             return;
         }
 
-        if (this.itemCount <=0) {
-            this.errorMessage = 'Please enter a quantity more than 1.';
+        if (this.itemCount <= 0) {
+            this.errorMessage = 'Please enter a quantity more than 0.';
             return;
         }
+
 
           // construct a query to find existing document
             const itemsRef = collection(db, "recycledDatabase");
@@ -144,9 +144,26 @@
             
             const querySnapshotUsers = await getDocs(p);
             querySnapshotUsers.forEach(async (doc) => {
-                await updateDoc(doc.ref, {
-                    fertiliser: increment(this.itemCount)
-                });
+                const updateData = {
+                    fertiliser: increment(this.itemCount),
+                    numRecycled: increment(this.itemCount) // Increment numRecycled count
+                };
+                if (this.item.category === "metal") {
+                    updateData.metalRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
+                }
+                if (this.item.category === "plastic") {
+                    updateData.plasticRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
+                }
+                if (this.item.category === "paper") {
+                    updateData.paperRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
+                }
+                if (this.item.category === "glass") {
+                    updateData.glassRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
+                }
+                if (this.item.category === "e-waste") {
+                    updateData.ewasteRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
+                }
+                await updateDoc(doc.ref, updateData);
                 console.log("Fertilizer count updated successfully for user:", this.username);
             });
 
@@ -161,7 +178,7 @@
 
     // Reset input fields after successful logging
     resetInputs() {
-        this.itemCount = 1; // Reset to default value
+        this.itemCount = ''; // Reset to default value
         this.isClean = false; // Reset checkbox
         this.errorMessage = ''; // Clear any error messages
     },

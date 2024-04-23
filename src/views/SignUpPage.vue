@@ -113,6 +113,8 @@ export default {
 
 <style scoped>
 .container {
+  position: relative;
+  z-index: 2;
   display: block;
   justify-content: center;
   align-items: center;
@@ -143,10 +145,11 @@ button:active {
 }
 
 .banner-section {
-  position: fixed;
+  position: absolute;
+  z-index: 1;
   bottom: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
 }
 
 .banner-image {

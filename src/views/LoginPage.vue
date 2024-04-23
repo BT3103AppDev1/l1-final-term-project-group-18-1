@@ -40,6 +40,8 @@
 
 <style>
     #main {
+        position: relative;
+        z-index: 2;
         display: block;
         justify-content: center;
         align-items: center;
@@ -74,6 +76,7 @@
 
 .banner-section {
   position: fixed;
+  z-index: 1;
   bottom: 0;
   left: 0;
   width: 100vw;
