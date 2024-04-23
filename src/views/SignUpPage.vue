@@ -65,6 +65,11 @@ export default {
         return;
       }
 
+      if (this.password.length < 6) {
+        alert("Password must be at least 6 characters long.");
+        return;
+      }
+
       const unique = await this.isUsernameUnique(this.username);
       if (!unique) {
         alert("This username is already taken. Please choose another one.");
@@ -114,6 +119,27 @@ export default {
   width: 70%;
   margin: 0 auto;
   height: 60vh;
+}
+
+button {
+  margin: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #457247;
+  background-color: #457247;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+button:active {
+  background-color: #3b5e3b;
+}
+
+#show {
+  display: flex;
+  justify-content: flex-end;
+  margin: 5px;
 }
 
 .banner-section {
