@@ -6,18 +6,24 @@
       <main>
         <h1>Home Page</h1>
         <searchButton />
-      </main>
+      </main>    
+    </div>
+    <div>
+      <pieChart />
     </div>
 </template>
 
 <script>
 import searchButton from '../components/Home/searchButton.vue'
+import pieChart from '../components/Home/pieChart.vue'
 import Logout from '../components/Logout.vue'
+
 
 export default {
   components: {
     Logout,
     searchButton,
+    pieChart
   }
 }
 </script>
