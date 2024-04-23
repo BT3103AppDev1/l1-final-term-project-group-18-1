@@ -13,7 +13,6 @@ import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firesto
 import { db } from '@/firebaseConfig';
 import { Chart, registerables } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { faCentercode } from '@fortawesome/free-brands-svg-icons';
 Chart.register(...registerables, ChartDataLabels);
 
 
@@ -26,10 +25,10 @@ export default {
         };
     },
     mounted() {
-        this.initializeDataWithDelay();
+        this.initialiseDataWithDelay();
     },
     methods: {
-        initializeDataWithDelay() {
+        initialiseDataWithDelay() {
             const auth = getAuth();
             onAuthStateChanged(auth, (user) => {
                 if (user) {
@@ -134,7 +133,7 @@ export default {
                     aspectRatio: 1, 
                     layout: {
                         padding: {
-                            top: 20,
+                            top: 0,
                             right: 150,
                             bottom: 20,
                             left: 150
@@ -142,12 +141,12 @@ export default {
                     },
                     plugins: {
                         legend: {
-                            display: false,
+                            display:false
                         },
                         datalabels: {
                             color: '#000000', // The color of the label text
                             font: {
-                                size: 14, // The size of the label font
+                                size: 15, // The size of the label font
                             },
                             anchor: 'end',
                             align: 'end',
@@ -163,10 +162,6 @@ export default {
                                 const dataArr = context.chart.data.datasets[0].data;
                                 const total = dataArr.reduce((acc, curr) => acc + curr, 0);
                                 const percentage = ((value / total) * 100).toFixed(1) + '%';
-                                if (percentage < 5) {
-                                    console.log("setting % to null")
-                                    return null; 
-                                }
                                 return context.chart.data.labels[context.dataIndex] + ' ' + percentage;
                             },
                             // Define how the lines should look

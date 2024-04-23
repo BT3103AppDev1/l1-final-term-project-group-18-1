@@ -16,8 +16,16 @@
       </div>
       <searchButton />
       <div>
+        <p class="regularText">You have recycled</p>
+          <numberDisplay/>
+          <p class="regularText">items so far.</p>
+      </div>
+      <br>
+      <div>
+          <p class="regularText">Your recycled items this month:</p>
           <pieChart />
       </div>
+   
     </main>
   </div>
 </template>
@@ -25,11 +33,13 @@
 <script>
 import searchButton from '../components/Home/searchButton.vue'
 import pieChart from '../components/Home/pieChart.vue'
+import numberDisplay from '@/components/Home/numberDisplay.vue';
 
 export default {
   components: {
     searchButton,
-    pieChart // Corrected component registration
+    pieChart,
+    numberDisplay,
   },
   computed: {
     upcomingEvents() {
@@ -78,5 +88,12 @@ main {
 
 .second-heading {
   color: #333333;
+}
+
+.regularText{
+  font-size: 25px;
+  text-align: center;
+  color:#457247;
+  font-weight:bold
 }
 </style>

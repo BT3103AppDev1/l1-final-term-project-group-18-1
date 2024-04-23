@@ -21,8 +21,8 @@
   justify-content: center;
   padding:20px 20px; /*padding around the content*/
   font-weight:bold;
-  font-size: 1rem;
-  width: 250px;
+  font-size: 1.5rem;
+  width: 800px;
   height: 70px;
   border-radius: 20px;
   background-image: url('@/assets/recycleIcon.png');
