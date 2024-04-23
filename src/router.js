@@ -16,7 +16,6 @@ import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import SearchPage from './views/home/SearchPage.vue'
 import SocialPage from './views/SocialPage.vue'
-import AddReminderModal from '@/components/AddReminderModal.vue';
 import CreateEventModal from '@/components/CreateEventModal.vue'
 import EditEventModal from '@/components/EditEventModal.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
@@ -84,11 +83,6 @@ const routes = [
         name: 'Events',
         component: EventsPage,
         children: [
-            {
-                path: 'add-reminder',
-                name: 'AddReminder',
-                component: AddReminderModal,
-            },
             {
                 path: 'create-event',
                 name: 'CreateEvent',

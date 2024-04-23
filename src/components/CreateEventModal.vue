@@ -95,12 +95,13 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  padding: 20px;
+  padding: 30px;
   z-index: 1000;
   border: 1px solid #ccc;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
+  width: 40%; /* Adjust the width as needed */
 }
 
 /* Styles for both input and select elements */

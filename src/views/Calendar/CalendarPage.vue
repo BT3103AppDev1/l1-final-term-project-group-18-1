@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>Sync your Google Calendar with Eco Harbour</h1>
-    <h3>Unlock a seamless integration of eco-friendly reminders to encourage sustainable living in your faily activities.</h3>
+    <h1 class = "main-title">Sync your Google Calendar with Eco Harbour</h1>
+    <h3 class = "description">Unlock a seamless integration of eco-friendly reminders to encourage sustainable living in your daily activities.</h3>
     <GoogleLoginButton @authenticated="handleAuthentication"/>
   </div>
 </template>
@@ -38,3 +38,22 @@ export default {
   },
 };
 </script>
+
+<style>
+.main-title,
+.subtitle {
+  font-weight: bold; 
+}
+
+.main-title {
+  font-size: 2rem;
+  color: #457247;
+}
+
+.description {
+  font-size: 1rem;
+  color: #666666;
+  max-width: 1000px;
+  margin: 1em auto; 
+}
+</style>
