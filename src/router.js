@@ -20,6 +20,7 @@ import CreateEventModal from '@/components/CreateEventModal.vue'
 import EditEventModal from '@/components/EditEventModal.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 import EmailVerification from './views/EmailVerificationPage.vue'
+import CalendarLandingPage from './views/Calendar/CalendarLandingPage.vue'
 
 const routes = [
     {
@@ -72,6 +73,11 @@ const routes = [
         path: '/Shop',
         name: 'Shop',
         component: Shop,
+    },
+    {
+        path: '/CalendarLanding',
+        name: 'CalendarLanding',
+        component: CalendarLandingPage
     },
     {
         path: '/Calendar',
