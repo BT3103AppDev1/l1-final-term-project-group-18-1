@@ -3,7 +3,6 @@
     <br><br><br>
     <h1>Your Events</h1>
     <button @click="showCreateEventModal = true">Add Event</button>
-    <button @click="showAddReminderModal = true">Add Reminder</button>
     <div class="calendar-container">
       <FullCalendar :options="calendarOptions" />
     </div>
@@ -11,10 +10,6 @@
       v-if="showCreateEventModal"
       @close="showCreateEventModal = false"
       @save="addEvent"/>
-    <AddReminderModal
-      v-if="showAddReminderModal"
-      @close="showAddReminderModal = false"
-      @save="addReminder"/>
   </div>
 </template>
 
@@ -23,7 +18,6 @@ import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { initGoogleAPI } from '@/utils/googleApi';
 import CreateEventModal from '@/components/CreateEventModal.vue';
-import AddReminderModal from '@/components/AddReminderModal.vue';
 import { auth, db } from '@/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore'
@@ -33,7 +27,6 @@ export default {
   components: {
     FullCalendar,
     CreateEventModal,
-    AddReminderModal,
   },
   data() {
     return {
@@ -56,22 +49,21 @@ export default {
   },
   mounted() {
     onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // Fetch user profile to check if they have synced their calendar
-        const userDocRef = doc(db, 'users', user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        if (userDocSnap.exists() && userDocSnap.data().calendarSynced) {
-          this.initializeAndLoadEvents();
-        } else {
-          // User needs to sync their calendar
-          this.$router.push({ name: 'Calendar' });
-        }
+    if (user) {
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      if (userDocSnap.exists() && userDocSnap.data().calendarSynced) {
+        this.initializeAndLoadEvents();
+      } else {
+        this.$router.push({ name: 'Calendar' });
       }
+    } else {
+      // Stop polling if the user signs out
+      this.stopPolling();
     }
-    )
-    this.initializeAndLoadEvents();
+  });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.stopPolling();
   },
   methods: {
@@ -88,31 +80,58 @@ export default {
         console.error('Failed to initialize Google API:', error);
       }
     },
-    loadEvents() {
-      if (window.gapi && window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
-        window.gapi.client.calendar.events.list({
-          'calendarId': 'primary',
-          'timeMin': (new Date()).toISOString(),
-          'showDeleted': false,
-          'singleEvents': true,
-          'maxResults': 10,
-          'orderBy': 'startTime'
-        }).then(response => {
-          const fetchedEvents = response.result.items.filter(event => event.status !== 'cancelled').map(event => ({ // ensure that event deleted from google calendar won't be displayed 
-            title: event.summary,
-            start: event.start.dateTime || event.start.date,
-            end: event.end.dateTime || event.end.date,
-            allDay: !event.start.dateTime,
-            type: event.extendedProperties?.private?.type || 'event' // to differentiate events from reminders
-          }));
-          this.calendarOptions.events = fetchedEvents; // so events deleted from google calendar will be removed on the web-app AUTOMATICALLY too
-        }).catch(error => {
+    async loadEvents() {
+      // First, check if the Firebase user is signed in
+      const firebaseUser = auth.currentUser;
+
+      if (firebaseUser) {
+        try {
+          // Fetch the Firestore document for the current user
+          const userDocRef = doc(db, 'users', firebaseUser.uid);
+          const userDocSnap = await getDoc(userDocRef);
+
+          // Check if the document exists and contains a googleAccessToken
+          if (userDocSnap.exists() && userDocSnap.data().googleAccessToken) {
+            const googleAccessToken = userDocSnap.data().googleAccessToken;
+            // Set the access token for the Google API client
+            window.gapi.client.setToken({ access_token: googleAccessToken });
+
+            // Now, make the API call to Google Calendar
+            const response = await window.gapi.client.calendar.events.list({
+              'calendarId': 'primary',
+              'timeMin': (new Date()).toISOString(),
+              'showDeleted': false,
+              'singleEvents': true,
+              'maxResults': 10,
+              'orderBy': 'startTime'
+            });
+
+            // Process the events response from Google Calendar
+            const fetchedEvents = response.result.items.filter(event => event.status !== 'cancelled').map(event => ({
+              title: event.summary,
+              start: event.start.dateTime || event.start.date,
+              end: event.end.dateTime || event.end.date,
+              allDay: !event.start.dateTime,
+              type: event.extendedProperties?.private?.type || 'event'
+            }));
+
+            // Update the calendarOptions with the fetched events
+            this.calendarOptions.events = fetchedEvents;
+
+          } else {
+            console.error('No Google access token found in Firestore.');
+            // Consider redirecting the user to re-authenticate with Google
+          }
+        } catch (error) {
           console.error("Error fetching events: ", error);
-        });
+          // Handle errors such as Firestore read failure or Google API request failure
+        }
       } else {
-        console.error('User is not signed in.');
+        console.error('Firebase user is not signed in.');
+        // Redirect the user to sign in with Firebase or handle this case appropriately
       }
     },
+
     // getting the most updated version of the calendar
     startPolling() {
       this.pollInterval = setInterval(this.loadEvents, 10000);
@@ -162,43 +181,6 @@ export default {
       });
     },
 
-    /*---- Add reminders to calendar ----*/
-    addReminder(reminder) {
-      const event = {
-        summary: reminder.title,
-        start: {
-          dateTime: new Date(reminder.start).toISOString(),
-          timeZone: 'Asia/Singapore'
-        },
-        end: {
-          dateTime: new Date(reminder.end || new Date(reminder.start).setHours(new Date(reminder.start).getHours() + 1)).toISOString(),
-          timeZone: 'Asia/Singapore'
-        },
-        extendedProperties: {
-          private: {
-            type: 'reminder'
-          }
-        }
-      };
-
-      window.gapi.client.calendar.events.insert({
-        'calendarId': 'primary',
-        'resource': event
-      }).then(response => {
-        this.calendarOptions.events.push({
-          title: response.result.summary,
-          start: response.result.start.dateTime,
-          end: response.result.end.dateTime,
-          allDay: !response.result.start.dateTime,
-          type: 'reminder'
-        });
-        this.scheduleNotification(reminder);
-        this.showAddReminderModal = false;
-      }).catch(error => {
-        console.error("Error adding reminder to Google Calendar: ", error);
-        alert("Failed to add event to Google Calendar: " + error.result.error.message);
-      });
-    },
     renderEventContent(arg) {
       let timeString = new Date(arg.event.start).toLocaleTimeString([], {
         hour: '2-digit',
@@ -215,15 +197,25 @@ export default {
       }
       return { domNodes: [element] };
     },
-    scheduleNotification(reminder) {
+    scheduleNotification(eventDetails) {
       if ("Notification" in window) {
         Notification.requestPermission().then((permission) => {
           if (permission === "granted") {
-            const localTimeOfReminder = new Date(reminder.start);
-            const timeUntilReminder = localTimeOfReminder.getTime() - new Date().getTime();
-            setTimeout(() => {
-              new Notification(reminder.title);
-            }, timeUntilReminder);
+            const localTimeOfEvent = new Date(eventDetails.start).getTime();
+            const reminderTime = (eventDetails.reminderTime || 0) * 60000; // convert minutes to milliseconds
+            const timeUntilReminder = localTimeOfEvent - new Date().getTime() - reminderTime;
+            
+            if (timeUntilReminder > 0) {
+              // Schedule the notification if the reminder time is in the future
+              setTimeout(() => {
+                new Notification(`Reminder: ${eventDetails.reminderDescription}`, {
+                body: `Event: ${eventDetails.title} starts at ${new Date(eventDetails.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}`,
+              // You can add other notification options here, such as icon
+              });
+              }, timeUntilReminder);
+            } else {
+              alert("Reminder time is in the past. No notification scheduled.");
+            }
           }
         });
       }

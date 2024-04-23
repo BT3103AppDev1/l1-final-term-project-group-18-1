@@ -17,7 +17,9 @@ export default {
         const GoogleAuth = window.gapi.auth2.getAuthInstance();
 
         if (!GoogleAuth.isSignedIn.get()) {
-          await GoogleAuth.signIn();
+          await GoogleAuth.signIn({
+            prompt: 'select_account'
+          });
         }
 
         // Get the Firebase user's ID from the authentication state
