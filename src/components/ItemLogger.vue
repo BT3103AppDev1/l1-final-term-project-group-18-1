@@ -144,9 +144,26 @@
             
             const querySnapshotUsers = await getDocs(p);
             querySnapshotUsers.forEach(async (doc) => {
-                await updateDoc(doc.ref, {
-                    fertiliser: increment(this.itemCount)
-                });
+                const updateData = {
+                    fertiliser: increment(this.itemCount),
+                    numRecycled: increment(this.itemCount) // Increment numRecycled count
+                };
+                if (this.item.category === "metal") {
+                    updateData.metalRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
+                }
+                if (this.item.category === "plastic") {
+                    updateData.plasticRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
+                }
+                if (this.item.category === "paper") {
+                    updateData.paperRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
+                }
+                if (this.item.category === "glass") {
+                    updateData.glassRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
+                }
+                if (this.item.category === "e-waste") {
+                    updateData.ewasteRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
+                }
+                await updateDoc(doc.ref, updateData);
                 console.log("Fertilizer count updated successfully for user:", this.username);
             });
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Contact Us</h1>
-    <h2>Get in touch</h2>
+    <h2>Get in touch!</h2>
     <div class="email"> 
       <font-awesome-icon icon="envelope" class="emailicon" />
       <h3>ecoharbour@gmail.com</h3>
@@ -32,12 +32,11 @@
 <style scoped>
 /* Use the parent component's CSS to target the child component */
 .settings-wrapper h1 {
-  margin-right: 600px;
-  margin-bottom: 30px;
+  margin-right: 960px;
 }
 
 .settings-wrapper h2 {
-  margin-right: 540px;
+  margin-right: 900px;
   margin-bottom: 30px
 }
 
@@ -51,7 +50,7 @@
 .settings-wrapper .emailicon {
     margin-right: 10px;
     size: 20px;
-    color: #457247;
+    color: var(--primary-color);
     font-size: 20px;
   }
 

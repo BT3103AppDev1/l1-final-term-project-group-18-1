@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import searchButton from '../components/searchButton.vue'
+import searchButton from '../components/Home/searchButton.vue'
 import Logout from '../components/Logout.vue'
 
 export default {
