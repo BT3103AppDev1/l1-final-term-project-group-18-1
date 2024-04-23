@@ -11,7 +11,7 @@
   <style>
   .resource-button {
     display: inline-block;
-    background-color: #4CAF50; /* Green background */
+    background-color:#457247; /* Green background */
     color: white; /* White text */
     padding: 10px 20px; /* Some padding */
     margin: 10px; /* Space around buttons */

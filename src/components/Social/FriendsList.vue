@@ -7,11 +7,18 @@
           <div class="friend-name">{{ friend.name }}</div>
           <div class="friend-username">@{{ friend.username }}</div>
         </div>
-        <button @click="deleteFriend(friend.id)" class="delete-friend-btn">×</button>
+        <button @click="promptDeleteConfirmation(friend.id, friend.name)" class="delete-friend-btn">×</button>
       </li>
     </ul>
     <div v-else class="no-friends">
       You have no friends added.
+    </div>
+
+    <!-- Delete Confirmation Notification -->
+    <div v-if="showDeleteConfirmation" class="delete-confirmation">
+      <p>Are you sure you want to remove {{ friendToDeleteName }} as a friend?</p>
+      <button @click="confirmDeleteFriend">Yes, remove</button>
+      <button @click="cancelDelete">No, cancel</button>
     </div>
   </div>
 </template>
@@ -25,6 +32,9 @@ export default {
   data() {
     return {
       friends: [],
+      showDeleteConfirmation: false,
+      friendToDelete: null,
+      friendToDeleteName: '',
     };
   },
   created() {
@@ -77,6 +87,24 @@ export default {
         console.error('Error deleting friend:', error);
         alert('Failed to delete friend. Please try again.');
       }
+    },
+    promptDeleteConfirmation(friendId, friendName) {
+      this.friendToDelete = friendId;
+      this.friendToDeleteName = friendName;
+      this.showDeleteConfirmation = true;
+    },
+
+    confirmDeleteFriend() {
+      if (this.friendToDelete) {
+        this.deleteFriend(this.friendToDelete);
+        this.showDeleteConfirmation = false;
+        this.friendToDelete = null;
+      }
+    },
+
+    cancelDelete() {
+      this.showDeleteConfirmation = false;
+      this.friendToDelete = null;
     },
   },
 };
@@ -141,4 +169,42 @@ export default {
   color: #333333;
 }
 
+.delete-confirmation {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #D5EDDE;
+  border: 2px solid #457247;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.delete-confirmation p {
+  margin-bottom: 15px;
+}
+
+.delete-confirmation button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.delete-confirmation button:first-child {
+  background-color: green;
+  color: white;
+}
+
+.delete-confirmation button:last-child {
+  background-color: red;
+  color: white;
+}
 </style>
