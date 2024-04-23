@@ -60,6 +60,7 @@
                 const userSnap = await getDoc(userRef);
                 if (userSnap.exists()) {
                     this.username = userSnap.data().username;
+                    console.log("fetched user")
                 } else {
                     console.log("No such user!");
                 }
