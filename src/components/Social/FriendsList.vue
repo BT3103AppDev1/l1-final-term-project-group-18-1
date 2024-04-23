@@ -17,13 +17,17 @@
       You have no friends added.
     </div>
 
-    <!-- Gift Fertiliser Modal -->
-    <div v-if="showGiftModal" class="gift-modal">
-      <p>How many fertilisers do you want to gift to @{{ friendToGiftUsername }}?</p>
-      <input type="number" v-model="fertiliserAmount" min="1">
-      <button @click="confirmGift">Confirm</button>
-      <button @click="cancelGift">Cancel</button>
-    </div>
+
+    <teleport to="body">
+      <div v-if="showGiftModal" class="overlay" @click="cancelGift"></div>
+      <div v-if="showGiftModal" class="gift-modal">
+        <button class="close-btn" @click="cancelGift">×</button>
+        <h3>Gift</h3>
+        <input type="number" v-model="fertiliserAmount" min="1">
+        <p>To: @{{ friendToGiftUsername }}</p>
+        <button @click="confirmGift" class="delete-confirm-btn">Confirm</button>
+      </div>
+    </teleport>
 
     <!-- Delete Confirmation Notification -->
     <teleport to="body">
@@ -318,5 +322,29 @@ export default {
 
 .gift-modal {
   position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px;
+  background-color: #D5EDDE; 
+  border: 6px solid #457247; 
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  min-width: 450px; 
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: #47525E;
+}
+
+.gift-modal h3 {
+  margin-bottom: 20px;
+  color: #47525E;
+  font-weight: bold;
+}
+.gift-modal p {
+  margin-bottom: 20px;
+  color: #47525E;
 }
 </style> 
