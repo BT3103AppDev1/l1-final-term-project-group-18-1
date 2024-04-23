@@ -21,18 +21,6 @@ export default {
   setup() {
     const router = useRouter();
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // Check if the user has already synced their calendar
-        const userDocRef = doc(db, 'users', user.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists() && userDoc.data().calendarSynced) {
-          // User has synced, redirect them
-          router.push({ name: 'Events' });
-        }
-      }
-    });
-
     const handleAuthentication = async () => {
       // This function is called after Google authentication is successful
       const user = auth.currentUser;
@@ -50,4 +38,3 @@ export default {
   },
 };
 </script>
-
