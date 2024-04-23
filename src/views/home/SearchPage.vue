@@ -32,7 +32,7 @@
                 </div>
             </div>
             <p v-if="!isLoading && !item">No items found.</p>
-            <itemLogger v-if="item && item.recyclable" :item="item"></itemLogger>
+            <ItemLogger v-if="item && item.recyclable" :item="item"></ItemLogger>
         </div>
       
     </div>
@@ -44,12 +44,12 @@
     import { db } from '../../firebaseConfig.js';
     import { collection, where, getDocs, query} from 'firebase/firestore';
     import SearchBar from '@/components/SearchBar.vue';
-    import itemLogger from '@/components/itemLogger.vue';
+    import ItemLogger from '@/components/ItemLogger.vue';
   
     export default {
         components: {
             SearchBar,
-            itemLogger,
+            ItemLogger,
         },
         watch: {
         searchQuery(newVal, oldVal) {
@@ -189,5 +189,17 @@
         margin-left: 1em;
     }
 
+    .breadcrumb {
+    padding: 10px 0;
+    font-size: 16px;
+    }
 
+    .breadcrumb a {
+    color: #457247; /* Adjust color as needed */
+    text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+    text-decoration: underline;
+    }
 </style>
