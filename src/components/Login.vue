@@ -34,10 +34,15 @@ export default {
       console.log("email: " + this.email);
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then((userCredential) => {
-          // signed in
           const user = userCredential.user;
-        //   alert('Login attempted with email ' + this.email);
+          if (user.emailVerified) {
+          // User's email is verified, proceed to Home page
           this.$router.push({ path: '/Home' });
+        } else {
+          // User's email is not verified, redirect to a verify-email page or show a message
+          this.$router.push({ name: 'verify-email' }); // Make sure to have a route named 'verify-email'
+          alert('Please verify your email to log in.');
+        }
         })
         .catch((error) => {
           alert(error.message);

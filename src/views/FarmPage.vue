@@ -11,22 +11,22 @@
 </template>
 
 <script>
-  import '@/assets/DefaultFarm.png'
+  // import '@/assets/DefaultFarm.png'
 
-  export default{
-    data() {
-      return {
-        farmImageURL: require('@/assets/DefaultFarm.pn')
-      }
-    }
-  }
+  // export default{
+  //   data() {
+  //     return {
+  //       farmImageURL: require('@/assets/DefaultFarm.pn')
+  //     }
+  //   }
+  // }
 </script>
 
 <style>
 .farm-page{
   width: 100vw;
   height: 100vh;
-  background-image: url('@/assets/DefaultFarm.png'); 
+  /* background-image: url('@/assets/DefaultFarm.png');  */
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover; /* Cover the entire page */
