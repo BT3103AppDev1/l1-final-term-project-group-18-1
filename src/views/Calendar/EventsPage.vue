@@ -52,7 +52,6 @@ export default {
       pollInterval: null,
       showCreateEventModal: false,
       showAddReminderModal: false,
-      userHasSyncedCalendar: false,
     };
   },
   mounted() {
@@ -61,10 +60,7 @@ export default {
         // Fetch user profile to check if they have synced their calendar
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnap = await getDoc(userDocRef);
-
         if (userDocSnap.exists() && userDocSnap.data().calendarSynced) {
-          // User has synced their calendar
-          this.userHasSyncedCalendar = true;
           this.initializeAndLoadEvents();
         } else {
           // User needs to sync their calendar
