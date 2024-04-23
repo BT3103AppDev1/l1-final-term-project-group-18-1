@@ -23,7 +23,7 @@
 <script>
 import { db } from '@/firebaseConfig';
 import { getAuth } from 'firebase/auth';
-import { collection, query, where, onSnapshot, updateDoc, doc, getDoc, addDoc, writeBatch } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, updateDoc, doc, getDoc, writeBatch } from 'firebase/firestore';
 
 export default {
   data() {

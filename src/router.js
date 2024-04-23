@@ -15,8 +15,10 @@ import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import SearchResult from './views/home/searchResult.vue'
 import SocialPage from './views/SocialPage.vue'
-import AddReminderModal from '@/components/AddReminderModal.vue';
+import AddReminderModal from '@/components/AddReminderModal.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
+import Logout from '@/components/Logout.vue'
+
 
 const routes = [
     {
@@ -47,6 +49,11 @@ const routes = [
         path: '/Home',
         name: 'Home',
         component: HomePage,
+    },
+    {
+        path: '/Logout',
+        name: 'Logout',
+        component: Logout
     },
     {
         path: '/ForgetPassword',

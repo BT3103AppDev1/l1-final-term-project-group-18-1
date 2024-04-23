@@ -7,11 +7,22 @@
           <div class="friend-name">{{ friend.name }}</div>
           <div class="friend-username">@{{ friend.username }}</div>
         </div>
+        <button @click="promptGiftFertiliser(friend.id, friend.username)" class="gift-btn">
+          <img src='@/assets/fertiliser.png' alt="Gift Fertiliser">
+        </button>
         <button @click="promptDeleteConfirmation(friend.id, friend.name)" class="delete-friend-btn">×</button>
       </li>
     </ul>
     <div v-else class="no-friends">
       You have no friends added.
+    </div>
+
+    <!-- Gift Fertiliser Modal -->
+    <div v-if="showGiftModal" class="gift-modal">
+      <p>How many fertilisers do you want to gift to @{{ friendToGiftUsername }}?</p>
+      <input type="number" v-model="fertiliserAmount" min="1">
+      <button @click="confirmGift">Confirm</button>
+      <button @click="cancelGift">Cancel</button>
     </div>
 
     <!-- Delete Confirmation Notification -->
@@ -26,7 +37,7 @@
 <script>
 import { db } from '@/firebaseConfig';
 import { getAuth } from 'firebase/auth';
-import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, deleteDoc, runTransaction } from 'firebase/firestore';
 
 export default {
   data() {
@@ -35,18 +46,22 @@ export default {
       showDeleteConfirmation: false,
       friendToDelete: null,
       friendToDeleteName: '',
+      showGiftModal: false,
+      friendToGiftId: '',
+      friendToGiftUsername: '',
+      fertiliserAmount: 1, // default to 1
     };
   },
   created() {
-      const auth = getAuth();
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          this.fetchFriends();
-        } else {
-          console.log('User logged out'); 
-        }
-      });
-    },
+    const auth = getAuth();
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.fetchFriends();
+      } else {
+        console.log('User logged out');
+      }
+    });
+  },
   methods: {
     async fetchFriends() {
       const auth = getAuth();
@@ -65,13 +80,16 @@ export default {
         const querySnapshot2 = await getDocs(q2);
 
         querySnapshot1.forEach((doc) => {
-          const data = doc.data();
-          friendsList.push({ id: doc.id, username: data.username2, name: data.name2 });
-        });
-        querySnapshot2.forEach((doc) => {
-          const data = doc.data();
-          friendsList.push({ id: doc.id, username: data.username1, name: data.name1});
-        });
+        const data = doc.data();
+        // Assuming userId2 is the UID of the friend user, and it is stored correctly in the document.
+        friendsList.push({ id: data.userId2, username: data.username2, name: data.name2 });
+      });
+      querySnapshot2.forEach((doc) => {
+        const data = doc.data();
+        // Assuming userId1 is the UID of the friend user, and it is stored correctly in the document.
+        friendsList.push({ id: data.userId1, username: data.username1, name: data.name1 });
+      });
+
 
         this.friends = friendsList;
       } catch (error) {
@@ -88,6 +106,7 @@ export default {
         alert('Failed to delete friend. Please try again.');
       }
     },
+
     promptDeleteConfirmation(friendId, friendName) {
       this.friendToDelete = friendId;
       this.friendToDeleteName = friendName;
@@ -106,9 +125,62 @@ export default {
       this.showDeleteConfirmation = false;
       this.friendToDelete = null;
     },
+
+    promptGiftFertiliser(friendId, username) {
+      this.friendToGiftId = friendId;
+      this.friendToGiftUsername = username;
+      this.showGiftModal = true;
+    },
+
+    async confirmGift() {
+  const auth = getAuth();
+  const currentUserUid = auth.currentUser ? auth.currentUser.uid : null;
+  const currentUserDocRef = doc(db, 'users', currentUserUid);
+  const friendDocRef = doc(db, 'users', this.friendToGiftId);
+
+  console.log('Attempting to gift fertiliser:');
+  console.log('Current User UID:', currentUserUid);
+  console.log('Friend UID:', this.friendToGiftId);
+  
+  try {
+    await runTransaction(db, async (transaction) => {
+      const currentUserDoc = await transaction.get(currentUserDocRef);
+      const friendDoc = await transaction.get(friendDocRef);
+
+      if (!currentUserDoc.exists || !friendDoc.exists) {
+        console.error('Document does not exist:', currentUserDoc.exists ? 'Friend document missing' : 'Current user document missing');
+        throw new Error("One of the documents does not exist!");
+      }
+
+      const currentUserFertilisers = currentUserDoc.data().fertiliser;
+      const friendFertilisers = friendDoc.data().fertiliser;
+
+      // Make sure the current user has enough fertiliser to gift
+      if (this.fertiliserAmount > currentUserFertilisers) {
+        throw new Error("Insufficient fertilisers to gift.");
+      }
+
+      transaction.update(currentUserDocRef, { fertiliser: currentUserFertilisers - this.fertiliserAmount });
+      transaction.update(friendDocRef, { fertiliser: friendFertilisers + this.fertiliserAmount });
+    });
+
+    alert('Fertilisers sent successfully!');
+  } catch (error) {
+    console.error('Transaction failed: ', error);
+    alert('Failed to send fertilisers. Please try again.');
+  }
+
+  this.showGiftModal = false;
+  this.fertiliserAmount = 1; // reset to default
+},
+
+    cancelGift() {
+      this.showGiftModal = false;
+    },
   },
 };
 </script>
+
 
 <style scoped>
 .friends-list {
@@ -207,4 +279,24 @@ export default {
   background-color: red;
   color: white;
 }
-</style>
+
+.gift-btn {
+  background-color: #79BCD9;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: right;
+  justify-content: center;
+}
+
+.gift-btn img {
+  height: 50px; /* Adjust size as necessary */
+  width: auto;
+}
+
+.gift-modal {
+  position: fixed;
+}
+</style> 
