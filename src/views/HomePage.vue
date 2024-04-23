@@ -25,9 +25,6 @@
 <script>
 import searchButton from '../components/Home/searchButton.vue'
 import pieChart from '../components/Home/pieChart.vue'
-import Logout from '../components/Logout.vue'
-
-
 
 export default {
   components: {
