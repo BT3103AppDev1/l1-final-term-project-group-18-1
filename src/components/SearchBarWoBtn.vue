@@ -92,6 +92,7 @@
         this.searchQuery = suggestion.name; // Autofill the search bar
         this.showPlaceholder = false;
         this.suggestions = []; // clear suggestions after selection 
+        this.$emit('item-selected', suggestion); // emit an event to the parent component
 
         this.$nextTick(() => { //using next tick to run this line after vue has updated the dom and autofilled
           this.isAutofilling = false; //set it back to false
