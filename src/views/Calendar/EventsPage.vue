@@ -10,6 +10,12 @@
       v-if="showCreateEventModal"
       @close="showCreateEventModal = false"
       @save="addEvent"/>
+    <EditEventModal
+      v-if="showEditEventModal"
+      :event="selectedEvent"
+      @close="showEditEventModal = false"
+      @update="updateEvent"
+      @delete="deleteEvent"/>
   </div>
 </template>
 
@@ -18,6 +24,7 @@ import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { initGoogleAPI } from '@/utils/googleApi';
 import CreateEventModal from '@/components/CreateEventModal.vue';
+import EditEventModal from '@/components/EditEventModal.vue';
 import { auth, db } from '@/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore'
@@ -27,6 +34,7 @@ export default {
   components: {
     FullCalendar,
     CreateEventModal,
+    EditEventModal,
   },
   data() {
     return {
@@ -40,11 +48,20 @@ export default {
           minute: '2-digit',
           hour12: false
         },
-        eventContent: this.renderEventContent // Custom render method for events
+        eventContent: this.renderEventContent, // Custom render method for events
+        eventClick: this.handleEventClick,
       },
       pollInterval: null,
       showCreateEventModal: false,
-      showAddReminderModal: false,
+      showEditEventModal: false,
+      selectedEvent: {
+        id: '',
+        title: '',
+        start: '',
+        end: '',
+        reminderDescription: '',
+        reminderTime: '',
+      },
     };
   },
   mounted() {
@@ -112,9 +129,11 @@ export default {
               start: event.start.dateTime || event.start.date,
               end: event.end.dateTime || event.end.date,
               allDay: !event.start.dateTime,
-              type: event.extendedProperties?.private?.type || 'event'
+              type: event.extendedProps?.private?.type || 'event',
+              reminderDescription: event.extendedProperties?.private?.reminderDescription || '',
+              reminderTime: event.extendedProperties?.private?.reminderTime || '',
             }));
-
+            
             // Update the calendarOptions with the fetched events
             this.calendarOptions.events = fetchedEvents;
 
@@ -154,31 +173,87 @@ export default {
           dateTime: new Date(eventDetails.end).toISOString(),
           timeZone: 'Asia/Singapore'
         },
-        extendedProperties: {
+        extendedProps: { 
           private: {
-            type: 'event'
+            type: 'event',
+            reminderDescription: String(eventDetails.reminderDescription), // This is a custom property
+            reminderTime: String(eventDetails.reminderTime), // Convert to string to ensure it's preserved
           }
         }
       };
-      console.log('event details: ' + eventDetails.title)
 
       window.gapi.client.calendar.events.insert({
         'calendarId': 'primary',
         'resource': event
       }).then(response => {
+        // Event added successfully
         this.calendarOptions.events.push({
-          title: response.result.summary,
-          start: response.result.start.dateTime,
-          end: response.result.end.dateTime,
-          allDay: !response.result.start.dateTime,
-          type: 'event'
-        });
-        this.scheduleNotification(eventDetails);
-        console.log(event.title);
-        this.showCreateEventModal = false;
+        id: response.result.id,
+        title: response.result.summary,
+        start: response.result.start.dateTime || response.result.start.date,
+        end: response.result.end.dateTime || response.result.end.date,
+        allDay: response.result.start.date ? true : false,
+        // extendedProps: {
+        //  private: {
+        //    reminderDescription: response.result.extendedProps.private.reminderDescription,
+        //    reminderTime: response.result.extendedProps.private.reminderTime,
+        //  }
+        //}
+      });
+      // Call any other methods you might need to update the UI, etc.
+      this.scheduleNotification(eventDetails);
+      this.showCreateEventModal = false;
       }).catch(error => {
         console.error("Error adding event to Google Calendar: ", error);
       });
+    },
+
+    /* editing events */
+    handleEventClick(info) {
+      this.selectedEvent = {
+        id: info.event.id, // This is important for identifying the event in update/delete operations
+        title: info.event.title,
+        start: info.event.startStr, 
+        end: info.event.endStr, 
+        // reminderDescription: info.event.extendedProps.private.reminderDescription,
+        // reminderTime: info.event.extendedProps.private.reminderTime,
+      };
+      this.showEditEventModal = true;
+    },
+
+    async updateEvent(updatedEventDetails) {
+      try {
+        // Make an API call to update the event in Google Calendar
+        await window.gapi.client.calendar.events.update({
+          calendarId: 'primary',
+          eventId: updatedEventDetails.id, // Ensure this is passed from the EditEventModal
+          resource: updatedEventDetails
+        });
+
+        // Refresh the events on the calendar after the update
+        await this.loadEvents();
+        this.showEditEventModal = false;
+      } catch (error) {
+        console.error("Error updating event: ", error);
+        // Handle the error appropriately
+      }
+    },
+
+    async deleteEvent(eventId) {
+      try {
+        // Make an API call to delete the event from Google Calendar
+        await window.gapi.client.calendar.events.delete({
+          calendarId: 'primary',
+          eventId: eventId
+        });
+
+        // Refresh the events on the calendar after the delete
+        await this.loadEvents();
+        this.showEditEventModal = false;
+      } catch (error) {
+        console.error("Error deleting event: ", error);
+        // Handle the error appropriately
+      }
     },
 
     renderEventContent(arg) {

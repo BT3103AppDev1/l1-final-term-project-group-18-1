@@ -17,6 +17,7 @@ import SearchResult from './views/home/searchResult.vue'
 import SocialPage from './views/SocialPage.vue'
 import AddReminderModal from '@/components/AddReminderModal.vue';
 import CreateEventModal from '@/components/CreateEventModal.vue'
+import EditEventModal from '@/components/EditEventModal.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 
 const routes = [
@@ -84,6 +85,11 @@ const routes = [
                 path: 'create-event',
                 name: 'CreateEvent',
                 component: CreateEventModal, 
+            },
+            {
+                path: 'edit-event',
+                name: 'EditEvent',
+                component: EditEventModal,
             }
         ]
     },

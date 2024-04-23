@@ -148,5 +148,4 @@ export default {
   border-color: #888; /* Slightly darker border on hover */
 }
 
-/* ... other styles ... */
 </style>
