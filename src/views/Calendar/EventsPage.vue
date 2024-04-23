@@ -2,7 +2,7 @@
   <div>
     <br><br><br>
     <h1>Your Events</h1>
-    <button @click="showCreateEventModal = true">Create Event</button>
+    <button @click="showCreateEventModal = true">Add Event</button>
     <button @click="showAddReminderModal = true">Add Reminder</button>
     <div class="calendar-container">
       <FullCalendar :options="calendarOptions" />
@@ -10,7 +10,7 @@
     <CreateEventModal
       v-if="showCreateEventModal"
       @close="showCreateEventModal = false"
-      @submit="handleEventCreation"/>
+      @save="addEvent"/>
     <AddReminderModal
       v-if="showAddReminderModal"
       @close="showAddReminderModal = false"
@@ -22,8 +22,8 @@
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { initGoogleAPI } from '@/utils/googleApi';
-import AddReminderModal from '@/components/AddReminderModal.vue';
 import CreateEventModal from '@/components/CreateEventModal.vue';
+import AddReminderModal from '@/components/AddReminderModal.vue';
 import { auth, db } from '@/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore'
@@ -126,29 +126,17 @@ export default {
         clearInterval(this.pollInterval);
       }
     },
-
+    
     /* Add events to calendar */
-    async handleEventCreation(eventDetails) {
-      console.log('Received event details:', eventDetails);
-
-      // Validate start and end dates before proceeding
-      const startDate = new Date(eventDetails.start);
-      const endDate = new Date(eventDetails.end);
-
-      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        console.error('Invalid date provided. Start Date:', eventDetails.start, 'End Date:', eventDetails.end);
-        alert('Please provide valid start and end dates.');
-        return; // Stop the execution and inform the user
-      }
-
+    addEvent(eventDetails) {
       const event = {
         summary: eventDetails.title,
         start: {
-          dateTime: startDate.toISOString(),
+          dateTime: new Date(eventDetails.start).toISOString(),
           timeZone: 'Asia/Singapore'
         },
         end: {
-          dateTime: endDate.toISOString(),
+          dateTime: new Date(eventDetails.end).toISOString(),
           timeZone: 'Asia/Singapore'
         },
         extendedProperties: {
@@ -157,9 +145,9 @@ export default {
           }
         }
       };
+      console.log('event details: ' + eventDetails.title)
 
-
-      window.gapi.client.events.insert({
+      window.gapi.client.calendar.events.insert({
         'calendarId': 'primary',
         'resource': event
       }).then(response => {
@@ -170,14 +158,15 @@ export default {
           allDay: !response.result.start.dateTime,
           type: 'event'
         });
-        this.scheduleNotification(event); // check
+        this.scheduleNotification(eventDetails);
+        console.log(event.title);
         this.showCreateEventModal = false;
       }).catch(error => {
-        console.error("Error creating event: " + error);
-      })
+        console.error("Error adding event to Google Calendar: ", error);
+      });
     },
-    
-    /* Add reminders to calendar */
+
+    /*---- Add reminders to calendar ----*/
     addReminder(reminder) {
       const event = {
         summary: reminder.title,
@@ -210,7 +199,7 @@ export default {
         this.scheduleNotification(reminder);
         this.showAddReminderModal = false;
       }).catch(error => {
-        console.error("Error adding event to Google Calendar: ", error);
+        console.error("Error adding reminder to Google Calendar: ", error);
         alert("Failed to add event to Google Calendar: " + error.result.error.message);
       });
     },
