@@ -32,6 +32,10 @@
       <p>Don't have an account? <a href="#" @click.prevent="goToSignup">Sign up</a></p>
     </div>
   </div>
+  <!-- Banner Image Section -->
+  <div class="banner-section">
+    <img src="@/assets/Banner.png" alt="EcoHarbour Banner" class="banner-image" />
+  </div>
 </template>
 
 <style>
@@ -41,6 +45,7 @@
         align-items: center;
         width: 60%;
         margin: 0 auto;
+        height: 60vh;
     }
     input {
         margin: 5px;
@@ -66,4 +71,17 @@
         justify-content: flex-end;
         margin: 5px;
     }
+
+.banner-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+}
+
+.banner-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 </style>
