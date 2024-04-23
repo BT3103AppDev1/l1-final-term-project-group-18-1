@@ -5,6 +5,7 @@ import SignUp from './views/SignUpPage.vue'
 import HomePage from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
+import Shop from './components/ShopModal.vue'
 import CalendarPage from './views/Calendar/CalendarPage.vue';
 import EventsPage from './views/Calendar/EventsPage.vue'
 import Infographics from './views/Resources/Infographics.vue'
@@ -63,6 +64,11 @@ const routes = [
         path: '/SocialPage',
         name: 'SocialPage',
         component: SocialPage,
+    },
+    {
+        path: '/Shop',
+        name: 'Shop',
+        component: Shop,
     },
     {
         path: '/Calendar',

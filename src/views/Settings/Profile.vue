@@ -89,8 +89,9 @@
   <style>
   /* Styles for the email display */
   .settings-wrapper h1 {
-    margin-right: 690px;
+    margin-right: 1150px;
     margin-bottom: 30px;
+    font-weight: bold;
   }
 
   .user-email {
@@ -122,7 +123,7 @@
   
   /* Style for the save button */
   .btn {
-    background-color: #457247;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     padding: 10px 15px;
@@ -134,7 +135,7 @@
   /* Additional styling for success message */
   .success-message {
     margin-top: 0.3rem;
-    color:#457247;
+    color:var(--primary-color);
     font-size: 16px;
   }
 
@@ -144,7 +145,7 @@
   cursor: not-allowed; /* Shows a disabled cursor on hover */
 }
 
-/* You may want to make the border color match the greyed-out style too */
+/* the border color match the greyed-out style too */
 .input-disabled {
   border: 1px solid #ced4da;
 }
