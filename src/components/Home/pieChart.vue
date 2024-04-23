@@ -130,7 +130,7 @@ export default {
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 1, 
+                    aspectRatio: 1.3, 
                     layout: {
                         padding: {
                             top: 0,
@@ -184,8 +184,9 @@ export default {
     #recyclingChart {
         width: 100%;
         max-width: 1000px;
-        max-height:1000px;
+        max-height: 1000px;
+        margin-top:0;
         display:block;
-        margin:auto
+        margin:auto;
     }
 </style>
