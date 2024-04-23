@@ -16,6 +16,7 @@ import ContactUs from './views/Settings/ContactUs.vue'
 import SearchResult from './views/home/searchResult.vue'
 import SocialPage from './views/SocialPage.vue'
 import AddReminderModal from '@/components/AddReminderModal.vue';
+import CreateEventModal from '@/components/CreateEventModal.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 
 const routes = [
@@ -78,6 +79,11 @@ const routes = [
                 path: 'add-reminder',
                 name: 'AddReminder',
                 component: AddReminderModal,
+            },
+            {
+                path: 'create-event',
+                name: 'CreateEvent',
+                component: CreateEventModal, 
             }
         ]
     },

@@ -1,8 +1,10 @@
 <template>
     <div class="modal">
       <form @submit.prevent="saveReminder">
+        <h2>Create New Reminder</h2> 
+
         <label for="title">Reminder Title:</label>
-        <input type="text" id="title" v-model="reminder.title" required>
+        <input type="text" id="title" v-model="reminder.title" placeholder="Reminder Title" required>
   
         <label for="start">Start Time:</label>
         <input type="datetime-local" id="start" v-model="reminder.start" required>
