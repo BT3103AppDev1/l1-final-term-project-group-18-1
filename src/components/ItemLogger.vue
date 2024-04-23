@@ -72,6 +72,13 @@
      async logItem() {
         console.log("Received item as:", this.item);
 
+        const now = new Date();
+        //const now = new Date('2024-11-29');//testing
+        const day = now.toLocaleDateString('en-US', { weekday: 'long' }); // Get the day of the week as a string
+        const month = now.toLocaleString('default', { month: 'long' }); // Get the current month as a string
+        const dayField = day + 'Count'; // Create the field name, e.g., 'MondayCount'
+        const monthField = month + 'Count'; // Create the field name for the month, e.g., 'JanuaryCount'
+
         // Basic validation for item details
         if (!this.item || !this.item.name) {
             this.errorMessage = 'Item details are not available. Please try again.';
@@ -95,34 +102,20 @@
         }
 
 
-          // construct a query to find existing document
+          // construct a query to find existing document of user and item in database
             const itemsRef = collection(db, "recycledDatabase");
             const q = query(itemsRef, where("username", "==", this.username), where("itemName", "==", this.item.name));
         
-        // Query to find existing document in users collection by username
+        // query to find existing document in users collection by username
             const usersRef = collection(db, "users");
             const p = query(usersRef, where("username", "==", this.username));
 
-        
-
-        // try {
-        //     // Proceed with Firestore logging
-        //     await addDoc(collection(db, "recycledDatabase"), {
-        //         itemName: this.item.name,
-        //         quantity: this.itemCount,
-        //         isClean: this.isClean,
-        //         username: this.username,
-        //     });
-
-        //     console.log("Item logged successfully.");
-        //     this.resetInputs();
-        //     alert("Item logged successfully!"); // Provide user feedback
-        // } catch (error) {
-        //     console.error("Error logging item:", error);
-        //     this.errorMessage = 'Failed to log the item. Please try again.';
-        // }
+        // query to find existing document in recycledDataSummary collection by username
+            const summaryRef = collection(db, "recycledDataSummary");
+            const r = query(summaryRef, where("username", "==", this.username));
         
         try {
+            //logging item in recycledDatabase
             const querySnapshot = await getDocs(q);
             if (querySnapshot.empty) {
                 await addDoc(itemsRef, {
@@ -137,17 +130,18 @@
                     const newQuantity = doc.data().quantity + this.itemCount;
                     await updateDoc(doc.ref, {
                         quantity: newQuantity,
-                        isClean: this.isClean
+                        isClean: this.isClean,
                     });
                 });
                 console.log("Item quantity updated successfully.");
             }
             
+            //logging fertiliser and numRecycled for each in users collection
             const querySnapshotUsers = await getDocs(p);
             querySnapshotUsers.forEach(async (doc) => {
                 const updateData = {
                     fertiliser: increment(this.itemCount),
-                    numRecycled: increment(this.itemCount) // Increment numRecycled count
+                    numRecycled: increment(this.itemCount), // Increment numRecycled count
                 };
                 if (this.item.category === "metal") {
                     updateData.metalRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
@@ -167,6 +161,27 @@
                 await updateDoc(doc.ref, updateData);
                 console.log("Fertilizer count updated successfully for user:", this.username);
             });
+
+
+            //logging into recycledDataSummary
+            const querySnapshotSummary = await getDocs(r);
+            if (querySnapshotSummary.empty) {
+                await addDoc(summaryRef, {
+                    username: this.username,
+                    [dayField]: this.itemCount, 
+                    [monthField]: this.itemCount, 
+                    currWeeklyAvg: 1,
+                });
+                console.log("created document for user to store in recycledDataSummary");
+            } else {
+                querySnapshotSummary.forEach(async (doc) => {
+                    await updateDoc(doc.ref, {
+                        [dayField]: increment(this.itemCount),  
+                        [monthField]: increment(this.itemCount),  
+                    });
+                });
+                console.log("Item quantity updated successfully for each day.");
+            }
 
             
         this.resetInputs();

@@ -17,6 +17,9 @@
       <div class = "button-container">
           <searchButton />
       </div>  
+      <div class="sectionHeader">
+          <p class="regularText">Statistics</p>      
+      </div>
        <div>
         <p class="regularText">You have recycled</p>
           <numberDisplay/>
@@ -27,7 +30,13 @@
           <p class="regularText">Your recycled items this month:</p>
           <pieChart />
       </div>
-   
+
+      <div class ="weeklyAvg">
+        <weeklyAverage />
+      </div>
+      <div class ="barChart">     
+        <barChart />
+      </div>    
     </main>
   </div>
 </template>
@@ -36,12 +45,16 @@
 import searchButton from '../components/Home/searchButton.vue'
 import pieChart from '../components/Home/pieChart.vue'
 import numberDisplay from '@/components/Home/numberDisplay.vue';
+import weeklyAverage from '@/components/Home/weeklyAverage.vue';
+import barChart from '@/components/Home/barChart.vue';
 
 export default {
   components: {
     searchButton,
     pieChart,
     numberDisplay,
+    weeklyAverage,
+    barChart
   },
   computed: {
     upcomingEvents() {
@@ -68,8 +81,8 @@ export default {
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
-  padding-top: 50px;
   padding-bottom: 20px;
+  padding-top: 20px;
 }
 
 .main-title {
@@ -81,6 +94,10 @@ main {
   padding-top: 60px;
 }
 
+.sectionHeader{
+  display:flex;
+  padding-top: 10px;
+}
 .events-container {
   margin-top: 20px;
   background-color: #ffe1b0;
@@ -103,6 +120,14 @@ main {
 
 .second-heading {
   color: #333333;
+}
+
+.weeklyAvg{
+  margin-top: 80px;
+}
+
+.barChart{
+  margin-top: 80px;
 }
 
 .regularText{
