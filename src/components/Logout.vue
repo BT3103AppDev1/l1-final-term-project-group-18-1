@@ -1,59 +1,38 @@
 <template>
-    <button id="btn" @click="logout()" v-if="user">Logout</button>
+  <button @click="logout" v-if="user">Logout</button>
 </template>
 
 <script>
-import '@/firebaseConfig';
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
+import { getGoogleAuth } from "@/utils/googleApi";  // Import getGoogleAuth
 
 export default {
   name: 'Logout',
-
   data() {
     return {
-      user: false,
+      user: null,
     };
   },
 
   mounted() {
     const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.user = user;
-      }
-    });
+    this.user = auth.currentUser;
   },
 
   methods: {
-    logout() {
+    async logout() {
       const auth = getAuth();
-      const user = auth.currentUser;
-      signOut(auth, user)
-        .then(() => {
-          this.$router.push({name: 'Login'})
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-
+      try {
+        const GoogleAuth = getGoogleAuth(); // Get Google Auth instance
+        if (GoogleAuth && GoogleAuth.isSignedIn.get()) {
+          await GoogleAuth.signOut();  // Sign out from Google
+        }
+        await signOut(auth);  // Sign out from Firebase
+        this.$router.push({name: 'Login'});
+      } catch (error) {
+        console.error('Logout error:', error.message);
+      }
     }
   }
 };
 </script>
-
-<style>
-  button {
-    margin: 5px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #457247;
-    background-color: #457247;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.1s;
-  }
-  button:active {
-    background-color: #3b5e3b;
-  }
-</style>
-
