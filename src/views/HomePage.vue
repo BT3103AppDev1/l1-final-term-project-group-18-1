@@ -5,19 +5,19 @@
       </header>
       <main>
         <h1>Home Page</h1>
-        <SearchBar />
+        <searchButton />
       </main>
     </div>
 </template>
 
 <script>
-import SearchBar from '../components/SearchBar.vue'
+import searchButton from '../components/searchButton.vue'
 import Logout from '../components/Logout.vue'
 
 export default {
   components: {
     Logout,
-    SearchBar
+    searchButton,
   }
 }
 </script>

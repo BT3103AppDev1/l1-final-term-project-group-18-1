@@ -2,32 +2,39 @@
     <div class = "container">
         <div class = "pageHeader">Thank you for making the Earth a better place!</div>
         <div class = "subheader">Key in your item here</div>
-        <SearchBarWoBtn />
-        <div v-if="isLoading">Loading...</div>
-        <div v-if="error">{{ error }}</div>
-        <div v-if="!isLoading && !error && item">
-            <div class = "information">
-                <p style="font-size: 35px; font-weight:bold">{{ capitalizeWords(item.name) }}</p>
+        <SearchBar @update-query="updateSearchQuery"/>
+        <div v-if="hasSearchQuery">
+            <div v-if="isLoading">Loading...</div>
+            <div v-if="error">{{ error }}</div>
+            <div v-if="!isLoading && !error && item">
+                <div class = "information">
+                    <p style="font-size: 35px; font-weight:bold">{{ capitalizeWords(item.name) }}</p>
 
-                <!-- <p class = "labels">Recyclable:</p> <p class ="text">{{ item.recyclable ? 'Yes' : 'No' }}</p> -->
-                <div class = "inline-texts" :class="{ 'recyclable': item.recyclable, 'non-recyclable': !item.recyclable }">
-                    <p class ="text">{{ item.recyclable ? 'Yes' : 'No' }}</p> 
-                    <p class = "text">it</p> 
-                    <p class ="text">{{ item.recyclable ? 'can' : 'can\'t' }}</p> 
-                    <p class = "text">recycled</p>
+                    <!-- <p class = "labels">Recyclable:</p> <p class ="text">{{ item.recyclable ? 'Yes' : 'No' }}</p> -->
+                    <div class = "inline-texts" :class="{ 'recyclable': item.recyclable, 'non-recyclable': !item.recyclable }">
+                        <p class ="text">{{ item.recyclable ? 'Yes' : 'No' }}</p> 
+                        <p class = "text">it</p> 
+                        <p class ="text">{{ item.recyclable ? 'can' : 'can\'t' }}</p> 
+                        <p class = "text">recycled</p>
+                    </div>
+
+                    <div v-if="item.recyclable" class = "inline-texts">
+                        You can recycle it at the <span class ="bold">{{ item.place }}</span>.
+                    </div>
+
+                    <p class = "labels">Information: </p>
+                    <ul class = "information-list">
+                    <li v-for="(sentence, index) in informationSentences" :key="index">
+                        {{ sentence.trim() }}
+                    </li>
+                </ul>
+                <!-- <p>Information: {{ item.information }}</p> -->
                 </div>
-
-                <p class = "labels">Information: </p>
-                <ul class = "information-list">
-                <li v-for="(sentence, index) in informationSentences" :key="index">
-                    {{ sentence.trim() }}
-                 </li>
-            </ul>
-            <!-- <p>Information: {{ item.information }}</p> -->
             </div>
+            <p v-if="!isLoading && !item">No items found.</p>
+            <itemLogger v-if="item && item.recyclable" :item="item"></itemLogger>
         </div>
-        <p v-if="!isLoading && !item">No items found.</p>
-        <itemLogger v-if="item && item.recyclable" :item="item"></itemLogger>
+      
     </div>
 </template>
 
@@ -36,19 +43,13 @@
 <script> 
     import { db } from '../../firebaseConfig.js';
     import { collection, where, getDocs, query} from 'firebase/firestore';
-    import SearchBarWoBtn from '@/components/SearchBarWoBtn.vue';
+    import SearchBar from '@/components/SearchBar.vue';
     import itemLogger from '@/components/itemLogger.vue';
   
     export default {
-        props: {
-            searchQuery: String // declare search query as a prop of type string 
-        },
         components: {
-            SearchBarWoBtn,
+            SearchBar,
             itemLogger,
-        },
-        mounted() {
-            this.fetchData();
         },
         watch: {
         searchQuery(newVal, oldVal) {
@@ -62,7 +63,8 @@
             return {
                 item:null,
                 isLoading: false,
-                error: null
+                error: null,
+                searchQuery: '',
             };
         },
         computed: {
@@ -74,10 +76,16 @@
                  return this.item.information.split(/(?<!\b\w)\. (?=[A-Z])/g);
             }
             return [];
-            }
+            },
+            hasSearchQuery() {
+                return this.searchQuery && this.searchQuery.trim().length > 0;
+            },
         },
         methods: {
             async fetchData() {
+                if (this.searchQuery === "sampleQuery") { // Checking for a specific sample query
+                    return; // Do nothing for sample queries
+                }
                 this.isLoading = true;
                 this.item = null;
 
@@ -88,8 +96,6 @@
 
                 if (!querySnapshot.empty) {
                     this.item = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()};
-                    // DEBUGGING
-                    console.log("Fetched item:", this.item);
                 } else {
                     this.error = "No results found";
                     this.item = null; //set to null if no results found
@@ -103,7 +109,10 @@
             },
             capitalizeWords(str) { //method to capitalise the first letter of each word for names
                 return str.replace(/\b\w/g, char => char.toUpperCase());
-            }
+            },
+            updateSearchQuery(newQuery) {
+                this.searchQuery = newQuery;
+            },
         },
     }
 </script>
@@ -132,8 +141,10 @@
     }
 
     .labels{
-        color: #4f714b;
         font-size: 35px;   
+    }
+    .bold{
+        font-weight: bold;
     }
 
     .inline-texts .text {

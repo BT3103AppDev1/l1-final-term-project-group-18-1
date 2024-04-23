@@ -7,12 +7,14 @@
         class="item-count-input"
         min="1"
       /> 
-      <label>
-      <input type="checkbox" v-model="isClean" />
-            Item is clean/rinsed
+      <label class ="checkbox-label">
+            <input type="checkbox" v-model="isClean" />
+            <span class="checkbox-custom"></span>
+            Item is clean/rinsed <span class="required-asterisk">*</span>
       </label>
+      <span class="required-text"><span class="required-asterisk">*</span> Required</span>
       <button @click="logItem">Let's Recycle</button>
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> <!-- Error message will show up if it exists -->
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> <!-- Error message will show up if it exists -->   
      </div>
   
   </template>
@@ -154,6 +156,10 @@
   
   <style scoped>
     .error-message {
+        color: red;
+    }
+
+    .required-asterisk{
         color: red;
     }
   </style>
