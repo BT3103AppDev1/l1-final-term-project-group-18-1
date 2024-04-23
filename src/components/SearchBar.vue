@@ -13,7 +13,7 @@
   
         <ul v-if="searchQuery" class="suggestions-dropdown">
             <!-- Show "No result found" if there are no suggestions -->
-            <li v-if="suggestions.length === 0" class="no-results">
+            <li v-if="suggestions.length === 0 && displayNoResult" class="no-results">
                 No result found (Please contact us if you think there is an issue)
             </li>
             <!-- List items for each suggestion -->
@@ -37,12 +37,14 @@ import { db } from '../firebaseConfig.js'; // imports the firebase configuration
         showPlaceholder: true,
         suggestions: [], //store suggestions here
         isAutofilling: false, //boolean to indicate autofill so it won't fetch suggestions again
+        displayNoResult: false,
       };
     },
     watch: { //watch to remove dropdown list when user clears the search field 
     searchQuery(value) {
       if (value.trim() === '') {
         this.suggestions = [];
+        this.displayNoResult = false;
       } else {
         this.fetchSuggestions();
       }
@@ -66,19 +68,22 @@ import { db } from '../firebaseConfig.js'; // imports the firebase configuration
          }
          const input = this.searchQuery.trim().toLowerCase(); // converts input to lowercase
          if (this.searchQuery.trim().length >= 2) { //this first check if user's input has more than 2 characters
-          const itemsRef = collection(db, "recyclableItemDetails"); // this creates a reference to the "recyclableItemDetails collection"
-          const q = query(itemsRef, 
-                          where("name", ">=", input), 
-                          where("name", "<=", input + '\uf8ff')); //"<=, >= and \uf8ff effectively searches for 
-                                                                            //cany names that start with specified query string, achieving the start with search functionality"
-          const querySnapshot = await getDocs(q);
+            const itemsRef = collection(db, "recyclableItemDetails"); // this creates a reference to the "recyclableItemDetails collection"
+            const q = query(itemsRef, 
+                            where("name", ">=", input), 
+                            where("name", "<=", input + '\uf8ff')); //"<=, >= and \uf8ff effectively searches for 
+                                                                              //cany names that start with specified query string, achieving the start with search functionality"
+            const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) { 
               this.suggestions = querySnapshot.docs.map(doc => ({ id: doc.id, name: doc.data().name }));
+              this.displayNoResult = false;
           } else {
             this.suggestions = [];
+            this.displayNoResult = true;
           }
           } else {
             console.log ('waiting for more input before suggesting to optimise suggestion function')
+            this.displayNoResult = true;
           }
           console.log("current suggestion length" + this.suggestions.length)
       },
@@ -89,6 +94,7 @@ import { db } from '../firebaseConfig.js'; // imports the firebase configuration
         this.showPlaceholder = false;
         this.suggestions = []; // clear suggestions after selection 
         this.$emit('update-query', this.searchQuery); //emitting query to parent
+        this.displayNoResult = false; //reset to false
 
         this.$nextTick(() => { //using next tick to run this line after vue has updated the dom and autofilled
           this.isAutofilling = false; //set it back to false
