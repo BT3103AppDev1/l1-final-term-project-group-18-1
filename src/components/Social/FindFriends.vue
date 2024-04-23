@@ -13,21 +13,26 @@
     </div>
 
     <teleport to="body">
-  <div v-if="showNotification" class="overlay" @click="closeNotification"></div>
-  <div v-if="showNotification" class="notification">
-    <p>Friend request sent! <br> Username: <span>@{{ lastRequestedUsername }}</span></p>
-    <button class="close-btn" @click="closeNotification">×</button>
-  </div>
+      <div v-if="showNotification" class="overlay" @click="closeNotification"></div>
+      <div v-if="showNotification" class="notification">
+        <p>Friend request sent! <br> Username: <span>@{{ potentialFriend.username }}</span></p>
+        <button class="close-btn" @click="closeNotification">×</button>
+      </div>
+
+      <div v-if="showAddFriendModal" class="overlay" @click="closeNotification"></div>
+      <div v-if="showAddFriendModal" class="notification add-friend-notification">
+        <p>Add Friend <br> Username: <span>@{{ potentialFriend.username }}</span></p>
+        <div class="button-container">
+          <button class="confirm-btn" @click="handleSendFriendRequest(potentialFriend.id)">Confirm</button>
+        </div>
+        <button class="close-btn" @click="closeAddFriendNotification">×</button>
+      </div>
   </teleport>
 
-    <ul class="search-results" v-if="searchResults.length">
-      <li v-for="user in searchResults" :key="user.id">
-        {{ user.username }}
-        <button @click="handleSendFriendRequest(user.id)">Send Request</button>
-      </li>
-    </ul>
   </div>
 </template>
+
+
 
 <script>
 import { db } from '@/firebaseConfig';
@@ -40,7 +45,8 @@ export default {
       searchQuery: '',
       searchResults: [],
       showNotification: false,
-      lastRequestedUsername: '',
+      showAddFriendModal: false,
+      potentialFriend: null,
     };
   },
   methods: {
@@ -56,14 +62,16 @@ export default {
       try {
         const querySnapshot = await getDocs(q);
         if (querySnapshot.empty) {
-          this.searchResults = [];
           alert('No users found with that username. Please try a different search.');
         } else {
-          this.searchResults = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            username: doc.data().username,
-            name: doc.data().name,
-          }));
+          // Assuming only one user can be found with a specific username
+          const userDoc = querySnapshot.docs[0];
+          this.potentialFriend = {
+            id: userDoc.id,
+            username: userDoc.data().username,
+            name: userDoc.data().name,
+          };
+          this.showAddFriendModal = true; // Show the 'Add friend' notification
         }
       } catch (error) {
         console.error('Error searching users:', error);
@@ -118,8 +126,7 @@ export default {
           toId: friendId,
           status: 'pending'
         });
-
-        this.lastRequestedUsername = this.searchResults.find(user => user.id === friendId).username;
+        this.showAddFriendModal = false
         this.showNotification = true;
       } catch (error) {
         console.error('Failed to send friend request:', error);
@@ -129,7 +136,12 @@ export default {
 
     closeNotification() {
       this.showNotification = false;
-    }
+    },
+
+    closeAddFriendNotification() {
+      this.showAddFriendModal = false;
+    },
+
   },
 };
 </script>
@@ -216,12 +228,33 @@ export default {
   text-align: center; 
   font-size: 20px;
   font-weight: 500;
-  color: #457247; 
+  color: #47525E; 
 }
 
 .notification span {
-  color: #457247; 
+  color: #47525E; 
   font-weight: bold;
 }
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Centers the button horizontally */
+  margin-top: 20px; /* Adds space between the text and the button */
+}
+
+.confirm-btn {
+  padding: 8px 16px;
+  border: none;
+  background-color: #47525E;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.confirm-btn:hover {
+  background-color: #37474F;
+}
+
 
 </style>

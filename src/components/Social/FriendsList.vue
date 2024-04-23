@@ -10,7 +10,7 @@
         <button @click="promptGiftFertiliser(friend.id, friend.username)" class="gift-btn">
           <img src='@/assets/fertiliser.png' alt="Gift Fertiliser">
         </button>
-        <button @click="promptDeleteConfirmation(friend.id, friend.name)" class="delete-friend-btn">×</button>
+        <button @click="promptDeleteConfirmation(friend.id, friend.username)" class="delete-friend-btn">×</button>
       </li>
     </ul>
     <div v-else class="no-friends">
@@ -26,13 +26,18 @@
     </div>
 
     <!-- Delete Confirmation Notification -->
-    <div v-if="showDeleteConfirmation" class="delete-confirmation">
-      <p>Are you sure you want to remove {{ friendToDeleteName }} as a friend?</p>
-      <button @click="confirmDeleteFriend">Yes, remove</button>
-      <button @click="cancelDelete">No, cancel</button>
-    </div>
+    <teleport to="body">
+      <div v-if="showDeleteConfirmation" class="overlay" @click="cancelDelete"></div>
+      <div v-if="showDeleteConfirmation" class="delete-confirmation-modal">
+        <button class="close-btn" @click="cancelDelete">×</button>
+        <h3>Delete friend</h3>
+        <p>Username: @{{ friendToDeleteUsername }}</p>
+        <button @click="confirmDeleteFriend" class="delete-confirm-btn">Confirm</button>
+      </div>
+    </teleport>
   </div>
 </template>
+
 
 <script>
 import { db } from '@/firebaseConfig';
@@ -45,7 +50,7 @@ export default {
       friends: [],
       showDeleteConfirmation: false,
       friendToDelete: null,
-      friendToDeleteName: '',
+      friendToDeleteUsername: '',
       showGiftModal: false,
       friendToGiftId: '',
       friendToGiftUsername: '',
@@ -105,9 +110,9 @@ export default {
       }
     },
 
-    promptDeleteConfirmation(friendId, friendName) {
+    promptDeleteConfirmation(friendId, friendUsername) {
       this.friendToDelete = friendId;
-      this.friendToDeleteName = friendName;
+      this.friendToDeleteUsername = friendUsername;
       this.showDeleteConfirmation = true;
     },
 
@@ -136,9 +141,6 @@ export default {
   const currentUserDocRef = doc(db, 'users', currentUserUid);
   const friendDocRef = doc(db, 'users', this.friendToGiftId);
 
-  console.log('Attempting to gift fertiliser:');
-  console.log('Current User UID:', currentUserUid);
-  console.log('Friend UID:', this.friendToGiftId);
   
   try {
     await runTransaction(db, async (transaction) => {
@@ -239,44 +241,64 @@ export default {
   color: #333333;
 }
 
-.delete-confirmation {
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #457247; 
+}
+
+.close-btn:hover {
+  color: #ff5252; 
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.delete-confirmation-modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #D5EDDE;
-  border: 2px solid #457247;
-  padding: 20px;
-  border-radius: 8px;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 40px;
+  background-color: #D5EDDE; 
+  border: 6px solid #457247; 
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  min-width: 450px; 
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: #47525E;
 }
 
-.delete-confirmation p {
-  margin-bottom: 15px;
+.delete-confirmation-modal p {
+  margin-bottom: 20px;
+  color: #47525E;
 }
 
-.delete-confirmation button {
-  padding: 10px 20px;
-  margin: 0 10px;
+.delete-confirm-btn {
+  padding: 8px 16px;
   border: none;
-  border-radius: 5px;
+  background-color: #47525E;
+  color: white;
   cursor: pointer;
-  font-weight: bold;
+  font-size: 16px;
+  border-radius: 4px;
 }
 
-.delete-confirmation button:first-child {
-  background-color: green;
-  color: white;
-}
-
-.delete-confirmation button:last-child {
-  background-color: red;
-  color: white;
-}
 
 .gift-btn {
   background-color: #79BCD9;

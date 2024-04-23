@@ -179,7 +179,7 @@ export default {
   color: black;
   border: none; 
   cursor: pointer;
-  font-size: 1.2rem; 
+  font-size: 1.5rem; 
   margin-left: 8px;
 }
 
