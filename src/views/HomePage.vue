@@ -14,17 +14,25 @@
           </div>
         </div>
       </div>
-      <SearchBar />
+      <SearchButton />
+      <div>
+          <pieChart />
+      </div>
     </main>
   </div>
 </template>
 
 <script>
-import SearchBar from '../components/SearchBar.vue';
+import searchButton from '../components/Home/searchButton.vue'
+import pieChart from '../components/Home/pieChart.vue'
+import Logout from '../components/Logout.vue'
+
+
 
 export default {
   components: {
-    SearchBar // Corrected component registration
+    searchButton,
+    pieChart // Corrected component registration
   },
   computed: {
     upcomingEvents() {
