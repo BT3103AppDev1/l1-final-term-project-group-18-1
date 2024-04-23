@@ -7,11 +7,18 @@
       <input type="text" id="name" required="" placeholder="Name" v-model="name">
       <input type="text" id="username" required="" placeholder="Username" v-model="username">
       <input type="email" id="email" required="" placeholder="Email" v-model="email">
-      <input type="password" id="password" required="" placeholder="Password" v-model="password">
-      <input type="password" id="cfmpassword" required="" placeholder="Confirm Password" v-model="cfmpassword">
+      <input v-bind:type="inputType" id="password" required="" placeholder="Password" v-model="password">
+      <input v-bind:type="inputType" id="cfmpassword" required="" placeholder="Confirm Password" v-model="cfmpassword">
     </form>
-
+    <div>
+      <input type="checkbox" v-model="showPassword"> Show Password
+    </div>
     <button id = "signupbutton" type="button" v-on:click="signup">Sign Up</button>
+  </div>
+
+  <!-- Banner Image Section -->
+  <div class="banner-section">
+    <img src="@/assets/Banner.png" alt="EcoHarbour Banner" class="banner-image" />
   </div>
 </template>
 
@@ -31,8 +38,14 @@ export default {
       email: '',
       password: '',
       cfmpassword: '',
-      checkEmailVerificationInterval: null
+      checkEmailVerificationInterval: null,
+      showPassword: false,
     };
+  },
+  computed: {
+    inputType() {
+      return this.showPassword ? 'text' : 'password';
+    }
   },
   methods: {
     async isUsernameUnique(username) {
@@ -92,3 +105,27 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.container {
+  display: block;
+  justify-content: center;
+  align-items: center;
+  width: 70%;
+  margin: 0 auto;
+  height: 60vh;
+}
+
+.banner-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+}
+
+.banner-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+</style>
