@@ -68,6 +68,7 @@
 }
 
 .banner-image {
+  display: block;
   width: 100%;
   height: auto; 
 }
