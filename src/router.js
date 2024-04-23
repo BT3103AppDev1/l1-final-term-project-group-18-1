@@ -17,6 +17,7 @@ import SearchResult from './views/home/searchResult.vue'
 import SocialPage from './views/SocialPage.vue'
 import AddReminderModal from '@/components/AddReminderModal.vue';
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
+import EmailVerification from './views/EmailVerificationPage.vue'
 
 const routes = [
     {
@@ -40,9 +41,10 @@ const routes = [
     {
         path: '/verify-email',
         name: 'verify-email',
-        component: () => import('@/components/EmailVerification.vue'),
+        component: EmailVerification,
         props: route => ({ email: route.query.email })
     },
+
     {
         path: '/Home',
         name: 'Home',
@@ -124,7 +126,7 @@ const routes = [
         ]
     },
     {
-        path: '/searchResult /:searchQuery', //passing searchQuery as well as a route parameter 
+        path: '/searchResult /:searchQuery', //passing searchQuery as well as a route parameter
         name: 'searchResult',
         component: SearchResult,
         //component: () => import('./views/home/searchResult.vue'), // this allow for java modules to load asynchronously, the component is loaded only when route is actually visited by user
