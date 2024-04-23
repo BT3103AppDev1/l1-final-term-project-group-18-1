@@ -136,6 +136,7 @@ export default {
             
             // Update the calendarOptions with the fetched events
             this.calendarOptions.events = fetchedEvents;
+            this.$store.dispatch('updateUpcomingEvents', this.upcomingEvents);
 
           } else {
             console.error('No Google access token found in Firestore.');
@@ -294,8 +295,25 @@ export default {
           }
         });
       }
+    },
+  },
+  computed: {
+    upcomingEvents() {
+      const now = new Date();
+      const twentyFourHoursLater = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+      return this.calendarOptions.events.filter(event => {
+        const eventStart = new Date(event.start);
+        return eventStart >= now && eventStart <= twentyFourHoursLater;
+      }).map(event => {
+        return {
+          ...event,
+          start: new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
+        };
+      });
     }
-  }
+  },
+
 }
 </script>
 

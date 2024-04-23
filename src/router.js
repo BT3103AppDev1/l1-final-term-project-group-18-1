@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import HomePage from './views/HomePage.vue'
 import About from './views/About.vue'
 import Login from './views/LoginPage.vue'
 import SignUp from './views/SignUpPage.vue'
-import HomePage from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
 import Shop from './components/ShopModal.vue'
