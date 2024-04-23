@@ -8,7 +8,7 @@
   
 
 <script>
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/firebaseConfig';
 import { Chart, registerables } from 'chart.js'
@@ -26,12 +26,20 @@ export default {
         };
     },
     mounted() {
-        this.fetchUsername();
-        this.$nextTick(() => {
-            this.fetchRecycledData(); // call fetchRecycledData after the component is mounted and the canvas is available
-        });
+        this.initializeDataWithDelay();
     },
     methods: {
+        initializeDataWithDelay() {
+            const auth = getAuth();
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("User is signed in, fetching data.");
+                    this.fetchUsername();
+                } else {
+                    console.error("No user is signed in.");
+                }
+            });
+        },
         async fetchUsername() {
             console.log("fetching username")
             const auth = getAuth();
@@ -51,6 +59,7 @@ export default {
             }
         },
         async fetchRecycledData() {
+            console.log("calling fetchRecycledData")
             const usersRef = collection(db, "users");
             const q = query(usersRef, where("username", "==", this.username));
 
@@ -59,6 +68,7 @@ export default {
                 if (querySnapshot.empty) {
                     console.log("No data available for this user.");
                 } else {
+                    console.log("retreived data working with it now.");
                     querySnapshot.forEach((doc) => {
                         const userData = doc.data();
                         this.recycledData = {
@@ -153,11 +163,6 @@ export default {
                                 const dataArr = context.chart.data.datasets[0].data;
                                 const total = dataArr.reduce((acc, curr) => acc + curr, 0);
                                 const percentage = ((value / total) * 100).toFixed(1) + '%';
-                                //console.log("checking percentage for hUoh" + percentage + "it is" + percentage<5)
-                                //console.log("gyOG")
-                                console.log("checking percentage for" + percentage)
-                                console.log(percentage>5)
-
                                 if (percentage < 5) {
                                     console.log("setting % to null")
                                     return null; 
