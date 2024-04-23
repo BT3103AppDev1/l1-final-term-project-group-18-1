@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import HomePage from './views/HomePage.vue'
 import About from './views/About.vue'
 import Login from './views/LoginPage.vue'
 import SignUp from './views/SignUpPage.vue'
-import HomePage from './views/HomePage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
 import Shop from './components/ShopModal.vue'
@@ -16,7 +16,8 @@ import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import SearchPage from './views/home/SearchPage.vue'
 import SocialPage from './views/SocialPage.vue'
-import AddReminderModal from '@/components/AddReminderModal.vue';
+import CreateEventModal from '@/components/CreateEventModal.vue'
+import EditEventModal from '@/components/EditEventModal.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 import EmailVerification from './views/EmailVerificationPage.vue'
 
@@ -83,9 +84,14 @@ const routes = [
         component: EventsPage,
         children: [
             {
-                path: 'add-reminder',
-                name: 'AddReminder',
-                component: AddReminderModal,
+                path: 'create-event',
+                name: 'CreateEvent',
+                component: CreateEventModal, 
+            },
+            {
+                path: 'edit-event',
+                name: 'EditEvent',
+                component: EditEventModal,
             }
         ]
     },
