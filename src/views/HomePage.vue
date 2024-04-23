@@ -14,7 +14,7 @@
           </div>
         </div>
       </div>
-      <SearchButton />
+      <searchButton />
       <div>
           <pieChart />
       </div>
