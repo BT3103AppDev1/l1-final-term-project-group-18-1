@@ -308,7 +308,6 @@ export default {
       }).map(event => {
         return {
           ...event,
-          start: new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
         };
       });
     }

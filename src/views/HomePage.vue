@@ -1,12 +1,12 @@
 <template>
   <div>
     <main>
-      <h1>Home Page</h1>
+      <h1 class="main-title">Thank you for making the Earth a better place!</h1>
       <!-- Events display section -->
       <div class="events-container">
         <h2>Upcoming Events</h2>
         <ul>
-          <li v-for="event in upcomingEvents" :key="event.id">
+          <li v-for="event in formattedUpcomingEvents" :key="event.id">
             <strong>{{ event.title }}</strong> - {{ event.start }} to {{ event.end }}
             <!-- Conditionally render the description if it exists -->
             <p v-if="event.description">{{ event.description }}</p>
@@ -27,23 +27,23 @@ export default {
   },
   computed: {
     upcomingEvents() {
-      console.log('Accessing upcoming events from store:', this.$store.state.upcomingEvents);
       return this.$store.state.upcomingEvents;
+    },
+    formattedUpcomingEvents() {
+      return this.upcomingEvents.map(event => ({
+        ...event,
+        start: new Date(event.start).toLocaleString(), // Format 'start' date
+        end: new Date(event.end).toLocaleString() // Format 'end' date
+      }));
     }
   }
 };
 </script>
 
 <style>
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #f8f9fa;
-  padding: 10px 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  z-index: 1000;
+.main-title {
+  font-weight: bold; 
+  color: #457247;
 }
 
 main {
@@ -64,5 +64,6 @@ main {
   padding: 10px;
   background-color: #e9ecef;
   border-radius: 5px;
+  width: auto; /* Adjusted for potentially wider formatted date strings */
 }
 </style>
