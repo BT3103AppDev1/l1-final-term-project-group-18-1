@@ -2,7 +2,7 @@
   <div class = "container">
     <h1>Welcome to EcoHarbour</h1>
     <h3>Join us in protecting our environment and paving the way for a sustainable future where the well-being of our planet is at the forefront of our actions and decisions.</h3>
-  
+
     <form id="signupform" @submit.prevent="signup">
       <input type="text" id="name" required="" placeholder="Name" v-model="name">
       <input type="text" id="username" required="" placeholder="Username" v-model="username">
@@ -31,6 +31,7 @@ export default {
       email: '',
       password: '',
       cfmpassword: '',
+      checkEmailVerificationInterval: null
     };
   },
   methods: {
@@ -41,7 +42,7 @@ export default {
         return !docSnap.exists();
       } catch (error) {
         console.error("Error checking username uniqueness:", error);
-        return false; 
+        return false;
       }
     },
 
@@ -74,7 +75,15 @@ export default {
         });
 
         alert("Signup successful. Please check your email for verification.");
-        this.$router.push({ name: 'Home' }); 
+        if (!user.emailVerified) {
+          // Sign out the user
+          await auth.signOut();
+          // Redirect to a page that reminds them to verify their email
+          this.$router.push({ name: 'verify-email' });
+        } else {
+          // wait for email to be verified redirect to the home or dashboard page
+          this.$router.push({ name: 'Home' });
+        }
       } catch (error) {
         console.error("Error signing up:", error);
         alert("Error signing up. Please try again.");
