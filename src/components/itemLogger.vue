@@ -21,8 +21,9 @@
   
   <script>
   import { db } from '../firebaseConfig'; 
-  import { collection, addDoc, doc, getDoc, query, updateDoc, where, getDocs } from 'firebase/firestore'; 
+  import { collection, addDoc, doc, getDoc, query, updateDoc, where, getDocs, increment } from 'firebase/firestore'; 
   import { getAuth } from 'firebase/auth';  // Import getAuth function to access authentication
+
   
   export default {
     data() {
@@ -96,6 +97,12 @@
           // construct a query to find existing document
             const itemsRef = collection(db, "recycledDatabase");
             const q = query(itemsRef, where("username", "==", this.username), where("itemName", "==", this.item.name));
+        
+        // Query to find existing document in users collection by username
+            const usersRef = collection(db, "users");
+            const p = query(usersRef, where("username", "==", this.username));
+
+        
 
         // try {
         //     // Proceed with Firestore logging
@@ -115,28 +122,37 @@
         // }
         
         try {
-        const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
-            await addDoc(itemsRef, {
-                itemName: this.item.name,
-                quantity: this.itemCount,
-                isClean: this.isClean,
-                username: this.username,
-            });
-            console.log("New item logged successfully.");
-        } else {
-            querySnapshot.forEach(async (doc) => {
-                const newQuantity = doc.data().quantity + this.itemCount;
-                await updateDoc(doc.ref, {
-                    quantity: newQuantity,
-                    isClean: this.isClean
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) {
+                await addDoc(itemsRef, {
+                    itemName: this.item.name,
+                    quantity: this.itemCount,
+                    isClean: this.isClean,
+                    username: this.username,
                 });
+                console.log("New item logged successfully.");
+            } else {
+                querySnapshot.forEach(async (doc) => {
+                    const newQuantity = doc.data().quantity + this.itemCount;
+                    await updateDoc(doc.ref, {
+                        quantity: newQuantity,
+                        isClean: this.isClean
+                    });
+                });
+                console.log("Item quantity updated successfully.");
+            }
+            
+            const querySnapshotUsers = await getDocs(p);
+            querySnapshotUsers.forEach(async (doc) => {
+                await updateDoc(doc.ref, {
+                    fertiliser: increment(this.itemCount)
+                });
+                console.log("Fertilizer count updated successfully for user:", this.username);
             });
-            console.log("Item quantity updated successfully.");
-        }
-        
+
+            
         this.resetInputs();
-        alert("Item logged successfully!");
+        alert("Item logged and fertilisers updated successfully!");
         } catch (error) {
             console.error("Error logging item:", error);
             this.errorMessage = 'Failed to log the item. Please try again.';
