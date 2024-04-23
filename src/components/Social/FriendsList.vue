@@ -17,15 +17,18 @@
       You have no friends added.
     </div>
 
-
+    <!-- Gift Fertiliser Modal -->
     <teleport to="body">
       <div v-if="showGiftModal" class="overlay" @click="cancelGift"></div>
       <div v-if="showGiftModal" class="gift-modal">
         <button class="close-btn" @click="cancelGift">×</button>
-        <h3>Gift</h3>
-        <input type="number" v-model="fertiliserAmount" min="1">
+        <h3>Gift Fertiliser</h3>
+        <div class="gift-input">
+          <label for="fertiliserAmount">Amount:</label>
+          <input type="number" id="fertiliserAmount" v-model="fertiliserAmount" min="1">
+        </div>
         <p>To: @{{ friendToGiftUsername }}</p>
-        <button @click="confirmGift" class="delete-confirm-btn">Confirm</button>
+        <button @click="confirmGift" class="confirm-btn">Confirm</button>
       </div>
     </teleport>
 
@@ -39,8 +42,18 @@
         <button @click="confirmDeleteFriend" class="delete-confirm-btn">Confirm</button>
       </div>
     </teleport>
+
+    <teleport to="body">
+      <div v-if="showGiftSuccessNotification" class="overlay" @click="closeGiftSuccessNotification"></div>
+      <div v-if="showGiftSuccessNotification" class="gift-success-notification">
+        <button class="close-btn" @click="closeGiftSuccessNotification">×</button>
+        <h3>Success!</h3>
+        <p>Username: @{{ friendToGiftUsername }}</p>
+      </div>
+    </teleport>
   </div>
 </template>
+
 
 
 <script>
@@ -58,7 +71,8 @@ export default {
       showGiftModal: false,
       friendToGiftId: '',
       friendToGiftUsername: '',
-      fertiliserAmount: 1, // default to 1
+      fertiliserAmount: 1,
+      showGiftSuccessNotification: false,
     };
   },
   created() {
@@ -140,46 +154,49 @@ export default {
     },
 
     async confirmGift() {
-  const auth = getAuth();
-  const currentUserUid = auth.currentUser ? auth.currentUser.uid : null;
-  const currentUserDocRef = doc(db, 'users', currentUserUid);
-  const friendDocRef = doc(db, 'users', this.friendToGiftId);
+      const auth = getAuth();
+      const currentUserUid = auth.currentUser ? auth.currentUser.uid : null;
+      const currentUserDocRef = doc(db, 'users', currentUserUid);
+      const friendDocRef = doc(db, 'users', this.friendToGiftId);
 
-  
-  try {
-    await runTransaction(db, async (transaction) => {
-      const currentUserDoc = await transaction.get(currentUserDocRef);
-      const friendDoc = await transaction.get(friendDocRef);
+      try {
+        await runTransaction(db, async (transaction) => {
+          const currentUserDoc = await transaction.get(currentUserDocRef);
+          const friendDoc = await transaction.get(friendDocRef);
+          
+          if (!currentUserDoc.exists || !friendDoc.exists) {
+            throw new Error("One of the documents does not exist!");
+          }
 
-      if (!currentUserDoc.exists || !friendDoc.exists) {
-        console.error('Document does not exist:', currentUserDoc.exists ? 'Friend document missing' : 'Current user document missing');
-        throw new Error("One of the documents does not exist!");
+          const currentUserFertilisers = currentUserDoc.data().fertiliser;
+          const friendFertilisers = friendDoc.data().fertiliser;
+
+          if (this.fertiliserAmount > currentUserFertilisers) {
+            throw new Error("Insufficient fertilisers to gift.");
+          }
+
+          transaction.update(currentUserDocRef, { fertiliser: currentUserFertilisers - this.fertiliserAmount });
+          transaction.update(friendDocRef, { fertiliser: friendFertilisers + this.fertiliserAmount });
+        });
+
+        this.giftSuccessMessage = 'Fertilisers sent successfully!';
+        this.showGiftSuccessNotification = true;
+      } catch (error) {
+        console.error('Transaction failed: ', error);
+        alert('Failed to send fertilisers. Please try again.');
       }
 
-      const currentUserFertilisers = currentUserDoc.data().fertiliser;
-      const friendFertilisers = friendDoc.data().fertiliser;
+      this.showGiftModal = false;
+      this.fertiliserAmount = 1; // reset to default
+    },
 
-      // Make sure the current user has enough fertiliser to gift
-      if (this.fertiliserAmount > currentUserFertilisers) {
-        throw new Error("Insufficient fertilisers to gift.");
-      }
-
-      transaction.update(currentUserDocRef, { fertiliser: currentUserFertilisers - this.fertiliserAmount });
-      transaction.update(friendDocRef, { fertiliser: friendFertilisers + this.fertiliserAmount });
-    });
-
-    alert('Fertilisers sent successfully!');
-  } catch (error) {
-    console.error('Transaction failed: ', error);
-    alert('Failed to send fertilisers. Please try again.');
-  }
-
-  this.showGiftModal = false;
-  this.fertiliserAmount = 1; // reset to default
-},
 
     cancelGift() {
       this.showGiftModal = false;
+    },
+
+    closeGiftSuccessNotification() {
+      this.showGiftSuccessNotification = false;
     },
   },
 };
@@ -191,8 +208,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 480px; 
-  margin: auto;
+  max-width: 350px; 
 }
 
 .friends-list h2 {
@@ -210,10 +226,10 @@ export default {
   margin-bottom: 10px;
   border-radius: 20px; 
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: left;
   padding: 10px 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  font-size: 18px;
 }
 
 .friend-info {
@@ -224,21 +240,20 @@ export default {
 .friend-name {
   font-weight: bold;
   color: #333333;
+  font-size: 20px;
 }
 
 .friend-username {
-  font-size: 0.9em;
   color: #333333;
 }
 
 .delete-friend-btn {
-  padding: 5px;
-  margin-left: 15px;
   background-color: transparent;
   color: black; 
   border: none;
-  font-size: 1.2em; 
+  font-size: 1.5em; 
   cursor: pointer;
+  align-items: right;
 }
 
 .no-friends {
@@ -312,11 +327,11 @@ export default {
   cursor: pointer;
   display: flex;
   align-items: right;
-  justify-content: center;
+  margin-left: 80px;
 }
 
 .gift-btn img {
-  height: 50px; /* Adjust size as necessary */
+  height: 50px; 
   width: auto;
 }
 
@@ -334,7 +349,6 @@ export default {
   min-width: 450px; 
   text-align: center;
   font-size: 20px;
-  font-weight: 500;
   color: #47525E;
 }
 
@@ -342,9 +356,30 @@ export default {
   margin-bottom: 20px;
   color: #47525E;
   font-weight: bold;
+  font-size: 28px;
 }
 .gift-modal p {
   margin-bottom: 20px;
   color: #47525E;
 }
+
+.gift-success-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px;
+  background-color: #D5EDDE; 
+  border: 6px solid #457247; 
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  min-width: 450px; 
+  text-align: center;
+  font-size: 20px;
+  color: #47525E;
+}
+
+
+
 </style> 
