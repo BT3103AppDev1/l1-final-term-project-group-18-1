@@ -247,9 +247,6 @@ export default {
 }
 
 
-
-
-
 @media (max-width: 768px) {
   .nav-links {
     flex-direction: column;

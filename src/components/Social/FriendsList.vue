@@ -81,12 +81,10 @@ export default {
 
         querySnapshot1.forEach((doc) => {
         const data = doc.data();
-        // Assuming userId2 is the UID of the friend user, and it is stored correctly in the document.
         friendsList.push({ id: data.userId2, username: data.username2, name: data.name2 });
       });
       querySnapshot2.forEach((doc) => {
         const data = doc.data();
-        // Assuming userId1 is the UID of the friend user, and it is stored correctly in the document.
         friendsList.push({ id: data.userId1, username: data.username1, name: data.name1 });
       });
 
