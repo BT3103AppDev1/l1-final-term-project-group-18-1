@@ -4,7 +4,6 @@
 
 <script>
 import { initGoogleAPI } from '@/utils/googleApi';
-import { getAuth, onAuthStateChanged } from 'firebase/auth'; // Import the needed functions from the auth module
 import { doc, setDoc } from 'firebase/firestore'; // Import the needed functions from the firestore module
 import { auth, db } from '@/firebaseConfig';
 
