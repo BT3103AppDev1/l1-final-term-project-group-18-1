@@ -9,7 +9,6 @@
 <script>
 import { auth, db } from '@/firebaseConfig';
 import { doc, setDoc , getDoc } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'vue-router';
 import GoogleLoginButton from '@/components/GoogleLoginButton.vue';
 
