@@ -1,13 +1,15 @@
 <template>
-    <p class="regularText">You have recycled</p>
-    <div class="counter">
-      <transition-group name="fade" tag="div" class="counter-container">
-        <div v-for="(digit, index) in formattedCount" :key="index" class="counter-digit">
-          {{ digit }}
-        </div>
-      </transition-group>
+    <div class="elementContainer">
+      <p class="regularText">You have recycled</p>
+      <div class="counter">
+        <transition-group name="fade" tag="div" class="counter-container">
+          <div v-for="(digit, index) in formattedCount" :key="index" class="counter-digit">
+            {{ digit }}
+          </div>
+        </transition-group>
+      </div>
+      <p class="regularText">items so far.</p>
     </div>
-    <p class="regularText">items so far.</p>
   </template>
   
   <script>
@@ -116,8 +118,9 @@
     color: white;
     font-size: 5em;
     margin: 0 4px;
-    padding: 10px;
+    padding: 20px;
     border-radius: 20px;
+    flex: 0 0 auto;
   }
 
   .counter-container {

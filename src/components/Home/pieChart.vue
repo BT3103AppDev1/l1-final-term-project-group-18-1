@@ -136,7 +136,7 @@ export default {
                         padding: {
                             top: 50,
                             right: 150,
-                            bottom: 50,
+                            bottom: 100,
                             left: 150
                         }
                     },
