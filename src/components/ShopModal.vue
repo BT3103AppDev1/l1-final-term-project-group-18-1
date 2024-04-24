@@ -103,40 +103,37 @@
                 if (farmDocSnapshot.exists()) {
                     // If user already exists, update it
                     const existingFarmItems = farmDocSnapshot.data().items || [];
-                    let itemExists = false;
+                    const newItemRef = doc(collection(db, 'farm'));
+                    const newItemId = newItemRef.id; // Generate a unique ID for every new item bought
 
-                    // Check if the purchased item already exists in the farm items
-                    const updatedFarmItems = existingFarmItems.map(item => {
-                        if (item.name === this.selectedItem.name) {
-                            itemExists = true;
-                            return { ...item, quantity: item.quantity + 1 };
-                        }
-                        return item;
-                    });
-
-                    // If the item doesn't exist, add it with quantity 1
-                    if (!itemExists) {
-                        updatedFarmItems.push({ 
+                    const updatedFarmItems = [
+                        ...existingFarmItems,
+                        {
+                            id: newItemId,
                             name: this.selectedItem.name,
                             imageURL: this.selectedItem.imageURL,
-                            quantity: 1
-                        });
-                    }
+                            top: 0,
+                            left: 0
+                        }
+                    ];
 
                     await updateDoc(userFarmDocRef, { items: updatedFarmItems });
                 } else {
                     // If the document doesn't exist, create a new one with the purchased item
+                    const newItemRef = doc(collection(db, 'farm'));
+                    const newItemId = newItemRef.id; // Generate a unique ID for the new item
                     const farmItem = {
                         username: this.currentUser.uid,
                         items: [{
+                            id: newItemId,
                             name: this.selectedItem.name,
                             imageURL: this.selectedItem.imageURL,
-                            quantity: 1
+                            top: 0,
+                            left: 0
                         }]
                     };
                     await setDoc(userFarmDocRef, farmItem);
                 }
-
                 console.log('Purchase information stored successfully.');
             } catch (error) {
                 console.error("Error storing purchase information:", error);
