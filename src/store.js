@@ -3,6 +3,7 @@ import { createStore } from 'vuex';
 export default createStore({
   state: {
     upcomingEvents: [],
+    fertiliser: 0,
   },
   mutations: {
     setUpcomingEvents(state, events) {
@@ -11,7 +12,10 @@ export default createStore({
     resetState(state) {
       // Reset the state object
       state.upcomingEvents = [];
-    }
+    },
+    updateFertiliser(state, newValue) {
+      state.fertiliser = newValue;
+    },
   },
   actions: {
     updateUpcomingEvents({ commit }, events) {

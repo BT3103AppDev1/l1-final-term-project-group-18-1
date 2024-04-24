@@ -22,16 +22,15 @@
           <p class="regularText" style="font-size:xx-large;">Statistics</p>
       </div>
        <div>
-        <p class="regularText">You have recycled</p>
           <numberDisplay/>
-          <p class="regularText">items so far.</p>
       </div>
       <br>
       <div>
-          <p class="regularText">Your recycled items this month:</p>
           <pieChart />
       </div>
-
+      <div class ="communityPie">
+        <communityPie />
+      </div>
       <div class ="weeklyAvg">
         <weeklyAverage />
       </div>
@@ -48,8 +47,9 @@ import pieChart from '../components/Home/pieChart.vue'
 import numberDisplay from '@/components/Home/numberDisplay.vue';
 import weeklyAverage from '@/components/Home/weeklyAverage.vue';
 import barChart from '@/components/Home/barChart.vue';
-import FriendRequests from '@/components/Social/FriendRequests.vue'
 import UpcomingEvents from '@/components/UpcomingEvents.vue';
+import FriendRequests from '@/components/Social/FriendRequests.vue';
+import communityPie from '@/components/Home/communityPie.vue';
 
 export default {
   components: {
@@ -60,6 +60,7 @@ export default {
     barChart,
     FriendRequests,
     UpcomingEvents
+    communityPie,
   },
   computed: {
     formattedUpcomingEvents() {
