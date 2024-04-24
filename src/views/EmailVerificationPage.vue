@@ -21,6 +21,11 @@ import {reload} from 'firebase/auth'
 
 export default {
     name: 'EmailVerification',
+    methods: {
+        loginpage() {
+            this.$router.push({ name: 'Login' });
+        }
+    }
 };
 </script>
 
