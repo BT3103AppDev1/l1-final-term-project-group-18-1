@@ -21,10 +21,10 @@
         <div class="form-group">
           <label for="reminder-type">Add Eco-Friendly Reminders:</label>
           <select id="reminder-type" v-model="editedEvent.reminderType" @change="onReminderTypeChange">
-
-            <option v-for="reminder in reminders" :key="reminder.id" :value="reminder.id">{{ reminder.message }}</option>
+            <option value="">No Reminder</option>
+            <option v-for="reminder in reminders" :key="reminder.id" :value="reminder.message">{{ reminder.message }}</option>
             <option value="custom">Custom</option>
-          </select>
+        </select>
         </div>
   
         <div class="form-group" v-if="editedEvent.reminderType === 'custom'">
