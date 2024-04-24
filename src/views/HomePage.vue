@@ -31,7 +31,7 @@
       </div>
        
       <div>
-          <pieChart v-if="hasRecycledDataSummary"/>
+        <pieChart v-if="hasRecycledDataSummary"/>
       </div>
       <div class ="communityPie">
         <communityPie v-if="hasRecycledDataSummary"/>
@@ -92,7 +92,7 @@ export default {
     const auth = getAuth();
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          onsole.log("User is signed in, fetching data.");
+          console.log("User is signed in, fetching data.");
           this.fetchUsername();
         } else {
           console.error("No user is signed in.");
@@ -109,7 +109,7 @@ export default {
           const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
           this.username = userSnap.data().username;
-          this.fetchData();
+          this.checkUserRecycledDataSummary();
         } else {
           console.error("No such user!");
         }
