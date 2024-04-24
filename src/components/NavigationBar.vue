@@ -99,7 +99,7 @@ export default {
   background-color: var(--background-color);
   color: var(--primary-color);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: space-between;

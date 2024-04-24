@@ -212,7 +212,7 @@
   top: 50%;
   left: 50%;
   width: 65%;
-  height: 65%;
+  height: 70%;
   transform: translate(-50%, -50%);
   background: #D5EDDE; 
   padding: 20px;
@@ -273,7 +273,7 @@ p {
 
 .confirm-btn {
   position: absolute;
-  bottom: 20px; 
+  bottom: 40px; 
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--primary-color);
@@ -289,7 +289,7 @@ p {
 }
 
 .message {
-    margin-top: 0.3rem;
+    margin-top: 70px;
     color:var(--primary-color);
     font-size: 16px;
   }
@@ -303,6 +303,5 @@ p {
   height: 150px; 
   width: auto;
 }
-
 </style>
 
