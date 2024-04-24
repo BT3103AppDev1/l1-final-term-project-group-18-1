@@ -2,7 +2,9 @@
   <div class="upcoming-events">
     <ul>
       <li v-for="event in upcomingEvents" :key="event.id" class="event-item">
-        <div>{{ event.title }}</div>
+        <div>
+          <b>{{ event.title }}</b>
+        </div>
         <div>{{ formatDateTime(event.start) + ' to ' + formatDateTime(event.end)}}</div>
       </li>
     </ul>
@@ -28,18 +30,33 @@ export default {
     async fetchUpcomingEvents() {
       const now = new Date();
       const next24Hours = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-      
+
+      // Convert to local Singapore time
+      const localNow = this.convertToSingaporeTime(now);
+      const localNext24Hours = this.convertToSingaporeTime(next24Hours);
+
       const eventsRef = collection(db, 'users', auth.currentUser.uid, 'events');
-      const q = query(eventsRef, where('start', '>=', now.toISOString()), where('start', '<', next24Hours.toISOString()));
-      
+      const q = query(
+        eventsRef,
+        where('start', '>=', localNow.toISOString()),
+        where('start', '<', localNext24Hours.toISOString())
+      );
+
       onSnapshot(q, (querySnapshot) => {
         this.upcomingEvents = [];
-        querySnapshot.forEach(doc => {
+        querySnapshot.forEach((doc) => {
           const event = doc.data();
           event.id = doc.id;
           this.upcomingEvents.push(event);
         });
+        console.log('Upcoming events within the next 24 hours:', this.upcomingEvents);
       });
+    },
+
+    convertToSingaporeTime(date) {
+      // UTC+8 for Singapore
+      const singaporeTimeOffset = 8 * 60 * 60 * 1000;
+      return new Date(date.getTime() + singaporeTimeOffset);
     },
 
     formatDateTime(dateTime) {

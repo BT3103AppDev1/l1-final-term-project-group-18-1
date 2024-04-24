@@ -15,8 +15,6 @@ import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import SearchPage from './views/home/SearchPage.vue'
 import SocialPage from './views/SocialPage.vue'
-import CreateEventModal from '@/components/CreateEventModal.vue'
-import EditEventModal from '@/components/EditEventModal.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 import EmailVerification from './views/EmailVerificationPage.vue'
 
@@ -76,13 +74,6 @@ const routes = [
         path: '/Events',
         name: 'Events',
         component: EventsPage,
-        children: [
-            {
-                path: 'create-event',
-                name: 'CreateEvent',
-                component: CreateEventModal,
-            },
-        ]
     },
     {
         path: '/resources/Infographics',
