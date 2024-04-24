@@ -1,7 +1,7 @@
 <template>
   <div class = "container">
-    <h1>Welcome to EcoHarbour</h1>
-    <h3>Join us in protecting our environment and paving the way for a sustainable future where the well-being of our planet is at the forefront of our actions and decisions.</h3>
+    <h1 style="color:#457247;">Welcome to EcoHarbour</h1>
+    <p style="color:#457247;">Join us in protecting our environment and paving the way for a sustainable future where the well-being of our planet is at the forefront of our actions and decisions.</p>
 
     <form id="signupform" @submit.prevent="signup">
       <input type="text" id="name" required="" placeholder="Name" v-model="name">
@@ -120,7 +120,7 @@ export default {
   align-items: center;
   width: 70%;
   margin: 0 auto;
-  height: 60vh;
+  margin-top: 10vh;
 }
 
 button {
