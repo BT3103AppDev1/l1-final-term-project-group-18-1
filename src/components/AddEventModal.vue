@@ -39,8 +39,12 @@
         <input type="number" id="reminder-time" v-model="event.reminderTime" placeholder="Minutes before event">
       </div>
 
+      <div v-if="!isEndTimeValid" class="error">
+        End time must be after start time.
+      </div>
+
       <div class="form-group action-buttons">
-        <button type="submit">Save Event</button>
+        <button type="submit" :disabled="!isEndTimeValid">Save Event</button>
         <button type="button" @click="$emit('close')">Cancel</button>
       </div>
     </form>
@@ -66,6 +70,15 @@ export default {
       },
       isReminderRequired: false
     };
+  },
+  computed: {
+    isEndTimeValid() {
+      if (!this.event.start || !this.event.end) {
+        return true
+      } else {
+        return this.event.start && this.event.end && new Date(this.event.end) > new Date(this.event.start);
+      }
+    }
   },
   methods: {
     onReminderTypeChange() {
@@ -198,5 +211,11 @@ export default {
 }
 .form-group select:hover {
   border-color: #888;
+}
+
+.error {
+  color: #457247;
+  margin-top: -10px;
+  margin-bottom: 10px;
 }
 </style>
