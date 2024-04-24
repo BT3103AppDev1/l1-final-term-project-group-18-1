@@ -78,8 +78,15 @@
                     this.successfulPurchase = false;
                 }, 4000);
 
+                // For the purchased item to be reflected in farm automatically
+                this.$emit('item-purchased', this.selectedItem);
+
                 // Deduct fertilisers from user's account
                 await updateDoc(userRef, { fertiliser: userFertilisers - this.selectedItem.fertiliser });
+
+                // Update the fertiliser count in the global state
+                this.$store.commit('updateFertiliser', userFertilisers - this.selectedItem.fertiliser);
+                console.log('Fertiliser count updated successfully in global.')
 
                 // Store purchase information in the "farm" collection
                 await this.storePurchaseInfo();

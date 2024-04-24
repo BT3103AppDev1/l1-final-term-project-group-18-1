@@ -6,7 +6,7 @@
             <router-link to="/SocialPage" class="button">Social</router-link>
             <button @click="openModal" class="button">Shop</button>
         </div>
-        <ShopModal v-if="showModal" @close="closeModal" />
+        <ShopModal v-if="showModal" @close="closeModal" @item-purchased="handleItemPurchased"/>
 
         <!-- Display farm items -->
         <div class="farm-items">
@@ -50,6 +50,14 @@
       }
     },
     methods: {
+      handleItemPurchased(newItem) {
+        // Add the new item to the farmItems array
+        this.farmItems.push({
+          ...newItem,
+          top: 0,  // Default positions, or handle dynamically
+          left: 0
+        });
+      },
       initialiseDataWithDelay() {
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
