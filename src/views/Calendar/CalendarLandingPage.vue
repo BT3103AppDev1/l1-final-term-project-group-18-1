@@ -7,7 +7,7 @@
 <script>
 import { onMounted } from 'vue';
 import { auth, db } from '@/firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'vue-router';
 import { getGoogleAuth, initGoogleAPI } from '@/utils/googleApi';
 
@@ -16,55 +16,47 @@ export default {
     const router = useRouter();
 
     onMounted(async () => {
-      const user = auth.currentUser;
-      // Calendar collections within individual users document
-      console.log(user)
-      const userDocRef = doc(db, 'users', user.uid, 'calendar', user.uid);
+      if (!auth.currentUser) {
+        console.error("No authenticated user found.");
+        router.push({ name: 'Login' });
+        return;
+      }
+      const userDocRef = doc(db, 'users', auth.currentUser.uid, 'calendar', auth.currentUser.uid);
       const docSnap = await getDoc(userDocRef);
       
       if (docSnap.exists() && docSnap.data().calendarSynced) {
         const GoogleAuth = getGoogleAuth();
         const googleUser = GoogleAuth.currentUser.get();
-        if (googleUser.getBasicProfile().getEmail() == docSnap.data().userEmail) {
-
-          // Check if access token needs refreshing
-          const accessTokenExpirationTime = docSnap.data().calendar.accessTokenExpirationTime;
+        
+        if (googleUser && googleUser.getBasicProfile().getEmail() === docSnap.data().userEmail) {
+          const accessTokenExpirationTime = docSnap.data().calendar?.accessTokenExpirationTime;
           const now = new Date().getTime();
-          
+
           if (!accessTokenExpirationTime || accessTokenExpirationTime < now) {
-            // Access token has expired or not set, redirect to sign-in
             await signInAgain();
             return;
           }
-          // Access token is still valid, proceed to events page
           router.push({ name: 'Events' });
-      } 
-    } else {
-        // User has not synced, redirect to sync page
+        }
+      } else {
         router.push({ name: 'Calendar' });
       }
     });
-    
+
     const signInAgain = async () => {
       try {
-        await initGoogleAPI(); // Ensure Google API is initialized
+        await initGoogleAPI();
         const GoogleAuth = window.gapi.auth2.getAuthInstance();
         
         if (!GoogleAuth.isSignedIn.get()) {
-          await GoogleAuth.signIn({
-            prompt: 'select_account'
-          });
+          await GoogleAuth.signIn({ prompt: 'select_account' });
         }
         
-        // After sign-in, update access token and expiration time in Firestore
         const googleUser = GoogleAuth.currentUser.get();
         const authResponse = googleUser.getAuthResponse(true);
         const accessToken = authResponse.access_token;
         
-        // Update access token and expiration time in Firestore
         await updateUserAccessToken(accessToken, auth.currentUser.uid);
-        
-        // Redirect to events page
         router.push({ name: 'Events' });
       } catch (error) {
         console.error('Error during Google sign-in:', error);
@@ -72,16 +64,11 @@ export default {
     };
     
     const updateUserAccessToken = async (accessToken, userId) => {
-      // Update access token and expiration time in Firestore
-      const updateUserAccessToken = async (accessToken, userId) => {
-      // Update access token and expiration time in Firestore
-      await setDoc(doc(db, 'users', userId, 'calendar', userId), {
-        calendar: {
-          accessToken: accessToken,
-          accessTokenExpirationTime: new Date().getTime() + (60 * 60 * 1000) // Set expiration time to 1 hour from now
-        }
+      const userAccessTokenDocRef = doc(db, 'users', userId, 'calendar', userId);
+      await setDoc(userAccessTokenDocRef, {
+        accessToken: accessToken,
+        accessTokenExpirationTime: new Date().getTime() + (60 * 60 * 1000)
       }, { merge: true });
-      };
     };
   }
 };
