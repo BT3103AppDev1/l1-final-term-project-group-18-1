@@ -35,6 +35,7 @@
       </div>
       <div class="fertiliser-info">
         <img src="@/assets/fertiliser.png" class="fertiliser-icon" />
+        <!-- render fertiliser value from global state -->
         <span class="fertiliser-amount">{{ fertiliser }}</span>
       </div>
     </div>
@@ -65,6 +66,7 @@ export default {
         if (userDoc.exists()) {
           const userData = userDoc.data();
           this.username = userData.username;
+          //store fertiliser value to global after fetch from db
           this.$store.commit(
               'updateFertiliser', userData.fertiliser || 0);
         } else {
