@@ -123,7 +123,9 @@
                             name: this.selectedItem.name,
                             imageURL: this.selectedItem.imageURL,
                             top: 0,
-                            left: 0
+                            left: 0,
+                            width: this.selectedItem.width, 
+                            height: this.selectedItem.height 
                         }
                     ];
 
@@ -139,7 +141,9 @@
                             name: this.selectedItem.name,
                             imageURL: this.selectedItem.imageURL,
                             top: 0,
-                            left: 0
+                            left: 0,
+                            width: this.selectedItem.width, 
+                            height: this.selectedItem.height 
                         }]
                     };
                     await setDoc(userFarmDocRef, farmItem);
@@ -159,7 +163,7 @@
         try {
             const querySnapshot = await getDocs(collection(db, "farmItems"));
             shopItems.value = querySnapshot.docs.map(doc => {
-            const shopItemData = { id: doc.id, ...doc.data(), quantity: 0 };
+            const shopItemData = { id: doc.id, ...doc.data() };
             return shopItemData;
             })
         } catch (error) {

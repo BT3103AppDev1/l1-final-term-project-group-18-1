@@ -1,37 +1,45 @@
 <template>
     <div class="item-logger">
-      <input
-        type="number"
-        v-model.number="itemCount"
-        placeholder="Enter quantity..."
-        class="item-count-input"
-        min="1"
-      />
+      <div>
+        <input
+            type="number"
+            v-model.number="itemCount"
+            placeholder="Enter quantity..."
+            class="item-count-input"
+            min="1"
+        />
+        <button @click="logItem">Let's Recycle</button>
+      </div>
       <label class ="checkbox-label">
             <input type="checkbox" v-model="isClean" />
             <span class="checkbox-custom"></span>
-            Item is clean/rinsed <span class="required-asterisk">*</span>
+            <span class="required-asterisk">*</span> Item is clean/rinsed
+            <span class="required-asterisk">*Required</span>
       </label>
-      <span class="required-text"><span class="required-asterisk">*</span> Required</span>
-      <button @click="logItem">Let's Recycle</button>
-
-      <br>
       <label class="checkbox-label">
         <input type="checkbox" v-model="loggingMore" />
         <span class="checkbox-custom"></span>
             Logging More
        </label>
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> <!-- Error message will show up if it exists -->   
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> <!-- Error message will show up if it exists -->
       <div v-if="loading" class="loading-spinner">
             Loading...
        </div>
-     </div>
+
+       <div v-if="showNotification" class="overlay" @click="closeNotification"></div>
+        <div v-if="showNotification" class="notification">
+            <p>Items successfully logged! <br> You have been awarded {{ itemCount }} fertilisers.</p>
+            <button class="close-btn" @click="closeNotification">×</button>
+      </div>
+    </div>
+
+
   </template>
 
   <script>
 
-  import { db } from '../firebaseConfig'; 
-  import { collection, addDoc, doc, getDoc, setDoc, query, updateDoc, where, getDocs, increment } from 'firebase/firestore'; 
+  import { db } from '../firebaseConfig';
+  import { collection, addDoc, doc, getDoc, setDoc, query, updateDoc, where, getDocs, increment } from 'firebase/firestore';
   import { getAuth } from 'firebase/auth';  // Import getAuth function to access authentication
   import { resolveTransitionHooks } from 'vue';
 
@@ -44,7 +52,8 @@
         isClean: false, // Tracks the state of the checkbox
         username: '',
         loading: false,
-        loggingMore: false
+        loggingMore: false,
+        showNotification: false,
       };
     },
     props: {
@@ -94,7 +103,7 @@
             } else {
                 console.log("No user is signed in.");
             }
-       },    
+       },
      async logItem() {
         this.loading = true;
         console.log("Received item as:", this.item);
@@ -132,14 +141,14 @@
             this.errorMessage = 'Please enter a quantity more than 0.';
             this.loading = false;
             return;
-        }     
-        
+        }
+
         try {
             //logging item in recycledDatabase
             // construct a query to find existing document of user and item in database
             const itemsRef = collection(db, "recycledDatabase");
             const q = query(itemsRef, where("username", "==", this.username), where("itemName", "==", this.item.name));
-        
+
             const querySnapshot = await getDocs(q);
             if (querySnapshot.empty) {
                 await addDoc(itemsRef, {
@@ -194,12 +203,12 @@
                 console.log("Fertilizer count incremented by", fertiliserIncrementBy);
                 console.log("Fertilizer count updated successfully for user:", this.username);
             });
-            
-            //get currentWeekCount for user 
+
+            //get currentWeekCount for user
 
 
             let currWeekCount = await this.retrieveCurrWeekCount(this.username);
-            
+
             //get the days logged for this week
             const daysLogged = await this.countLoggedDays(this.username, year, weekNumber, dayField);
 
@@ -221,14 +230,14 @@
                     username: this.username,
                     year: year,
                     weekNumber: weekNumber,
-                    [dayField]: this.itemCount, 
-                    [monthField]: this.itemCount, 
-                    currWeekCount: currWeekCount, 
+                    [dayField]: this.itemCount,
+                    [monthField]: this.itemCount,
+                    currWeekCount: currWeekCount,
                     currWeekAvg: 1,
                     currWeeklyAvgSum: initAvgSum,
             });
             console.log("Created new document for the week.");
-            } else {     
+            } else {
                 await updateDoc(weeklyDocRef, {
                     [dayField]: increment(this.itemCount),
                     [monthField]: increment(this.itemCount),
@@ -236,13 +245,8 @@
                     currWeeklyAvgSum: totalAvg,
                 });
                 console.log("Updated document for the week.");
-            }
-            if(!this.loggingMore) {
-                this.$router.push('/Home');
-            } else {
-                this.resetInputs();
-            }   
-        alert("Item logged and fertilisers updated successfully!");
+            }  
+            this.showNotification=true;
         } catch (error) {
             console.error("Error logging item:", error);
             this.errorMessage = 'Failed to log the item. Please try again.';
@@ -251,10 +255,10 @@
             this.loading = false;
         }
     },
-    
+
     // Reset input fields after successful logging
     resetInputs() {
-        this.itemCount = ''; // Reset to default value
+        this.itemCount = 0; // Reset to default value
         this.isClean = false; // Reset checkbox
         this.errorMessage = ''; // Clear any error messages
         this.loggingMore = false; //reset checkbox
@@ -268,7 +272,7 @@
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 const dayFields = [
-                    'MondayCount', 'TuesdayCount', 'WednesdayCount', 
+                    'MondayCount', 'TuesdayCount', 'WednesdayCount',
                     'ThursdayCount', 'FridayCount', 'SaturdayCount', 'SundayCount'
                 ];
                 let daysLogged = dayFields.filter(day => data[day] && data[day] > 0).length;
@@ -332,18 +336,32 @@
                 const querySnapshotWeekCount = await getDocs(queryRef);
                 if(querySnapshotWeekCount) {
                     currWeekCount = querySnapshotWeekCount.size;
-                } 
+                }
                 console.log("Current week count:", currWeekCount);
                 return currWeekCount;
             } catch (error) {
                 console.error("Error fetching documents:", error);
-            }       
+            }
+    },
+    closeNotification() {
+    this.showNotification = false; // Hide the notification
+        if (!this.loggingMore) {
+            this.$router.push('/Home'); // Navigate home if loggingMore is not true
+        } else {
+            this.resetInputs(); // Reset inputs if logging more items
+        }
     },
     },
   };
   </script>
 
   <style scoped>
+    .item-logger {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
     .error-message {
         color: red;
     }
@@ -372,6 +390,57 @@
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+    }
+
+    .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    }
+
+    .notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 40px;
+    background-color: #D5EDDE; 
+    border: 6px solid #457247; 
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    min-width: 450px; 
+    }
+
+    .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #457247; 
+    }
+
+    .close-btn:hover {
+    color: #ff5252; 
+    }
+
+    .notification p {
+    text-align: center; 
+    font-size: 20px;
+    font-weight: 500;
+    color: #47525E; 
+    }
+
+    .notification span {
+    color: #47525E; 
+    font-weight: bold;
     }
 
   </style>

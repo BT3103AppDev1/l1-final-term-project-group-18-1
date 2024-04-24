@@ -3,18 +3,18 @@
 
         <!-- Display social and shop buttons -->
         <div class="buttons-menu">
-            <router-link to="/SocialPage" class="button">Social</router-link>
-            <button @click="openModal" class="button">Shop</button>
+            <router-link to="/SocialPage" class="farm-button">Social</router-link>
+            <button @click="openModal" class="farm-button">Shop</button>
         </div>
         <ShopModal v-if="showModal" @close="closeModal" @item-purchased="handleItemPurchased"/>
 
         <!-- Display farm items -->
         <div class="farm-items">
-            <div v-for="(item, index) in farmItems" :key="index" class="item"
-                :style="{ top: item.top + 'px', left: item.left + 'px' }"
-                @mousedown="startDrag($event, index)">
-                <img :src="item.imageURL" :alt="item.name" class="item-image" />
-            </div>
+          <div v-for="(item, index) in farmItems" :key="index" class="item"
+            :style="{ top: item.top + 'px', left: item.left + 'px', width: item.width + 'px', height: item.height + 'px' }"
+            @mousedown="startDrag($event, index)">
+            <img :src="item.imageURL" :alt="item.name" class="item-image" />
+          </div>
         </div>
 
         <!-- Default farm background -->
@@ -53,7 +53,7 @@
       handleItemPurchased(newItem) {
         this.farmItems.push({
           ...newItem,
-          top: 0, 
+          top: 0,  // Default positions
           left: 0
         });
       },
@@ -91,9 +91,10 @@
             this.farmItems = farmItemsData.map(item => ({
               id: item.id,
               imageURL: item.imageURL,
-              quantity: item.quantity,
               top: item.top || 0, 
-              left: item.left || 0 
+              left: item.left || 0,
+              width: item.width,
+              height: item.height
             }));
             console.log('Farm items fetched successfully for user:', userToFetch);
           } else {
@@ -144,7 +145,7 @@
                         return {
                             ...existingItem,
                             left: item.left,
-                            top: item.top
+                            top: item.top,
                         };
                     } else {
                         return existingItem;
@@ -178,6 +179,7 @@
       right: 0;
       width: 100vw;
       height: 92vh;
+      overflow: hidden;
     }
 
     .instruction-text {
@@ -207,7 +209,7 @@
       margin-right: 1%;
     }
   
-    .button {
+    .farm-button {
       display: flex;
       justify-content: center; /* Center the content horizontally */
       align-items: center;
@@ -221,6 +223,7 @@
       padding: 0px;
       border: 0px;
       margin: 0px;
+      text-decoration: none;
     }
   
     .button:hover {
@@ -244,6 +247,5 @@
       width: 100%;
       height: auto;
     }
-
   </style>
   

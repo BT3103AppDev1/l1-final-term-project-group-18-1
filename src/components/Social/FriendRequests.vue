@@ -1,6 +1,5 @@
 <template>
   <div class="friend-requests">
-    <h2>Incoming Friend Requests</h2>
     <ul v-if="requests.length > 0">
       <li v-for="request in requests" :key="request.id" class="request-item">
         <div class="request-info">
@@ -137,8 +136,9 @@ export default {
 .friend-requests {
   display: flex;
   flex-direction: column;
-  align-items: left;
+  align-items: center;
   max-width: 350px; 
+  justify-content: center; 
 }
 
 .friend-requests h2 {
@@ -146,7 +146,7 @@ export default {
   font-weight: 500;
   font-size: 18px;
   margin-bottom: 10px;
-  align-self: flex-start;
+  align-self: center;
 }
 
 .friend-requests ul {
@@ -160,7 +160,6 @@ export default {
   margin-bottom: 10px;
   border-radius: 20px; 
   display: flex;
-  align-items: left;
   padding: 10px 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
   font-size: 18px;
@@ -208,11 +207,6 @@ export default {
   display: inline-block;
   height: 20px;
   background-size: contain;
-}
-
-.no-requests {
-  color: #333;
-  margin-top: 20px;
 }
 
 </style>

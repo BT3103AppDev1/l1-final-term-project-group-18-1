@@ -12,13 +12,14 @@
         </div>
         <!-- Friend requests section -->
         <div class="friend-requests">
+          <h2 class="second-heading">Incoming Friend Requests</h2>
           <FriendRequests />
         </div>
       </div>
       <div class = "button-container">
           <searchButton />
       </div>
-      
+
       <!-- Adding line to divide statistics section -->
       <div class="horizontal-line"></div>
 
@@ -29,7 +30,7 @@
         <numberDisplay class="flex-item"/>
         <weeklyAverage class="flex-item"/>
       </div>
-       
+
       <div>
         <pieChart v-if="hasRecycledDataSummary"/>
       </div>
@@ -77,7 +78,7 @@ export default {
         end: new Date(event.end).toLocaleString() // Format 'end' date
       }));
     }
-  }, 
+  },
   data() {
     return {
       username: '',
@@ -120,7 +121,7 @@ export default {
       async checkUserRecycledDataSummary() {
           // Reference to the 'recycledDataSummary' collection
           const recycledDataSummaryCollection = collection(db, 'recycledDataSummary');
-          
+
           // Create a query against the collection for the username
           const q = query(recycledDataSummaryCollection, where('username', '==', this.username));
           try {
@@ -138,7 +139,7 @@ export default {
             console.error('Error checking recycledDataSummary:', error);
             this.hasRecycledDataSummary = false;
           }
-      },    
+      },
   },
 }
 </script>
@@ -151,8 +152,8 @@ export default {
 
 .button-container {
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  justify-content: center; 
+  align-items: center; 
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -163,13 +164,13 @@ export default {
 }
 
 .noneGraph {
-  display: flex; /* This enables Flexbox */
-  justify-content: center; /* This centers the flex items horizontally */
-  align-items: center; /* This centers the flex items vertically */
+  display: flex; 
+  justify-content: center;
+  align-items: center; 
 }
 
 .flex-item {
-  flex: 1; /* This ensures that each flex item takes up an equal amount of space */
+  flex: 1; 
 }
 
 main {
@@ -179,17 +180,20 @@ main {
 .sectionHeader{
   margin-top: 10px;
 }
+
 .notifs {
   display: flex;
   justify-content: center; /* Center the children horizontally */
-  align-items: flex-start; /* Align the children to the top */
-  gap: 20px; /* Optional: Adds space between the children */
+  align-items: flex-start; 
+  gap: 20px; 
   width: 80vw;
 }
+
 .events-container, .friend-requests {
   flex: 1; /* Both children will take equal width */
   width: 600px;
   border-radius: 10px; /* Rounded corners */
+  box-sizing: border-box;
 }
 
 .events-container {
@@ -203,6 +207,7 @@ main {
 
 .second-heading {
   color: #333333;
+  align-self: center;
 }
 
 .weeklyAvg{
@@ -223,7 +228,7 @@ main {
 .horizontal-line {
   border-top: 1.5px solid #333; /* Creates a line at the top of the element */
   margin-top: 70px;
-  
+
 }
 
 </style>
