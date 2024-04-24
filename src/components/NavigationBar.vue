@@ -251,24 +251,4 @@ export default {
 }
 
 
-
-
-
-@media (max-width: 768px) {
-  .nav-links {
-    flex-direction: column;
-    align-items: center;
-    padding-top: 65px;
-  }
-
-  .nav-item {
-    margin: 0.5rem 0;
-  }
-
-  .dropdown-menu {
-    left: 50%;
-    transform: translateX(-50%);
-    border: 1px solid var(--primary-color);
-  }
-}
-  </style>
+</style>

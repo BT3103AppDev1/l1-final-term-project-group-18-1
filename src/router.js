@@ -14,8 +14,11 @@ import Profile from './views/Settings/Profile.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import SearchPage from './views/home/SearchPage.vue'
 import SocialPage from './views/SocialPage.vue'
+
+import AddReminderModal from '@/components/AddReminderModal.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 import EmailVerification from './views/EmailVerificationPage.vue'
+
 
 const routes = [
     {
@@ -47,6 +50,11 @@ const routes = [
         path: '/Home',
         name: 'Home',
         component: HomePage,
+    },
+    {
+        path: '/Logout',
+        name: 'Logout',
+        component: Logout
     },
     {
         path: '/ForgetPassword',
