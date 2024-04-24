@@ -1,7 +1,7 @@
 <template>
     <div class = "container">
-        <div class = "pageHeader">Thank you for making the Earth a better place!</div>
-        <div class = "subheader">Key in your item here</div>
+            <div class = "pageHeader">Thank you for making the Earth a better place!</div>
+            <div class = "subheader">Key in your item here</div>          
         <SearchBar @update-query="updateSearchQuery"/>
         <div v-if="hasSearchQuery">
             <div v-if="isLoading">Loading...</div>
@@ -162,9 +162,8 @@
 
     .information{
         text-align: left;
-        max-width: 2000px; 
-        margin: 0 auto;
-        padding-left: 20px;
+        max-width: 2000px;
+        padding-left: 50px; 
     }
 
     .information-list {
