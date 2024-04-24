@@ -30,6 +30,7 @@
     "lodash-es": "^4.17.21",
     "vue": "^3.4.21",
     "vue-browser-geolocation": "^1.8.0",
+    "vue-cal": "^4.8.1",
     "vue-router": "^4.3.2",
     "vuex": "^4.0.2"
   },

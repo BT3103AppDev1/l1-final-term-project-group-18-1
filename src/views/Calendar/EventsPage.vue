@@ -4,60 +4,60 @@
       <button @click="showAddEventModal = true">Add Event</button>
       <AddEvent v-if="showAddEventModal" @close="showAddEventModal = false" @save="handleSave" />
   
-      <div v-if="events.length === 0">
-        No events found.
-      </div>
-      <ul v-else>
-        <li v-for="(event, index) in events" :key="index">
-          <h2>{{ event.title }}</h2>
-          <p>Start: {{ event.start }}</p>
-          <p>End: {{ event.end }}</p>
-          <!-- You can display other event details here -->
-        </li>
-      </ul>
+      <FullCalendar :options="calendarOptions" />
     </div>
   </template>
   
-<script>
+  <script>
   import { auth, db } from '@/firebaseConfig';
   import { collection, query, onSnapshot } from 'firebase/firestore';
   import AddEvent from './AddEvent.vue';
-  
+  import FullCalendar from '@fullcalendar/vue3';
+  import dayGridPlugin from '@fullcalendar/daygrid';
+
   export default {
     components: {
-      AddEvent
+      AddEvent,
+      FullCalendar
     },
     data() {
       return {
         showAddEventModal: false,
         events: [],
-        unsubscribe: null
+        calendarOptions: {
+          plugins: [dayGridPlugin],
+          initialView: 'dayGridMonth',
+          events: this.events,
+          eventTimeFormat: { // like '14:30', for 2:30pm
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }
+        }
       };
     },
     methods: {
       handleSave(eventData) {
-        // handle event data, e.g., save to a database or state management
         console.log('Event saved', eventData);
         this.showAddEventModal = false; // Close modal after saving
       }
     },
     async mounted() {
-      try {
-        const user = auth.currentUser;
-        if (user) {
-          const q = query(collection(db, 'users', user.uid, 'events'));
-          this.unsubscribe = onSnapshot(q, (snapshot) => {
-            this.events = []; // Clear existing events
-            snapshot.forEach((doc) => {
-              this.events.push(doc.data());
-            });
-          });
-        } else {
-          console.error('User not logged in');
-        }
-      } catch (error) {
-        console.error('Error fetching events:', error);
+      const user = auth.currentUser;
+      if (user) {
+        const q = query(collection(db, 'users', user.uid, 'events'));
+        this.unsubscribe = onSnapshot(q, (snapshot) => {
+          this.events = snapshot.docs.map(doc => ({
+            title: doc.data().title,
+            start: doc.data().start,
+            end: doc.data().end
+          }));
+          this.calendarOptions.events = this.events;
+        });
+      } else {
+        console.error('User not logged in');
       }
     }
   };
   </script>
+  
