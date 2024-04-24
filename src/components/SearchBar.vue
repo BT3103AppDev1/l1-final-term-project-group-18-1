@@ -137,7 +137,7 @@ import { db } from '../firebaseConfig.js'; // imports the firebase configuration
   background-position: 10px center;
   background-size: 40px 40px;
   text-align:center;
-  z-index: 1001;
+  margin-top: 20px;
 }
 
 .suggestions-dropdown {
