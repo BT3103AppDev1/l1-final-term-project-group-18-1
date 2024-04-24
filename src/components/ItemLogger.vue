@@ -1,12 +1,12 @@
 <template>
-    <div class="item-logger"> 
+    <div class="item-logger">
       <input
         type="number"
-        v-model.number="itemCount" 
+        v-model.number="itemCount"
         placeholder="Enter quantity..."
         class="item-count-input"
         min="1"
-      /> 
+      />
       <label class ="checkbox-label">
             <input type="checkbox" v-model="isClean" />
             <span class="checkbox-custom"></span>
@@ -14,6 +14,7 @@
       </label>
       <span class="required-text"><span class="required-asterisk">*</span> Required</span>
       <button @click="logItem">Let's Recycle</button>
+
       <br>
       <label class="checkbox-label">
         <input type="checkbox" v-model="loggingMore" />
@@ -26,18 +27,19 @@
        </div>
      </div>
   </template>
-  
+
   <script>
+
   import { db } from '../firebaseConfig'; 
   import { collection, addDoc, doc, getDoc, setDoc, query, updateDoc, where, getDocs, increment } from 'firebase/firestore'; 
   import { getAuth } from 'firebase/auth';  // Import getAuth function to access authentication
   import { resolveTransitionHooks } from 'vue';
 
-  
+
   export default {
     data() {
       return {
-        itemCount: '', 
+        itemCount: 0,
         errorMessage: '', // Initialize error message as empty
         isClean: false, // Tracks the state of the checkbox
         username: '',
@@ -92,8 +94,7 @@
             } else {
                 console.log("No user is signed in.");
             }
-       },
-     
+       },    
      async logItem() {
         this.loading = true;
         console.log("Received item as:", this.item);
@@ -121,7 +122,7 @@
             return;
         }
 
-        if (this.itemCount === '' || this.itemCount === null) {
+        if (this.itemCount === null) {
             this.errorMessage = 'Please do not leave the quantity field empty.';
             this.loading = false;
             return;
@@ -158,13 +159,14 @@
                 });
                 console.log("Item quantity updated successfully.");
             }
-            
+
             //logging fertiliser and numRecycled for each in users collection
             // query to find existing document in users collection by username
             const usersRef = collection(db, "users");
             const p = query(usersRef, where("username", "==", this.username));
             const querySnapshotUsers = await getDocs(p);
             querySnapshotUsers.forEach(async (doc) => {
+                let fertiliserIncrementBy = this.itemCount;
                 const updateData = {
                     fertiliser: increment(this.itemCount),
                     numRecycled: increment(this.itemCount), // Increment numRecycled count
@@ -185,10 +187,16 @@
                     updateData.ewasteRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
                 }
                 await updateDoc(doc.ref, updateData);
+                //update global state for fertiliser
+                this.$store.commit(
+                    'updateFertiliser',
+                    this.$store.state.fertiliser + fertiliserIncrementBy);
+                console.log("Fertilizer count incremented by", fertiliserIncrementBy);
                 console.log("Fertilizer count updated successfully for user:", this.username);
             });
             
             //get currentWeekCount for user 
+
 
             let currWeekCount = await this.retrieveCurrWeekCount(this.username);
             
@@ -228,7 +236,6 @@
                 });
                 console.log("Updated document for the week.");
             }
-
             if(!this.loggingMore) {
                 this.$router.push('/Home');
             } else {
@@ -334,7 +341,7 @@
     },
   };
   </script>
-  
+
   <style scoped>
     .error-message {
         color: red;
@@ -348,7 +355,7 @@
         justify-content: center;
         align-items: center;
         margin-right: 10px;
-        height: 100px;  
+        height: 100px;
     }
 
     .loading-spinner::after {
@@ -367,4 +374,4 @@
     }
 
   </style>
-  
+

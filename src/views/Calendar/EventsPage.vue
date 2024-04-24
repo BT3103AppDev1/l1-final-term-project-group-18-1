@@ -1,8 +1,8 @@
 <template>
   <div>
     <br><br><br>
-    <h1>Your Events</h1>
-    <button @click="showCreateEventModal = true">Add Event</button>
+    <h1 class="title">Your Events</h1>
+    <button class="add-event-button" @click="showCreateEventModal = true">Add Event</button>
     <div class="calendar-container">
       <FullCalendar :options="calendarOptions" />
     </div>
@@ -330,13 +330,20 @@ export default {
   width: 100% !important;
   height: 100% !important;
 }
-.reminder-event {
-  color: #d9534f; /* Styling for reminders */
-}
+
 .regular-event {
   color: #5bc0de; /* Styling for regular events */
 }
 .reminder-icon, .event-icon {
   padding-right: 5px;
+}
+
+.add-event-button {
+  margin-left: auto;
+  width: 200px;
+}
+
+.title {
+  justify-content: center;
 }
 </style>
