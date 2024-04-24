@@ -50,12 +50,15 @@ export default {
 .left {
   flex: 3;
   border-right: 2px solid #ccc; 
+  margin-top: 10px;
+  margin-left: 30px;
 }
 
 .right {
   flex: 1;
   align-items: flex-start;
   padding-left: 30px; 
+  margin-top: 30px;
 }
 
 .find-friends-component {
