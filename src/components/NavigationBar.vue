@@ -21,7 +21,7 @@
       <router-link to="/CalendarLanding" class="nav-item" v-if="isAuthenticated">Calendar</router-link>
       <router-link to="/Settings" class="nav-item" v-if="isAuthenticated">Settings</router-link>
       <span class="vertical-line" v-if="isAuthenticated"></span>
-      
+
       <!-- Log In and Sign Up buttons for non-authenticated users -->
       <router-link to="/Login" class="auth-item-button" v-if="!isAuthenticated">Log In</router-link>
       <router-link to="/SignUp" class="auth-item-button" v-if="!isAuthenticated">Sign Up</router-link>
@@ -47,13 +47,13 @@
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/firebaseConfig';
+import { mapState } from 'vuex';
 
 export default {
   data() {
     return {
       isAuthenticated: false,
       username: this.username || '',
-      fertiliser: this.fertiliser || 0,
     };
   },
   async created() {
@@ -65,7 +65,8 @@ export default {
         if (userDoc.exists()) {
           const userData = userDoc.data();
           this.username = userData.username;
-          this.fertiliser = userData.fertiliser || 0;
+          this.$store.commit(
+              'updateFertiliser', userData.fertiliser || 0);
         } else {
           console.log('No such document!');
         }
@@ -77,6 +78,7 @@ export default {
       const noAuthRoutes = ['/Login', '/SignUp', '/ForgetPassword'];
       return !this.isAuthenticated && !noAuthRoutes.includes(this.$route.path);
     },
+    ...mapState(['fertiliser']),
   },
 };
 </script>
@@ -148,9 +150,9 @@ export default {
 }
 
 .nav-item-button:hover {
-  color: var(--background-color); 
-  background-color: var(--primary-color); 
-  border-color: var(--primary-color); 
+  color: var(--background-color);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .dropdown-item {
@@ -227,13 +229,13 @@ export default {
 .auth-item-button {
   margin: 0 1rem;
   font-size: 1.2em;
-  color: var(--primary-color); 
+  color: var(--primary-color);
   text-decoration: none;
   transition: background-color 0.3s, border-color 0.3s, color 0.3s;
   padding: 10px 20px;
-  border: 2px solid var(--primary-color); 
-  border-radius: 20px; 
-  background-color: transparent; 
+  border: 2px solid var(--primary-color);
+  border-radius: 20px;
+  background-color: transparent;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -241,9 +243,9 @@ export default {
 }
 
 .auth-item-button:hover {
-  color: var(--background-color); 
-  background-color: var(--primary-color); 
-  border-color: var(--primary-color); 
+  color: var(--background-color);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 

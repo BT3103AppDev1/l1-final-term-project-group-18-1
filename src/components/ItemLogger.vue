@@ -1,12 +1,12 @@
 <template>
-    <div class="item-logger"> 
+    <div class="item-logger">
       <input
         type="number"
-        v-model.number="itemCount" 
+        v-model.number="itemCount"
         placeholder="Enter quantity..."
         class="item-count-input"
         min="1"
-      /> 
+      />
       <label class ="checkbox-label">
             <input type="checkbox" v-model="isClean" />
             <span class="checkbox-custom"></span>
@@ -14,26 +14,27 @@
       </label>
       <span class="required-text"><span class="required-asterisk">*</span> Required</span>
       <button @click="logItem">Let's Recycle</button>
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> <!-- Error message will show up if it exists -->   
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> <!-- Error message will show up if it exists -->
       <div v-if="loading" class="loading-spinner">
             Loading...
        </div>
      </div>
   </template>
-  
+
   <script>
-  import { db } from '../firebaseConfig'; 
-  import { collection, addDoc, doc, getDoc, query, updateDoc, where, getDocs, increment } from 'firebase/firestore'; 
+  import { db } from '../firebaseConfig';
+  import { collection, addDoc, doc, getDoc, query, updateDoc, where, getDocs, increment } from 'firebase/firestore';
   import { getAuth } from 'firebase/auth';  // Import getAuth function to access authentication
 
-  
+
   export default {
     data() {
       return {
-        itemCount: '', 
+        itemCount: 0,
         errorMessage: '', // Initialize error message as empty
         isClean: false, // Tracks the state of the checkbox
         username: '',
+        userid: '',
         loading: false
       };
     },
@@ -54,6 +55,13 @@
     },
     mounted() {
         this.fetchUsername();
+        async () => {
+            const auth = getAuth();
+            const user = auth.currentUser;
+            if (user) {
+                this.userid = user.uid;
+            }
+        }
     },
     methods: {
       async fetchUsername() {
@@ -72,7 +80,7 @@
                 console.log("No user is signed in.");
             }
      },
-     
+
      async logItem() {
         this.loading = true;
         console.log("Received item as:", this.item);
@@ -98,7 +106,7 @@
             return;
         }
 
-        if (this.itemCount === '' || this.itemCount === null) {
+        if (this.itemCount === null) {
             this.errorMessage = 'Please do not leave the quantity field empty.';
             this.loading = false;
             return;
@@ -114,7 +122,7 @@
           // construct a query to find existing document of user and item in database
             const itemsRef = collection(db, "recycledDatabase");
             const q = query(itemsRef, where("username", "==", this.username), where("itemName", "==", this.item.name));
-        
+
         // query to find existing document in users collection by username
             const usersRef = collection(db, "users");
             const p = query(usersRef, where("username", "==", this.username));
@@ -122,7 +130,7 @@
         // query to find existing document in recycledDataSummary collection by username
             const summaryRef = collection(db, "recycledDataSummary");
             const r = query(summaryRef, where("username", "==", this.username));
-        
+
         try {
             //logging item in recycledDatabase
             const querySnapshot = await getDocs(q);
@@ -144,10 +152,11 @@
                 });
                 console.log("Item quantity updated successfully.");
             }
-            
+
             //logging fertiliser and numRecycled for each in users collection
             const querySnapshotUsers = await getDocs(p);
             querySnapshotUsers.forEach(async (doc) => {
+                let fertiliserIncrementBy = this.itemCount;
                 const updateData = {
                     fertiliser: increment(this.itemCount),
                     numRecycled: increment(this.itemCount), // Increment numRecycled count
@@ -168,31 +177,34 @@
                     updateData.ewasteRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
                 }
                 await updateDoc(doc.ref, updateData);
+                this.$store.commit(
+                    'updateFertiliser',
+                    this.$store.state.fertiliser + fertiliserIncrementBy);
+                console.log("Fertilizer count incremented by", fertiliserIncrementBy);
                 console.log("Fertilizer count updated successfully for user:", this.username);
             });
-
 
             //logging into recycledDataSummary
             const querySnapshotSummary = await getDocs(r);
             if (querySnapshotSummary.empty) {
                 await addDoc(summaryRef, {
                     username: this.username,
-                    [dayField]: this.itemCount, 
-                    [monthField]: this.itemCount, 
+                    [dayField]: this.itemCount,
+                    [monthField]: this.itemCount,
                     currWeeklyAvg: 1,
                 });
                 console.log("created document for user to store in recycledDataSummary");
             } else {
                 querySnapshotSummary.forEach(async (doc) => {
                     await updateDoc(doc.ref, {
-                        [dayField]: increment(this.itemCount),  
-                        [monthField]: increment(this.itemCount),  
+                        [dayField]: increment(this.itemCount),
+                        [monthField]: increment(this.itemCount),
                     });
                 });
                 console.log("Item quantity updated successfully for each day.");
             }
 
-            
+
         this.resetInputs();
         alert("Item logged and fertilisers updated successfully!");
         } catch (error) {
@@ -214,7 +226,7 @@
     },
   };
   </script>
-  
+
   <style scoped>
     .error-message {
         color: red;
@@ -228,7 +240,7 @@
         justify-content: center;
         align-items: center;
         margin-right: 10px;
-        height: 100px;  
+        height: 100px;
     }
 
     .loading-spinner::after {
@@ -247,4 +259,4 @@
     }
 
   </style>
-  
+
