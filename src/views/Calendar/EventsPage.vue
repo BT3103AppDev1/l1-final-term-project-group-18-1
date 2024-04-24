@@ -18,8 +18,7 @@
     </div>
   </template>
   
-  <script>
-  import { ref, onMounted } from 'vue';
+<script>
   import { auth, db } from '@/firebaseConfig';
   import { collection, query, onSnapshot } from 'firebase/firestore';
   import AddEvent from './AddEvent.vue';

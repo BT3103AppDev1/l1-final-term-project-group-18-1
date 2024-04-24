@@ -98,22 +98,19 @@ export default {
 
         // Schedule desktop notification for reminder
         if (this.event.reminderType && this.event.reminderTime) {
-          const notificationTime = new Date(this.event.start);
-          notificationTime.setMinutes(notificationTime.getMinutes() - this.event.reminderTime);
+          // Calculate the event start time in milliseconds
+          const eventStartTime = new Date(this.event.start).getTime();
+          // Calculate the current time in milliseconds
+          const currentTime = Date.now();
+          // Calculate the notification time by subtracting the reminder time from the event start time
+          const notificationTime = eventStartTime - (this.event.reminderTime * 60000); // Convert minutes to milliseconds
           
-          if (Notification.permission === "granted") {
-            let reminderMessage = '';
-            if (this.event.reminderType === 'custom') {
-              reminderMessage = this.event.reminderDescription;
-            } else {
-              reminderMessage = this.event.reminderType;
-            }
-            new Notification(`Reminder: ${reminderMessage}`, {
-              body: `For Event: ${this.event.title}`,
-            });
-          } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(permission => {
-              if (permission === "granted") {
+          // Check if the notification time is in the future
+          if (notificationTime > currentTime) {
+            // Schedule desktop notification for reminder
+            setTimeout(() => {
+              // Check if permission is granted for notifications
+              if (Notification.permission === "granted") {
                 let reminderMessage = '';
                 if (this.event.reminderType === 'custom') {
                   reminderMessage = this.event.reminderDescription;
@@ -123,8 +120,24 @@ export default {
                 new Notification(`Reminder: ${reminderMessage}`, {
                   body: `For Event: ${this.event.title}`,
                 });
+              } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                  if (permission === "granted") {
+                    let reminderMessage = '';
+                    if (this.event.reminderType === 'custom') {
+                      reminderMessage = this.event.reminderDescription;
+                    } else {
+                      reminderMessage = this.event.reminderType;
+                    }
+                    new Notification(`Reminder: ${reminderMessage}`, {
+                      body: `For Event: ${this.event.title}`,
+                    });
+                  }
+                });
               }
-            });
+            }, notificationTime - currentTime);
+          } else {
+            console.error('Notification time is in the past. Skipping notification.');
           }
         }
       })
