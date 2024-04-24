@@ -1,14 +1,5 @@
 <template>
   <div v-if="poster">
-    <!-- Breadcrumbs -->
-    <nav aria-label="breadcrumb">
-      <router-link to="/resources/ResourcesPage">Resources</router-link> 
-      >
-      <router-link to="/resources/Infographics">Infographics</router-link> 
-      > 
-      {{ poster.title }}
-    </nav>
-
     <h2>{{ poster.title }}</h2>
     <img :src="poster.imageURL" :alt="poster.title" class="poster-image" />
   </div>
@@ -69,19 +60,5 @@ h2 {
   margin-top: 20px; /* Adds space above the title */
 }
 
-/* Style for the breadcrumb */
-.breadcrumb {
-  padding: 10px 0;
-  font-size: 16px;
-}
-
-.breadcrumb a {
-  color: #007bff; /* Adjust color as needed */
-  text-decoration: none;
-}
-
-.breadcrumb a:hover {
-  text-decoration: underline;
-}
 
 </style>

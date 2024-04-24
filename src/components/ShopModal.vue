@@ -20,11 +20,12 @@
     </div>
 
     <div>
-      <button type="confirm" class="confirm-btn" @click="confirmPurchase">Confirm</button>
       <p v-if="noItemsChosen" class="message">Please select an item to purchase.</p>
       <p v-if="notEnoughFertilisers" class="message">You do not have enough fertilisers to buy this item.</p>
       <p v-if="successfulPurchase" class="message">Successful purchase!</p>
     </div>
+
+    <button type="confirm" class="confirm-btn" @click="confirmPurchase">Confirm</button>
 
   </div>
 </template>
@@ -293,10 +294,12 @@ p {
 }
 
 .message {
-    margin-top: 70px;
+    margin-top: 90px;
     color:var(--primary-color);
     font-size: 16px;
   }
+
+  
 
 .fertiliser-icon {
   height: auto;

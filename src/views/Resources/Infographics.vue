@@ -1,13 +1,6 @@
 <template>
   <div>
     <br><br>
-    <!-- Breadcrumbs -->
-    <nav aria-label="breadcrumb">
-      <router-link to="/resources/ResourcesPage">Resources</router-link>
-      >
-      Infographics
-    </nav>
-
     <h1>Infographics</h1>
   <div class="poster-container">
     <div v-for="poster in posters" :key="poster.id" class="poster-item">
@@ -87,21 +80,6 @@ export default {
 
 .poster-button:hover {
   background-color: rgb(0, 51, 34); /* Darker shade of green on hover */
-}
-
-/* Style for the breadcrumb */
-.breadcrumb {
-  padding: 10px 0;
-  font-size: 16px;
-}
-
-.breadcrumb a {
-  color: #457247; /* Adjust color as needed */
-  text-decoration: none;
-}
-
-.breadcrumb a:hover {
-  text-decoration: underline;
 }
 
 
