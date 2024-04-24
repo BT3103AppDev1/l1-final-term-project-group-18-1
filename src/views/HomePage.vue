@@ -19,7 +19,7 @@
       <div class = "button-container">
           <searchButton />
       </div>
-      
+
       <!-- Adding line to divide statistics section -->
       <div class="horizontal-line"></div>
 
@@ -30,7 +30,7 @@
         <numberDisplay class="flex-item"/>
         <weeklyAverage class="flex-item"/>
       </div>
-       
+
       <div>
         <pieChart v-if="hasRecycledDataSummary"/>
       </div>
@@ -78,7 +78,7 @@ export default {
         end: new Date(event.end).toLocaleString() // Format 'end' date
       }));
     }
-  }, 
+  },
   data() {
     return {
       username: '',
@@ -121,7 +121,7 @@ export default {
       async checkUserRecycledDataSummary() {
           // Reference to the 'recycledDataSummary' collection
           const recycledDataSummaryCollection = collection(db, 'recycledDataSummary');
-          
+
           // Create a query against the collection for the username
           const q = query(recycledDataSummaryCollection, where('username', '==', this.username));
           try {
@@ -139,7 +139,7 @@ export default {
             console.error('Error checking recycledDataSummary:', error);
             this.hasRecycledDataSummary = false;
           }
-      },    
+      },
   },
 }
 </script>
@@ -183,7 +183,7 @@ main {
 .notifs {
   display: flex;
   justify-content: center; /* Center the children horizontally */
-  align-items: flex-start; /* Align the children to the top */
+  align-items: stretch; /* Align the children to the top */
   gap: 20px; /* Optional: Adds space between the children */
   width: 80vw;
 }
@@ -191,6 +191,7 @@ main {
   flex: 1; /* Both children will take equal width */
   width: 600px;
   border-radius: 10px; /* Rounded corners */
+  box-sizing: border-box;
 }
 
 .events-container {
@@ -225,7 +226,7 @@ main {
 .horizontal-line {
   border-top: 1.5px solid #333; /* Creates a line at the top of the element */
   margin-top: 70px;
-  
+
 }
 
 </style>
