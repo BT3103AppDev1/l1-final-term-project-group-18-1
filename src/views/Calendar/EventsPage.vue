@@ -116,10 +116,10 @@ export default {
             // Now, make the API call to Google Calendar
             const response = await window.gapi.client.calendar.events.list({
               'calendarId': 'primary',
-              'timeMin': (new Date()).toISOString(),
+              //'timeMin': (new Date()).toISOString(),
               'showDeleted': false,
               'singleEvents': true,
-              'maxResults': 10,
+              'maxResults': 2500,
               'orderBy': 'startTime'
             });
 

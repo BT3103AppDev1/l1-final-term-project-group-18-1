@@ -23,9 +23,9 @@ export default {
       }
       const userDocRef = doc(db, 'users', auth.currentUser.uid, 'calendar', auth.currentUser.uid);
       const docSnap = await getDoc(userDocRef);
-      
-      if (docSnap.exists() && docSnap.data().calendarSynced) {
-        const GoogleAuth = getGoogleAuth();
+      const GoogleAuth = getGoogleAuth();
+
+      if (docSnap.exists() && docSnap.data().calendarSynced && GoogleAuth) {
         const googleUser = GoogleAuth.currentUser.get();
         
         if (googleUser && googleUser.getBasicProfile().getEmail() === docSnap.data().userEmail) {
