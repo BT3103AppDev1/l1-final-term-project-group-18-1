@@ -43,8 +43,12 @@
         End time must be after start time.
       </div>
 
+      <div v-if="!isReminderValid" class="error">
+        Please fill in both reminder-related fields.
+      </div>
+
       <div class="form-group action-buttons">
-        <button type="submit" :disabled="!isEndTimeValid">Save Event</button>
+        <button type="submit" :disabled="!isEndTimeValid || !isReminderValid">Save Event</button>
         <button type="button" @click="$emit('close')">Cancel</button>
       </div>
     </form>
@@ -78,6 +82,13 @@ export default {
       } else {
         return this.event.start && this.event.end && new Date(this.event.end) > new Date(this.event.start);
       }
+    },
+    isReminderValid() {
+      if (this.event.reminderType || this.event.reminderTime) {
+        return this.event.reminderType && this.event.reminderTime;
+      } else {
+        return true
+      }
     }
   },
   methods: {
@@ -94,19 +105,12 @@ export default {
         return;
       }
 
-      // Check if reminders-related fields are filled in if required
-      if (this.isReminderRequired && (!this.event.reminderType || !this.event.reminderTime)) {
-        alert("Please fill in both reminders-related fields.");
-        return;
-      }
-
       // Save event to Firestore
       addDoc(collection(db, 'users', auth.currentUser.uid, 'events'), {
         ...this.event,
         created: new Date() // Capture the creation date of the event
       })
       .then(() => {
-        alert('Event successfully added!');
         this.$emit('close');
 
         // Schedule desktop notification for reminder
