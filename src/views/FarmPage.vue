@@ -1,56 +1,226 @@
 <template>
-  <div>
-    <div class="page-header">
-      <h1>Farm Page</h1>
-      <div class="header-buttons">
-        <router-link to="/SocialPage" class="button">Social</router-link>
-        <router-link to="/Shop" class="button">Shop</router-link>
-      </div>
+    <div class="farm">
+
+        <!-- Display social and shop buttons -->
+        <div class="buttons-menu">
+            <router-link to="/SocialPage" class="button">Social</router-link>
+            <button @click="openModal" class="button">Shop</button>
+        </div>
+        <ShopModal v-if="showModal" @close="closeModal" />
+
+        <!-- Display farm items -->
+        <div class="farm-items">
+            <div v-for="(item, index) in farmItems" :key="index" class="item"
+                :style="{ top: item.top + 'px', left: item.left + 'px' }"
+                @mousedown="startDrag($event, index)">
+                <img :src="item.imageURL" :alt="item.name" class="item-image" />
+            </div>
+        </div>
+
+        <!-- Default farm background -->
+        <p class="instruction-text">Grow your farm! Drag then click to move farm elements.</p>
+        <div class="background"></div>
+
     </div>
-  </div>
-</template>
+  </template>
+  
+  <script>
+  import ShopModal from "@/components/ShopModal.vue";
+  import { db } from '@/firebaseConfig';
+  import { collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+  import { getAuth, onAuthStateChanged } from 'firebase/auth';
+  
+  export default {
+    components: {
+      ShopModal
+    },
+    data() {
+      return {
+        showModal: false,
+        farmItems: [],
+        currentUser: null
+      };
+    },
+    mounted() {
+      this.initialiseDataWithDelay();
+    },
+    methods: {
+      initialiseDataWithDelay() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            console.log("User is signed in, fetching data.");
+            this.currentUser = user; // Set the currentUser
+            this.fetchFarmItems(); // Fetch farm items
+          } else {
+            console.error("No user is signed in.");
+          }
+        });
+      },
+      openModal() {
+        this.showModal = true;
+      },
+      closeModal() {
+        this.showModal = false;
+      },
+      async fetchFarmItems() {
+        try {
+          const userId = this.currentUser.uid; // Use UID instead of username
+          const userFarmDocRef = doc(collection(db, 'farm'), userId);
+          const userFarmDocSnapshot = await getDoc(userFarmDocRef);
+  
+          if (userFarmDocSnapshot.exists()) {
+            const farmItemsData = userFarmDocSnapshot.data().items || [];
+            // Extract imageURL from each farm item
+            this.farmItems = farmItemsData.map(item => ({
+              id: item.id,
+              imageURL: item.imageURL,
+              quantity: item.quantity,
+              top: item.top || 0, // Default to 0 if top is not defined
+              left: item.left || 0 // Default to 0 if left is not defined
+            }));
+            console.log('Farm items fetched successfully');
+          }
+        } catch (error) {
+          console.error('Error fetching farm items:', error);
+        }
+      },
+  
+      async startDrag(event, index) {
+        console.log('startDrag called with item:', this.farmItems[index]);
+        const item = this.farmItems[index];
+        const initialMouseX = event.clientX;
+        const initialMouseY = event.clientY;
+        const initialItemX = item.left;
+        const initialItemY = item.top;
+        console.log('Mouse down at:', event.clientX, event.clientY);
+  
+        const handleDrag = (e) => {
+          const dx = e.clientX - initialMouseX;
+          const dy = e.clientY - initialMouseY;
+          item.left = initialItemX + dx;
+          item.top = initialItemY + dy;
+        };
+  
+        const endDrag = async () => {
+          document.removeEventListener('mousemove', handleDrag);
+          document.removeEventListener('mouseup', endDrag);
+          await this.updateItemPosition(item);
+        };
+  
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('mouseup', endDrag);
+      },
+  
+      async updateItemPosition(item) {
+        try {
+            const userId = this.currentUser.uid;
+            const userFarmDocRef = doc(db, 'farm', userId);
+            const userFarmDocSnapshot = await getDoc(userFarmDocRef);
 
-<script>
-  // import '@/assets/DefaultFarm.png'
+            if (userFarmDocSnapshot.exists()) {
+                const items = userFarmDocSnapshot.data().items || [];
+                const updatedItems = items.map(existingItem => {
+                    if (existingItem.id === item.id) {
+                        return {
+                            ...existingItem,
+                            left: item.left,
+                            top: item.top
+                        };
+                    } else {
+                        return existingItem;
+                    }
+                });
 
-  // export default{
-  //   data() {
-  //     return {
-  //       farmImageURL: require('@/assets/DefaultFarm.pn')
-  //     }
-  //   }
-  // }
-</script>
+                await updateDoc(userFarmDocRef, { items: updatedItems });
+                console.log('Item position updated successfully.');
+            } else {
+                console.error('User document does not exist.');
+            }
+        } catch (error) {
+            console.error('Error updating item position:', error);
+        }
+    }
 
-<style>
-.farm-page{
-  width: 100vw;
-  height: 100vh;
-  /* background-image: url('@/assets/DefaultFarm.png');  */
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover; /* Cover the entire page */
-  position: relative; /* If you need to position elements inside */
-}
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: top;
-}
 
-.header-buttons {
-  display: flex;
-  gap: 10px;
-}
+    }
+  };
+  </script>
+  
+  <style>
+    .farm {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      top: 8%;
+      right: 0;
+      width: 100vw;
+      height: 92vh;
+    }
 
-.button {
-  padding: 10px;
-  background-color: #3498db;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-</style>
+    .instruction-text {
+        position: absolute;
+        top: 0%;
+        left: 1%;
+    }
+  
+    .background {
+      background-image: url('src/assets/defaultFarm.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+  
+    .buttons-menu {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 1%;
+      margin-right: 1%;
+    }
+  
+    .button {
+      display: flex;
+      justify-content: center; /* Center the content horizontally */
+      align-items: center;
+      width: 100px;
+      height: 40px;
+      background-color: #357B9A;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      padding: 0px;
+      border: 0px;
+      margin: 0px;
+    }
+  
+    .button:hover {
+      background-color: #357B9A; /* Keep the same color as default */
+    }
+  
+    .farm-items {
+      display: flex;
+      justify-content: space-evenly;
+      flex-direction: row;
+    }
+  
+    .item {
+      width: calc(20% - 10px); /* Adjust item width*/
+      margin-top: 0%;
+      z-index: 1;
+      position: absolute; /* Position items absolutely for dragging */
+    }
+  
+    .item-image {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+  

@@ -1,59 +1,32 @@
 <template>
-    <button id="btn" @click="logout()" v-if="user">Logout</button>
+  <button @click="logout" v-if="user">Logout</button>
 </template>
 
 <script>
-import '@/firebaseConfig';
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 export default {
   name: 'Logout',
-
   data() {
     return {
-      user: false,
+      user: null,
     };
   },
 
   mounted() {
     const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.user = user;
-      }
-    });
+    this.user = auth.currentUser;
   },
 
   methods: {
-    logout() {
+    async logout() {
       const auth = getAuth();
-      const user = auth.currentUser;
-      signOut(auth, user)
-        .then(() => {
-          this.$router.push({name: 'Login'})
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-
+      try {
+        this.$router.push({name: 'Login'});
+      } catch (error) {
+        console.error('Logout error:', error.message);
+      }
     }
   }
 };
 </script>
-
-<style>
-  button {
-    margin: 5px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #457247;
-    background-color: #457247;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.1s;
-  }
-  button:active {
-    background-color: #3b5e3b;
-  }
-</style>
-

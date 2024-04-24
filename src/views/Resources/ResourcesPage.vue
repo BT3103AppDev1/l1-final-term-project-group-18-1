@@ -11,7 +11,7 @@
   <style>
   .resource-button {
     display: inline-block;
-    background-color: #4CAF50; /* Green background */
+    background-color: var(--primary-color); /* Green background */
     color: white; /* White text */
     padding: 10px 20px; /* Some padding */
     margin: 10px; /* Space around buttons */
@@ -24,6 +24,6 @@
   }
 
   .resource-button:hover {
-    background-color: #27792b; /* Darker shade of green on hover */
+    background-color: rgb(0, 51, 34); /* Darker shade of green on hover */
   }
   </style>

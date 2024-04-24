@@ -36,6 +36,11 @@
 
 .content-section {
   text-align: center; 
+  position: fixed;
+  top: 33%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
 }
 
 .main-title,
@@ -64,10 +69,12 @@
   position: fixed; 
   bottom: 0; 
   left: 0;
+  margin: 0;
   width: 100vw; 
 }
 
 .banner-image {
+  display: block;
   width: 100%;
   height: auto; 
 }

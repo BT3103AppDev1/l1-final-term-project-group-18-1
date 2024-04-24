@@ -1,25 +1,28 @@
 <template>
     <div class="profile-page">
       <h1>Profile</h1>
+      
       <form @submit.prevent="updateProfile">
         <div class="form-group">
           <label for="email">Registered Email:</label>
           <input id="email" type="email" v-model="user.email" disabled class="input-disabled" />
         </div>
         <div class="form-group">
-          <label for="name" class="sr-only">Name:</label>
-          <input id="name" type="text" v-model="user.name" :maxlength=20 placeholder="Name" />
+          <label for="name">Name:</label>
+          <input id="name" type="text" v-model="user.name" />
         </div>
         <div class="form-group">
-          <label for="username" class="sr-only">Username:</label>
-          <input id="username" type="text" v-model="user.username" :maxlength=20 placeholder="Username" />
+          <label for="username">Username:</label>
+          <input id="username" type="text" v-model="user.username" />
         </div>
         <button type="submit" class="btn">Update Profile</button>
-        <p v-if="showSuccessMessage" class="message">Profile updated successfully!</p>
-        <p v-if="showFailedMessage" class="message">Please ensure name and username are filled in.</p>
+        <p v-if="showSuccessMessage" class="success-message">Profile updated successfully!</p>
       </form>
+  
     </div>
   </template>
+  
+  
   
   <script>
   import { ref, onMounted } from 'vue';
@@ -36,8 +39,7 @@
         name: '',
         username: ''
       });
-      const showSuccessMessage = ref(false); 
-      const showFailedMessage = ref(false);
+      const showSuccessMessage = ref(false); // Add this line
   
       const fetchUserData = async (uid) => {
         const docRef = doc(db, 'users', uid);
@@ -52,7 +54,7 @@
       onMounted(() => {
         onAuthStateChanged(auth, (userAuth) => {
           if (userAuth) {
-            user.value.email = userAuth.email;
+            user.value.email = userAuth.email; // Assuming the email is directly available
             fetchUserData(userAuth.uid);
           } else {
             console.error('User is not signed in.');
@@ -67,26 +69,19 @@
         }
         const uid = auth.currentUser.uid;
         const userRef = doc(db, 'users', uid);
+        await updateDoc(userRef, {
+          name: user.value.name,
+          username: user.value.username
+        });
+        showSuccessMessage.value = true; // Show success message
   
-        // Check if name or username fields are empty
-        if (user.value.name.trim() && user.value.username.trim()) {
-            await updateDoc(userRef, {
-                name: user.value.name,
-                username: user.value.username
-            });
-            showSuccessMessage.value = true; // Show success message
-            setTimeout(() => {
-                showSuccessMessage.value = false;
-            }, 4000); // Hide success message after 3 seconds
-        } else {
-            showFailedMessage.value = true;
-            setTimeout(() => {
-                showFailedMessage.value = false;
-            }, 4000);
-        }
-    }
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+          showSuccessMessage.value = false;
+        }, 4000);
+      };
   
-      return { user, updateProfile, showSuccessMessage, showFailedMessage }; 
+      return { user, updateProfile, showSuccessMessage }; // Update return
     }
   };
   </script>
@@ -98,7 +93,7 @@
     margin-bottom: 30px;
     font-weight: bold;
   }
-  
+
   .user-email {
     padding: 10px 0;
     font-size: 0.9rem;
@@ -138,14 +133,22 @@
   }
   
   /* Additional styling for success message */
-  .message {
+  .success-message {
     margin-top: 0.3rem;
-    color: var(--primary-color);
+    color:var(--primary-color);
     font-size: 16px;
   }
-  
+
   .input-disabled {
   background-color: #e7e7e7; /* Grey background */
-  color: #6c757d;
-  } 
-</style>   
+  color: #6c757d; /* Dimmed text color */
+  cursor: not-allowed; /* Shows a disabled cursor on hover */
+}
+
+/* the border color match the greyed-out style too */
+.input-disabled {
+  border: 1px solid #ced4da;
+}
+  </style>
+  
+

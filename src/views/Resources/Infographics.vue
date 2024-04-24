@@ -1,21 +1,22 @@
 <template>
   <div>
+    <br><br>
     <!-- Breadcrumbs -->
     <nav aria-label="breadcrumb">
-      <router-link to="/resources/ResourcesPage">Resources</router-link> 
+      <router-link to="/resources/ResourcesPage">Resources</router-link>
       >
       Infographics
     </nav>
 
     <h1>Infographics</h1>
-    
+  <div class="poster-container">
     <div v-for="poster in posters" :key="poster.id" class="poster-item">
       <button @click="goToPosterDetail(poster.id)" class="poster-button">
         {{ poster.title }}
       </button>
-   
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -56,24 +57,36 @@ export default {
 </script>
 
 <style scoped>
+.poster-container {
+  margin: 10px;
+  width: 90vw;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
 .poster-item {
   display: inline;
+  margin-right: 10px;
 }
 
 .poster-button {
-  margin-top: 20px;
-  padding: 10px 15px;
-  background-color: #457247; /* Green background */
+  margin-top: 0px;
+  border-radius: 20px;
+  width: 200px;
+  height: 200px;
+  background-color: var(--primary-color); /* Green background */
   color: white; /* Text color */
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-size: 20px;
 }
 
 .poster-button:hover {
-  background-color: #27792b; /* Darker green on hover */
+  background-color: rgb(0, 51, 34); /* Darker shade of green on hover */
 }
 
 /* Style for the breadcrumb */
