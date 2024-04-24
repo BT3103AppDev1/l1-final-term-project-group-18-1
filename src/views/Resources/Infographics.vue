@@ -77,7 +77,7 @@ export default {
   border-radius: 20px;
   width: 200px;
   height: 200px;
-  background-color: rgb(31, 95, 65); /* Green background */
+  background-color: var(--primary-color); /* Green background */
   color: white; /* Text color */
   border: none;
   cursor: pointer;
