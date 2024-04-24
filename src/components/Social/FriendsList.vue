@@ -29,6 +29,7 @@
         </div>
         <p>To: @{{ friendToGiftUsername }}</p>
         <button @click="confirmGift" class="confirm-btn">Confirm</button>
+        <p v-if="showFailureMessage" class="failure-message">Insufficient fertiliser balance.</p>
       </div>
     </teleport>
 
@@ -74,6 +75,7 @@ export default {
       friendToGiftUsername: '',
       fertiliserAmount: 1,
       showGiftSuccessNotification: false,
+      showFailureMessage: false,
     };
   },
   created() {
@@ -171,7 +173,7 @@ export default {
         this.fertiliser = userDoc.data().fertiliser || 0;
       } else {
         console.log('No such document!');
-        this.fertiliser = 0; // Reset or handle as needed
+        this.fertiliser = 0;
       }
     } catch (error) {
       console.error('Error fetching fertiliser data:', error);
@@ -179,43 +181,44 @@ export default {
   },
 
   async confirmGift() {
-  const auth = getAuth();
-  const currentUserUid = auth.currentUser ? auth.currentUser.uid : null;
-  const currentUserDocRef = doc(db, 'users', currentUserUid);
-  const friendDocRef = doc(db, 'users', this.friendToGiftId);
+      const auth = getAuth();
+      const currentUserUid = auth.currentUser ? auth.currentUser.uid : null;
+      const currentUserDocRef = doc(db, 'users', currentUserUid);
+      const friendDocRef = doc(db, 'users', this.friendToGiftId);
 
-  try {
-    await runTransaction(db, async (transaction) => {
-      const currentUserDoc = await transaction.get(currentUserDocRef);
-      const friendDoc = await transaction.get(friendDocRef);
+      try {
+        await runTransaction(db, async (transaction) => {
+          const currentUserDoc = await transaction.get(currentUserDocRef);
+          const friendDoc = await transaction.get(friendDocRef);
 
-      if (!currentUserDoc.exists() || !friendDoc.exists()) {
-        throw new Error("Document does not exist!");
+          if (!currentUserDoc.exists() || !friendDoc.exists()) {
+            throw new Error("Document does not exist!");
+          }
+
+          const currentUserFertilisers = currentUserDoc.data().fertiliser;
+          const friendFertilisers = friendDoc.data().fertiliser;
+
+          if (this.fertiliserAmount > currentUserFertilisers) {
+            throw new Error("Insufficient fertiliser.");
+          }
+
+          transaction.update(currentUserDocRef, { fertiliser: currentUserFertilisers - this.fertiliserAmount });
+          transaction.update(friendDocRef, { fertiliser: friendFertilisers + this.fertiliserAmount });
+        });
+
+        this.showGiftSuccessNotification = true;
+      } catch (error) {
+        console.error('Transaction failed: ', error);
+        this.showFailureMessage = true;
+        setTimeout(() => {
+          this.showFailureMessage = false;
+        }, 4000); 
+        return; 
       }
 
-      const currentUserFertilisers = currentUserDoc.data().fertiliser;
-      const friendFertilisers = friendDoc.data().fertiliser;
-
-      if (this.fertiliserAmount > currentUserFertilisers) {
-        throw new Error("Insufficient fertiliser.");
-      }
-
-      transaction.update(currentUserDocRef, { fertiliser: currentUserFertilisers - this.fertiliserAmount });
-      transaction.update(friendDocRef, { fertiliser: friendFertilisers + this.fertiliserAmount });
-    });
-
-
-    this.showGiftSuccessNotification = true;
-  } catch (error) {
-    console.error('Transaction failed: ', error);
-    alert('Failed to send fertiliser.');
-  }
-
-  this.showGiftModal = false;
-  this.fertiliserAmount = 1; // Reset to default after the operation
-},
-
-
+      this.showGiftModal = false;
+      this.fertiliserAmount = 1;
+    },
 
     cancelGift() {
       this.showGiftModal = false;
@@ -416,6 +419,12 @@ export default {
 }
 .gift-success-notification h3 {
   font-weight: bold;
+}
+
+.failure-message {
+  margin-top: 0.3rem;
+  color: red !important;
+  font-size: 13px;
 }
 
 

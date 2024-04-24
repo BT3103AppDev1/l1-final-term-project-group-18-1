@@ -31,15 +31,15 @@ export default {
 .social-page-container {
   display: flex;
   flex-direction: column;
-  height: 80vh; /* Stretch to full viewport height */
-  width: 80vw; /* Stretch to full viewport width */
-  margin: 0; /* Remove default margin */
-  padding-top: 0; /* Adjust this as needed if you have a header */
+  height: 80vh; 
+  width: 80vw; 
+  margin: 0; 
+  padding-top: 0; 
 }
 
 .row {
   display: flex;
-  height: 100%; /* Take full height of the container */
+  height: 100%; 
 }
 
 .column {
@@ -49,18 +49,17 @@ export default {
 
 .left {
   flex: 3;
-  border-right: 2px solid #ccc; /* This creates a vertical line divider */
+  border-right: 2px solid #ccc; 
 }
 
 .right {
   flex: 1;
   align-items: flex-start;
-  padding-left: 30px; /* Increased space between the vertical line and the right column content */
+  padding-left: 30px; 
 }
 
-/* Add a class for the component FindFriends to add margin */
 .find-friends-component {
-  margin-bottom: 30px; /* Adjust the space as needed */
+  margin-bottom: 30px; 
 }
 
 </style>

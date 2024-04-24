@@ -64,14 +64,14 @@ export default {
         if (querySnapshot.empty) {
           alert('No users found with that username. Please try a different search.');
         } else {
-          // Assuming only one user can be found with a specific username
+
           const userDoc = querySnapshot.docs[0];
           this.potentialFriend = {
             id: userDoc.id,
             username: userDoc.data().username,
             name: userDoc.data().name,
           };
-          this.showAddFriendModal = true; // Show the 'Add friend' notification
+          this.showAddFriendModal = true; 
         }
       } catch (error) {
         console.error('Error searching users:', error);
@@ -238,8 +238,8 @@ export default {
 
 .button-container {
   display: flex;
-  justify-content: center; /* Centers the button horizontally */
-  margin-top: 20px; /* Adds space between the text and the button */
+  justify-content: center; 
+  margin-top: 20px; 
 }
 
 .confirm-btn {
