@@ -7,7 +7,7 @@
           <div class="friend-name">{{ friend.name }}</div>
           <div class="friend-username">@{{ friend.username }}</div>
         </div>
-        <button @click="visitFarm(friend.id)" class="visit-farm-btn">
+        <button @click="visitFriendFarm(friend.id)" class="visit-farm-btn">
           <img src="@/assets/door.png" alt="Visit Farm">
         </button>
         <button @click="promptGiftFertiliser(friend.id, friend.username)" class="gift-btn">
@@ -183,7 +183,7 @@ export default {
     }
   },
 
-  visitFarm(friendId) {
+  visitFriendFarm(friendId) {
     this.$router.push({ name: 'FarmPage', params: { userId: friendId } });
   },
 
