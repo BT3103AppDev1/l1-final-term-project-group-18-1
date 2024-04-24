@@ -8,7 +8,9 @@
         <div>{{ formatDateTime(event.start) + ' to ' + formatDateTime(event.end)}}</div>
       </li>
     </ul>
-    <div v-if="upcomingEvents.length === 0">No upcoming events in the next 24 hours.</div>
+    <div v-if="upcomingEvents.length === 0">
+      No upcoming events in the next 24 hours.
+    </div>
   </div>
 </template>
 
@@ -54,7 +56,6 @@ export default {
     },
 
     convertToSingaporeTime(date) {
-      // UTC+8 for Singapore
       const singaporeTimeOffset = 8 * 60 * 60 * 1000;
       return new Date(date.getTime() + singaporeTimeOffset);
     },

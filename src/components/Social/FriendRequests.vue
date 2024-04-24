@@ -1,6 +1,5 @@
 <template>
   <div class="friend-requests">
-    <h2>Incoming Friend Requests</h2>
     <ul v-if="requests.length > 0">
       <li v-for="request in requests" :key="request.id" class="request-item">
         <div class="request-info">
@@ -137,8 +136,9 @@ export default {
 .friend-requests {
   display: flex;
   flex-direction: column;
-  align-items: left;
+  align-items: center;
   max-width: 350px; 
+  justify-content: center; 
 }
 
 .friend-requests h2 {
@@ -213,6 +213,7 @@ export default {
 .no-requests {
   color: #333;
   margin-top: 20px;
+  align-self: center;
 }
 
 </style>
