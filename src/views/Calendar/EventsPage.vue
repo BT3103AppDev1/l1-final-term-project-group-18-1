@@ -5,8 +5,7 @@
       </h1>
       <button @click="showAddEventModal = true">Add Event</button>
       <AddEvent v-if="showAddEventModal" @close="showAddEventModal = false" @save="handleSave" />
-      <EditEvent v-if="showEditEventModal" @close="showEditEventModal = false" @save="handleEditSave" :event="selectedEvent" />
-      <FullCalendar :options="calendarOptions" @eventClick="handleEventClick" />
+      <FullCalendar :options="calendarOptions"/>
     </div>
   </template>
   
@@ -15,20 +14,17 @@
   import { collection, query, onSnapshot, doc, getDoc } from 'firebase/firestore';
   import { getAuth, onAuthStateChanged } from 'firebase/auth';
   import AddEvent from './AddEvent.vue';
-  import EditEvent from './EditEvent.vue';
   import FullCalendar from '@fullcalendar/vue3';
   import dayGridPlugin from '@fullcalendar/daygrid';
   
   export default {
     components: {
       AddEvent,
-      EditEvent,
       FullCalendar
     },
     data() {
       return {
         showAddEventModal: false,
-        showEditEventModal: false,
         selectedEvent: null,
         events: [],
         calendarOptions: {
@@ -44,20 +40,6 @@
       };
     },
     methods: {
-      async handleEventClick(info) {
-        console.log('clicked');
-        try {
-          const eventDoc = await getDoc(doc(db, 'users', auth.currentUser.uid, 'events', info.event.id));
-          if (eventDoc.exists()) {
-            this.selectedEvent = { id: eventDoc.id, ...eventDoc.data() };
-            this.showEditEventModal = true;
-          } else {
-            console.error('Event document not found');
-          }
-        } catch (error) {
-          console.error('Error fetching event:', error);
-        }
-      },
       handleSave(eventData) {
         console.log('Event saved', eventData);
         this.showAddEventModal = false; // Close modal after saving
