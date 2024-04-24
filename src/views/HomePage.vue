@@ -59,7 +59,7 @@ export default {
     weeklyAverage,
     barChart,
     FriendRequests,
-    UpcomingEvents
+    UpcomingEvents,
     communityPie,
   },
   computed: {
