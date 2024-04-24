@@ -7,6 +7,9 @@
           <div class="friend-name">{{ friend.name }}</div>
           <div class="friend-username">@{{ friend.username }}</div>
         </div>
+        <button @click="visitFarm(friend.id)" class="visit-farm-btn">
+          <img src="@/assets/door.png" alt="Visit Farm">
+        </button>
         <button @click="promptGiftFertiliser(friend.id, friend.username)" class="gift-btn">
           <img src='@/assets/fertiliser.png' alt="Gift Fertiliser">
         </button>
@@ -178,6 +181,10 @@ export default {
     } catch (error) {
       console.error('Error fetching fertiliser data:', error);
     }
+  },
+
+  visitFarm(friendId) {
+    this.$router.push({ name: 'FarmPage', params: { userId: friendId } });
   },
 
   async confirmGift() {
@@ -365,7 +372,6 @@ export default {
   cursor: pointer;
   display: flex;
   align-items: right;
-  margin-left: 80px;
 }
 
 .gift-btn img {
@@ -426,7 +432,20 @@ export default {
   color: red !important;
   font-size: 13px;
 }
+.visit-farm-btn img {
+  height: 50px; 
+  width: auto;
+}
 
-
+.visit-farm-btn {
+  background-color: #79BCD9;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center; 
+  justify-content: right;
+}
 
 </style> 
