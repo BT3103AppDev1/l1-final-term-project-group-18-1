@@ -9,6 +9,10 @@ export default createStore({
     setUpcomingEvents(state, events) {
       state.upcomingEvents = events;
     },
+    resetState(state) {
+      // Reset the state object
+      state.upcomingEvents = [];
+    },
     updateFertiliser(state, newValue) {
       state.fertiliser = newValue;
     },
@@ -16,6 +20,10 @@ export default createStore({
   actions: {
     updateUpcomingEvents({ commit }, events) {
       commit('setUpcomingEvents', events);
+    },
+    logout({ commit }) {
+      commit('resetState');
+      // Additional logout operations, like redirecting the user or clearing local storage
     }
   }
 });

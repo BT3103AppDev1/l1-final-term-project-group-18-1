@@ -18,7 +18,7 @@
       <!-- Conditional links for authenticated users -->
       <router-link to="/Home" class="nav-item" v-if="isAuthenticated">Home</router-link>
       <router-link to="/Farm" class="nav-item" v-if="isAuthenticated">Farm</router-link>
-      <router-link to="/CalendarLanding" class="nav-item" v-if="isAuthenticated">Calendar</router-link>
+      <router-link to="/Events" class="nav-item" v-if="isAuthenticated">Calendar</router-link>
       <router-link to="/Settings" class="nav-item" v-if="isAuthenticated">Settings</router-link>
       <span class="vertical-line" v-if="isAuthenticated"></span>
 
@@ -251,24 +251,4 @@ export default {
 }
 
 
-
-
-
-@media (max-width: 768px) {
-  .nav-links {
-    flex-direction: column;
-    align-items: center;
-    padding-top: 65px;
-  }
-
-  .nav-item {
-    margin: 0.5rem 0;
-  }
-
-  .dropdown-menu {
-    left: 50%;
-    transform: translateX(-50%);
-    border: 1px solid var(--primary-color);
-  }
-}
-  </style>
+</style>
