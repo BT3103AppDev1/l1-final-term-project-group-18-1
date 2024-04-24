@@ -16,11 +16,6 @@
             <span class="required-asterisk">*</span> Item is clean/rinsed
             <span class="required-asterisk">*Required</span>
       </label>
-
-
-
-
-      <br>
       <label class="checkbox-label">
         <input type="checkbox" v-model="loggingMore" />
         <span class="checkbox-custom"></span>
@@ -30,7 +25,15 @@
       <div v-if="loading" class="loading-spinner">
             Loading...
        </div>
-     </div>
+
+       <div v-if="showNotification" class="overlay" @click="closeNotification"></div>
+        <div v-if="showNotification" class="notification">
+            <p>Items successfully logged! <br> You have been awarded {{ itemCount }} fertilisers.</p>
+            <button class="close-btn" @click="closeNotification">×</button>
+      </div>
+    </div>
+
+
   </template>
 
   <script>
@@ -49,7 +52,8 @@
         isClean: false, // Tracks the state of the checkbox
         username: '',
         loading: false,
-        loggingMore: false
+        loggingMore: false,
+        showNotification: false,
       };
     },
     props: {
@@ -241,13 +245,8 @@
                     currWeeklyAvgSum: totalAvg,
                 });
                 console.log("Updated document for the week.");
-            }
-            if(!this.loggingMore) {
-                this.$router.push('/Home');
-            } else {
-                this.resetInputs();
-            }
-        alert("Item logged and fertilisers updated successfully!");
+            }  
+            this.showNotification=true;
         } catch (error) {
             console.error("Error logging item:", error);
             this.errorMessage = 'Failed to log the item. Please try again.';
@@ -259,7 +258,7 @@
 
     // Reset input fields after successful logging
     resetInputs() {
-        this.itemCount = ''; // Reset to default value
+        this.itemCount = 0; // Reset to default value
         this.isClean = false; // Reset checkbox
         this.errorMessage = ''; // Clear any error messages
         this.loggingMore = false; //reset checkbox
@@ -344,6 +343,14 @@
                 console.error("Error fetching documents:", error);
             }
     },
+    closeNotification() {
+    this.showNotification = false; // Hide the notification
+        if (!this.loggingMore) {
+            this.$router.push('/Home'); // Navigate home if loggingMore is not true
+        } else {
+            this.resetInputs(); // Reset inputs if logging more items
+        }
+    },
     },
   };
   </script>
@@ -383,6 +390,57 @@
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+    }
+
+    .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    }
+
+    .notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 40px;
+    background-color: #D5EDDE; 
+    border: 6px solid #457247; 
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    min-width: 450px; 
+    }
+
+    .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #457247; 
+    }
+
+    .close-btn:hover {
+    color: #ff5252; 
+    }
+
+    .notification p {
+    text-align: center; 
+    font-size: 20px;
+    font-weight: 500;
+    color: #47525E; 
+    }
+
+    .notification span {
+    color: #47525E; 
+    font-weight: bold;
     }
 
   </style>
