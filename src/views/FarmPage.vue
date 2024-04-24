@@ -51,7 +51,6 @@
     },
     methods: {
       handleItemPurchased(newItem) {
-        // Add the new item to the farmItems array
         this.farmItems.push({
           ...newItem,
           top: 0,  // Default positions
@@ -169,6 +168,9 @@
   </script>
   
   <style>
+  body {
+    overflow: hidden;
+  }
     .farm {
       display: flex;
       flex-direction: column;
@@ -244,6 +246,6 @@
     .item-image {
       width: 100%;
       height: auto;
-    } 
+    }
   </style>
   
