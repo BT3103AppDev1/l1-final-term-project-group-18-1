@@ -57,45 +57,48 @@
                     console.error("No user is signed in.");
                 }
             }, 
-            async fetchData() { 
-                const queryRef = collection(db, 'recycledDataSummary'); // Reference to the collection
-                const q = query(queryRef, where('username', '==', this.username)); // Create a query against the collection
+            async fetchData() {
+                const queryRef = collection(db, 'recycledDataSummary');
+                const q = query(queryRef, where('username', '==', this.username));
                 try {
-                    const querySnapshot = await getDocs(q); //execute the query
+                    const querySnapshot = await getDocs(q);
                     if (querySnapshot.empty) {
                         console.log("No data available for this user.");
                     } else {
-                        console.log("retreived data working with it now.");
+                        let monthlyCounts = Array(12).fill(0); // Array to hold counts for each month (Jan-Dec)
+
                         querySnapshot.forEach((doc) => {
                             const userData = doc.data();
-                            this.monthlyData = {
-                                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-                                values: [
-                                    userData.JanuaryCount || 0,
-                                    userData.FebruaryCount || 0,
-                                    userData.MarchCount || 0,
-                                    userData.AprilCount || 0,
-                                    userData.MayCount || 0,
-                                    userData.JuneCount || 0,
-                                    userData.JulyCount || 0,
-                                    userData.AugustCount || 0,
-                                    userData.SeptemberCount || 0,
-                                    userData.OctoberCount || 0,
-                                    userData.NovemberCount || 0,
-                                    userData.DecemberCount || 0
-                                ]
-
-                            };
-                            console.log('Fetched data:', this.monthlyData);
+                            // Assume userData.monthCounts is an object with keys like 'January', 'February', etc.
+                            monthlyCounts[0] += userData['JanuaryCount'] || 0;
+                            monthlyCounts[1] += userData['FebruaryCount'] || 0;
+                            monthlyCounts[2] += userData['MarchCount'] || 0;
+                            monthlyCounts[3] += userData['AprilCount'] || 0;
+                            monthlyCounts[4] += userData['MayCount'] || 0;
+                            monthlyCounts[5] += userData['JuneCount'] || 0;
+                            monthlyCounts[6] += userData['JulyCount'] || 0;
+                            monthlyCounts[7] += userData['AugustCount'] || 0;
+                            monthlyCounts[8] += userData['SeptemberCount'] || 0;
+                            monthlyCounts[9] += userData['OctoberCount'] || 0;
+                            monthlyCounts[10] += userData['NovemberCount'] || 0;
+                            monthlyCounts[11] += userData['DecemberCount'] || 0;
                         });
-                    }  
-                    this.$nextTick(() => {
-                        this.drawChart();
-                    });
+
+                        this.monthlyData = {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+                            values: monthlyCounts
+                        };
+
+                        console.log('Aggregated Monthly Data:', this.monthlyData);
+                        this.$nextTick(() => {
+                            this.drawChart();
+                        });
+                    }
                 } catch (error) {
                     console.error("Error fetching recycled data:", error);
                 }
             },
+
             drawChart() {
             // Ensure we have the data needed to draw the chart
             if (this.monthlyData) {

@@ -5,10 +5,6 @@
                 <font-awesome-icon icon="user"/>
                 <button @click="changeComponent('Profile')">Profile</button>
             </div>
-            <div class="notifications"> 
-                <font-awesome-icon icon="bell"/>
-                <button @click="changeComponent('Notifications')">Notifications</button>
-            </div>
             <div class="contactUs"> 
                 <font-awesome-icon icon="phone"/>
                 <button @click="changeComponent('ContactUs')">Contact Us</button>
@@ -26,15 +22,13 @@
   
   <script>
   import Profile from './Profile.vue';
-  import Notifications from './Notifications.vue';
   import ContactUs from './ContactUs.vue';
   import Logout from '@/components/Logout.vue'
   import { library } from '@fortawesome/fontawesome-svg-core'
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-  import { faUser, faBell,faPhone } from '@fortawesome/free-solid-svg-icons'
+  import { faUser, faPhone } from '@fortawesome/free-solid-svg-icons'
   
   library.add(faUser) //to add in the user icon 
-  library.add(faBell) //to add in the bell icon 
   library.add(faPhone) //to add in the phone icon 
   
   export default {
@@ -46,7 +40,6 @@
     components: {
       FontAwesomeIcon,
       Profile,
-      Notifications,
       ContactUs,
       Logout,
     },
@@ -69,10 +62,12 @@
     padding: 20px;
     flex-grow: 1;
     min-width: 800px;
+    align-items: center;
   }
   
   /* specific style for the buttons */ 
   .settings-menu {
+    margin-top: 82px;
     display: flex;
     flex-direction: column;
     width: 200px;
@@ -82,14 +77,12 @@
   }
   
   .profile,
-  .notifications,
   .contactUs {
     display: flex;
     align-items: center;
   }
   
   .profile button,
-  .notifications button,
   .contactUs button {
     background: none;
     border: none;
@@ -104,10 +97,8 @@
   }
   
   .profile button:hover,
-  .notifications button:hover,
   .contactUs button:hover,
   .profile:hover,
-  .notifications:hover,
   .contactUs:hover{
     color: #457247; /* Change to the color you want on hover */
   }

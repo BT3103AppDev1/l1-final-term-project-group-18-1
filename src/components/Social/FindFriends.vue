@@ -12,23 +12,27 @@
       </button>
     </div>
 
-    <!-- Overlay -->
-    <div v-if="showNotification" class="overlay" @click="closeNotification"></div>
+    <teleport to="body">
+      <div v-if="showNotification" class="overlay" @click="closeNotification"></div>
+      <div v-if="showNotification" class="notification">
+        <p>Friend request sent! <br> Username: <span>@{{ potentialFriend.username }}</span></p>
+        <button class="close-btn" @click="closeNotification">×</button>
+      </div>
 
-    <!-- Notification -->
-    <div v-if="showNotification" class="notification">
-      <p>Friend request sent! <br> Username: <span>@{{ lastRequestedUsername }}</span></p>
-      <button class="close-btn" @click="closeNotification">×</button>
-    </div>
+      <div v-if="showAddFriendModal" class="overlay" @click="closeNotification"></div>
+      <div v-if="showAddFriendModal" class="notification add-friend-notification">
+        <p>Add Friend <br> Username: <span>@{{ potentialFriend.username }}</span></p>
+        <div class="button-container">
+          <button class="confirm-btn" @click="handleSendFriendRequest(potentialFriend.id)">Confirm</button>
+        </div>
+        <button class="close-btn" @click="closeAddFriendNotification">×</button>
+      </div>
+  </teleport>
 
-    <ul class="search-results" v-if="searchResults.length">
-      <li v-for="user in searchResults" :key="user.id">
-        {{ user.username }}
-        <button @click="handleSendFriendRequest(user.id)">Send Request</button>
-      </li>
-    </ul>
   </div>
 </template>
+
+
 
 <script>
 import { db } from '@/firebaseConfig';
@@ -41,7 +45,8 @@ export default {
       searchQuery: '',
       searchResults: [],
       showNotification: false,
-      lastRequestedUsername: '',
+      showAddFriendModal: false,
+      potentialFriend: null,
     };
   },
   methods: {
@@ -57,14 +62,16 @@ export default {
       try {
         const querySnapshot = await getDocs(q);
         if (querySnapshot.empty) {
-          this.searchResults = [];
           alert('No users found with that username. Please try a different search.');
         } else {
-          this.searchResults = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            username: doc.data().username,
-            name: doc.data().name,
-          }));
+
+          const userDoc = querySnapshot.docs[0];
+          this.potentialFriend = {
+            id: userDoc.id,
+            username: userDoc.data().username,
+            name: userDoc.data().name,
+          };
+          this.showAddFriendModal = true; 
         }
       } catch (error) {
         console.error('Error searching users:', error);
@@ -119,8 +126,7 @@ export default {
           toId: friendId,
           status: 'pending'
         });
-
-        this.lastRequestedUsername = this.searchResults.find(user => user.id === friendId).username;
+        this.showAddFriendModal = false
         this.showNotification = true;
       } catch (error) {
         console.error('Failed to send friend request:', error);
@@ -130,11 +136,15 @@ export default {
 
     closeNotification() {
       this.showNotification = false;
-    }
+    },
+
+    closeAddFriendNotification() {
+      this.showAddFriendModal = false;
+    },
+
   },
 };
 </script>
-
 
 <style scoped>
 .find-friends {
@@ -174,62 +184,6 @@ export default {
   line-height: 0; 
 }
 
-button:hover {
-  background-color: #E0E0E0; 
-}
-
-.notification {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #D5EDDE; 
-  color: #457247; 
-  border: 2px solid #457247; 
-  padding: 20px;
-  border-radius: 8px;
-  z-index: 1000;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 400px;
-  box-sizing: border-box;
-  font-family: 'Arial', sans-serif;
-  position: relative; 
-}
-
-.notification .close-btn {
-  position: absolute; 
-  top: 5px; 
-  right: 5px; 
-  background-color: transparent;
-  border: none;
-  color: #FF5252; 
-  font-size: 24px;
-  cursor: pointer;
-  line-height: 1;
-}
-
-.notification p {
-  margin: 0;
-  font-weight: bold;
-  text-align: center; 
-}
-
-.notification span {
-  font-weight: normal;
-}
-
-.close-btn {
-  background-color: transparent;
-  border: none;
-  color: red;
-  font-size: 20px;
-  cursor: pointer;
-  margin-left: 10px;
-}
 
 .overlay {
   position: fixed;
@@ -238,7 +192,69 @@ button:hover {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 998; 
+  z-index: 1000;
 }
+
+.notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px;
+  background-color: #D5EDDE; 
+  border: 6px solid #457247; 
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  min-width: 450px; 
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #457247; 
+}
+
+.close-btn:hover {
+  color: #ff5252; 
+}
+
+.notification p {
+  text-align: center; 
+  font-size: 20px;
+  font-weight: 500;
+  color: #47525E; 
+}
+
+.notification span {
+  color: #47525E; 
+  font-weight: bold;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; 
+  margin-top: 20px; 
+}
+
+.confirm-btn {
+  padding: 8px 16px;
+  border: none;
+  background-color: #47525E;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.confirm-btn:hover {
+  background-color: #37474F;
+}
+
 
 </style>

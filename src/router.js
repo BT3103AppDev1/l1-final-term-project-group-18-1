@@ -6,21 +6,17 @@ import SignUp from './views/SignUpPage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
 import Shop from './components/ShopModal.vue'
-import CalendarPage from './views/Calendar/CalendarPage.vue';
 import EventsPage from './views/Calendar/EventsPage.vue'
 import Infographics from './views/Resources/Infographics.vue'
 import ThriftLocator from './views/Resources/ThriftLocator.vue'
 import Settings from './views/Settings/Settings.vue'
 import Profile from './views/Settings/Profile.vue'
-import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import SearchPage from './views/home/SearchPage.vue'
 import SocialPage from './views/SocialPage.vue'
-import CreateEventModal from '@/components/CreateEventModal.vue'
-import EditEventModal from '@/components/EditEventModal.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 import EmailVerification from './views/EmailVerificationPage.vue'
-import CalendarLandingPage from './views/Calendar/CalendarLandingPage.vue'
+
 
 const routes = [
     {
@@ -53,6 +49,11 @@ const routes = [
         name: 'Home',
         component: HomePage,
     },
+    // {
+    //     path: '/Logout',
+    //     name: 'Logout',
+    //     component: Logout
+    // },
     {
         path: '/ForgetPassword',
         name: 'ForgetPassword',
@@ -75,31 +76,9 @@ const routes = [
         component: Shop,
     },
     {
-        path: '/CalendarLanding',
-        name: 'CalendarLanding',
-        component: CalendarLandingPage
-    },
-    {
-        path: '/Calendar',
-        name: 'Calendar',
-        component: CalendarPage,
-    },
-    {
         path: '/Events',
         name: 'Events',
         component: EventsPage,
-        children: [
-            {
-                path: 'create-event',
-                name: 'CreateEvent',
-                component: CreateEventModal, 
-            },
-            {
-                path: 'edit-event',
-                name: 'EditEvent',
-                component: EditEventModal,
-            }
-        ]
     },
     {
         path: '/resources/Infographics',
@@ -133,10 +112,6 @@ const routes = [
               path: '/Profile',
               component: Profile,
             },
-            {
-                path: '/Notifications',
-                component: Notifications,
-              },
             {
             path: '/ContactUs',
             component: ContactUs,

@@ -7,26 +7,61 @@
           <div class="friend-name">{{ friend.name }}</div>
           <div class="friend-username">@{{ friend.username }}</div>
         </div>
-        <button @click="promptDeleteConfirmation(friend.id, friend.name)" class="delete-friend-btn">×</button>
+        <button @click="promptGiftFertiliser(friend.id, friend.username)" class="gift-btn">
+          <img src='@/assets/fertiliser.png' alt="Gift Fertiliser">
+        </button>
+        <button @click="promptDeleteConfirmation(friend.id, friend.username)" class="delete-friend-btn">×</button>
       </li>
     </ul>
     <div v-else class="no-friends">
       You have no friends added.
     </div>
 
+    <!-- Gift Fertiliser Modal -->
+    <teleport to="body">
+      <div v-if="showGiftModal" class="overlay" @click="cancelGift"></div>
+      <div v-if="showGiftModal" class="gift-modal">
+        <button class="close-btn" @click="cancelGift">×</button>
+        <h3>Gift Fertiliser</h3>
+        <div class="gift-input">
+          <label for="fertiliserAmount">Amount:</label>
+          <input type="number" id="fertiliserAmount" v-model="fertiliserAmount" min="1">
+        </div>
+        <p>To: @{{ friendToGiftUsername }}</p>
+        <button @click="confirmGift" class="confirm-btn">Confirm</button>
+        <p v-if="showFailureMessage" class="failure-message">Insufficient fertiliser balance.</p>
+      </div>
+    </teleport>
+
     <!-- Delete Confirmation Notification -->
-    <div v-if="showDeleteConfirmation" class="delete-confirmation">
-      <p>Are you sure you want to remove {{ friendToDeleteName }} as a friend?</p>
-      <button @click="confirmDeleteFriend">Yes, remove</button>
-      <button @click="cancelDelete">No, cancel</button>
-    </div>
+    <teleport to="body">
+      <div v-if="showDeleteConfirmation" class="overlay" @click="cancelDelete"></div>
+      <div v-if="showDeleteConfirmation" class="delete-confirmation-modal">
+        <button class="close-btn" @click="cancelDelete">×</button>
+        <h3>Delete friend</h3>
+        <p>Username: @{{ friendToDeleteUsername }}</p>
+        <button @click="confirmDeleteFriend" class="delete-confirm-btn">Confirm</button>
+      </div>
+    </teleport>
+
+    <teleport to="body">
+      <div v-if="showGiftSuccessNotification" class="overlay" @click="closeGiftSuccessNotification"></div>
+      <div v-if="showGiftSuccessNotification" class="gift-success-notification">
+        <button class="close-btn" @click="closeGiftSuccessNotification">×</button>
+        <h3>Success!</h3>
+        <p>Username: @{{ friendToGiftUsername }}</p>
+      </div>
+    </teleport>
   </div>
 </template>
+
+
 
 <script>
 import { db } from '@/firebaseConfig';
 import { getAuth } from 'firebase/auth';
-import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDoc, getDocs, doc, deleteDoc, runTransaction } from 'firebase/firestore';
+
 
 export default {
   data() {
@@ -34,19 +69,26 @@ export default {
       friends: [],
       showDeleteConfirmation: false,
       friendToDelete: null,
-      friendToDeleteName: '',
+      friendToDeleteUsername: '',
+      showGiftModal: false,
+      friendToGiftId: '',
+      friendToGiftUsername: '',
+      fertiliserAmount: 1,
+      showGiftSuccessNotification: false,
+      showFailureMessage: false,
     };
   },
   created() {
-      const auth = getAuth();
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          this.fetchFriends();
-        } else {
-          console.log('User logged out'); 
-        }
-      });
-    },
+    const auth = getAuth();
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.fetchFriends();
+        this.fetchFertiliser();
+      } else {
+        console.log('User logged out');
+      }
+    });
+  },
   methods: {
     async fetchFriends() {
       const auth = getAuth();
@@ -65,13 +107,14 @@ export default {
         const querySnapshot2 = await getDocs(q2);
 
         querySnapshot1.forEach((doc) => {
-          const data = doc.data();
-          friendsList.push({ id: doc.id, username: data.username2, name: data.name2 });
-        });
-        querySnapshot2.forEach((doc) => {
-          const data = doc.data();
-          friendsList.push({ id: doc.id, username: data.username1, name: data.name1});
-        });
+        const data = doc.data();
+        friendsList.push({ id: data.userId2, username: data.username2, name: data.name2 });
+      });
+      querySnapshot2.forEach((doc) => {
+        const data = doc.data();
+        friendsList.push({ id: data.userId1, username: data.username1, name: data.name1 });
+      });
+
 
         this.friends = friendsList;
       } catch (error) {
@@ -88,9 +131,10 @@ export default {
         alert('Failed to delete friend. Please try again.');
       }
     },
-    promptDeleteConfirmation(friendId, friendName) {
+
+    promptDeleteConfirmation(friendId, friendUsername) {
       this.friendToDelete = friendId;
-      this.friendToDeleteName = friendName;
+      this.friendToDeleteUsername = friendUsername;
       this.showDeleteConfirmation = true;
     },
 
@@ -106,21 +150,102 @@ export default {
       this.showDeleteConfirmation = false;
       this.friendToDelete = null;
     },
+
+    promptGiftFertiliser(friendId, username) {
+      this.friendToGiftId = friendId;
+      this.friendToGiftUsername = username;
+      this.showGiftModal = true;
+    },
+
+    async fetchFertiliser() {
+    const auth = getAuth();
+    if (!auth.currentUser) {
+      console.log('No user logged in');
+      return;
+    }
+
+    const userId = auth.currentUser.uid;
+    const userDocRef = doc(db, 'users', userId);
+    
+    try {
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        this.fertiliser = userDoc.data().fertiliser || 0;
+      } else {
+        console.log('No such document!');
+        this.fertiliser = 0;
+      }
+    } catch (error) {
+      console.error('Error fetching fertiliser data:', error);
+    }
+  },
+
+  async confirmGift() {
+      const auth = getAuth();
+      const currentUserUid = auth.currentUser ? auth.currentUser.uid : null;
+      const currentUserDocRef = doc(db, 'users', currentUserUid);
+      const friendDocRef = doc(db, 'users', this.friendToGiftId);
+
+      try {
+        await runTransaction(db, async (transaction) => {
+          const currentUserDoc = await transaction.get(currentUserDocRef);
+          const friendDoc = await transaction.get(friendDocRef);
+
+          if (!currentUserDoc.exists() || !friendDoc.exists()) {
+            throw new Error("Document does not exist!");
+          }
+
+          const currentUserFertilisers = currentUserDoc.data().fertiliser;
+          const friendFertilisers = friendDoc.data().fertiliser;
+
+          if (this.fertiliserAmount > currentUserFertilisers) {
+            throw new Error("Insufficient fertiliser.");
+          }
+
+          transaction.update(currentUserDocRef, { fertiliser: currentUserFertilisers - this.fertiliserAmount });
+          transaction.update(friendDocRef, { fertiliser: friendFertilisers + this.fertiliserAmount });
+        });
+
+        this.showGiftSuccessNotification = true;
+      } catch (error) {
+        console.error('Transaction failed: ', error);
+        this.showFailureMessage = true;
+        setTimeout(() => {
+          this.showFailureMessage = false;
+        }, 4000); 
+        return; 
+      }
+
+      this.showGiftModal = false;
+      this.fertiliserAmount = 1;
+    },
+
+    cancelGift() {
+      this.showGiftModal = false;
+    },
+
+    closeGiftSuccessNotification() {
+      this.showGiftSuccessNotification = false;
+    },
+
   },
 };
 </script>
 
+
 <style scoped>
+
 .friends-list {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 480px; 
-  margin: auto;
+  max-width: 350px; 
 }
 
 .friends-list h2 {
   color: #457247;
+  font-weight: bold;
+  margin-bottom: 15px;
 }
 
 .friends-list ul {
@@ -134,10 +259,10 @@ export default {
   margin-bottom: 10px;
   border-radius: 20px; 
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: left;
   padding: 10px 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  font-size: 18px;
 }
 
 .friend-info {
@@ -148,63 +273,160 @@ export default {
 .friend-name {
   font-weight: bold;
   color: #333333;
+  font-size: 20px;
+  text-align: left;
 }
 
 .friend-username {
-  font-size: 0.9em;
   color: #333333;
 }
 
 .delete-friend-btn {
-  padding: 5px;
-  margin-left: 15px;
   background-color: transparent;
   color: black; 
   border: none;
-  font-size: 1.2em; 
+  font-size: 1.5em; 
   cursor: pointer;
+  align-items: right;
 }
 
 .no-friends {
   color: #333333;
 }
 
-.delete-confirmation {
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #457247; 
+}
+
+.close-btn:hover {
+  color: #ff5252; 
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.delete-confirmation-modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #D5EDDE;
-  border: 2px solid #457247;
-  padding: 20px;
-  border-radius: 8px;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 40px;
+  background-color: #D5EDDE; 
+  border: 6px solid #457247; 
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  min-width: 450px; 
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: #47525E;
 }
 
-.delete-confirmation p {
-  margin-bottom: 15px;
+.delete-confirmation-modal p {
+  margin-bottom: 20px;
+  color: #47525E;
 }
 
-.delete-confirmation button {
-  padding: 10px 20px;
-  margin: 0 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.delete-confirmation-modal h3 {
   font-weight: bold;
 }
 
-.delete-confirmation button:first-child {
-  background-color: green;
+.delete-confirm-btn {
+  padding: 8px 16px;
+  border: none;
+  background-color: #47525E;
   color: white;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
 }
 
-.delete-confirmation button:last-child {
-  background-color: red;
-  color: white;
+
+.gift-btn {
+  background-color: #79BCD9;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: right;
+  margin-left: 80px;
 }
-</style>
+
+.gift-btn img {
+  height: 50px; 
+  width: auto;
+}
+
+.gift-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px;
+  background-color: #D5EDDE; 
+  border: 6px solid #457247; 
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  min-width: 450px; 
+  text-align: center;
+  font-size: 20px;
+  color: #47525E;
+}
+
+.gift-modal h3 {
+  margin-bottom: 20px;
+  color: #47525E;
+  font-weight: bold;
+  font-size: 28px;
+}
+.gift-modal p {
+  margin-bottom: 20px;
+  color: #47525E;
+}
+
+.gift-success-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px;
+  background-color: #D5EDDE; 
+  border: 6px solid #457247; 
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  min-width: 450px; 
+  text-align: center;
+  font-size: 20px;
+  color: #47525E;
+}
+.gift-success-notification h3 {
+  font-weight: bold;
+}
+
+.failure-message {
+  margin-top: 0.3rem;
+  color: red !important;
+  font-size: 13px;
+}
+
+
+
+</style> 

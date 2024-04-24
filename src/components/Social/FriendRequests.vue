@@ -23,7 +23,7 @@
 <script>
 import { db } from '@/firebaseConfig';
 import { getAuth } from 'firebase/auth';
-import { collection, query, where, onSnapshot, updateDoc, doc, getDoc, addDoc, writeBatch } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, updateDoc, doc, getDoc, writeBatch } from 'firebase/firestore';
 
 export default {
   data() {
@@ -137,11 +137,16 @@ export default {
 .friend-requests {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
+  max-width: 350px; 
 }
 
 .friend-requests h2 {
   color: #333;
+  font-weight: 500;
+  font-size: 18px;
+  margin-bottom: 10px;
+  align-self: flex-start;
 }
 
 .friend-requests ul {
@@ -155,9 +160,10 @@ export default {
   margin-bottom: 10px;
   border-radius: 20px; 
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
+  align-items: left;
+  padding: 10px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  font-size: 18px;
 }
 
 .request-info {
@@ -165,8 +171,14 @@ export default {
   flex-direction: column;
 }
 
-.request-name, .request-username {
-  margin: 0; 
+.request-name {
+  font-weight: bold;
+  color: #333333;
+  font-size: 20px;
+  align-self: flex-start;
+}
+.request-username {
+  color: #333333;
 }
 
 .request-actions {
@@ -174,19 +186,26 @@ export default {
   align-items: center;
 }
 
-.accept-btn, .reject-btn {
+.reject-btn {
   background-color: transparent; 
   color: black;
   border: none; 
   cursor: pointer;
-  font-size: 1.2rem; 
-  margin-left: 8px;
+  font-size: 1.5rem; 
+}
+
+.accept-btn {
+  background-color: transparent; 
+  color: black;
+  border: none; 
+  cursor: pointer;
+  font-size: 1.5rem; 
+  margin-left: 110px;
 }
 
 .accept-btn:before, .reject-btn:before {
   content: ""; 
   display: inline-block;
-  width: 20px; 
   height: 20px;
   background-size: contain;
 }
