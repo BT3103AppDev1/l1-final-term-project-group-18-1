@@ -1,30 +1,33 @@
 <template>
-    <div class="modal">
-      <span class="close-btn" @click="close">&times;</span>
-      <h2>Shop</h2>
-        
-      <div class="items-container"> 
-        <div class="item-container" v-for="item in shopItems" :key="item.id">
-          <div class="item-box">
-            <img :src="item.imageURL" :alt="item.name" class="item-image"/>
-            <p>Fun Fact: {{ item.funfact }}</p><br>
-            <p>Fertiliser: {{ item.fertiliser }}</p>
-          </div>
-          <div class="buy-item">
-            <input type="radio" :id="'item_' + item.id" :value="item" v-model="selectedItem" class="item-radio">
+  <div class="modal">
+    <span class="close-btn" @click="close">&times;</span>
+    <h2>Shop</h2>
+      
+    <div class="items-container"> 
+      <div class="item-container" v-for="item in shopItems" :key="item.id">
+        <div class="item-box">
+          <img :src="item.imageURL" :alt="item.name" class="item-image"/>
+          <p>Fun Fact: {{ item.funfact }}</p><br>
+          <div class="fertiliser-container">
+            <img src="@/assets/fertiliser.png" alt="Fertiliser" class="fertiliser-icon">
+            <span class="fertiliser-number">{{ item.fertiliser }}</span>
           </div>
         </div>
+        <div class="buy-item">
+          <input type="radio" :id="'item_' + item.id" :value="item" v-model="selectedItem" class="item-radio">
+        </div>
       </div>
-  
-      <div>
-        <button type="confirm" class="confirm-btn" @click="confirmPurchase">Confirm</button>
-        <p v-if="noItemsChosen" class="message">Please select an item to purchase.</p>
-        <p v-if="notEnoughFertilisers" class="message">You do not have enough fertilisers to buy this item.</p>
-        <p v-if="successfulPurchase" class="message">Successful purchase!</p>
-      </div>
-  
     </div>
-  </template>
+
+    <div>
+      <button type="confirm" class="confirm-btn" @click="confirmPurchase">Confirm</button>
+      <p v-if="noItemsChosen" class="message">Please select an item to purchase.</p>
+      <p v-if="notEnoughFertilisers" class="message">You do not have enough fertilisers to buy this item.</p>
+      <p v-if="successfulPurchase" class="message">Successful purchase!</p>
+    </div>
+
+  </div>
+</template>
   
   <script>
     import { ref, onMounted } from 'vue';
@@ -179,6 +182,31 @@
 </script>
 
 <style scoped>
+
+.item-box {
+  position: relative;
+}
+
+.fertiliser-container {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+}
+
+.fertiliser-icon {
+  height: auto;
+  margin-right: 5px;
+  margin-bottom: 20px;
+}
+
+.fertiliser-number {
+  font-size: 20px; 
+  margin-bottom: 20px;
+}
+
 .modal {
   position: fixed;
   top: 50%;
@@ -265,6 +293,16 @@ p {
     color:var(--primary-color);
     font-size: 16px;
   }
+
+.fertiliser-icon {
+  height: auto;
+  margin-right: 5px;
+}
+
+.fertiliser-icon img{
+  height: 150px; 
+  width: auto;
+}
 
 </style>
 
