@@ -19,7 +19,7 @@
       </div>
 
       <div class="form-group">
-        <label for="reminder-type">Type of Reminder:</label>
+        <label for="reminder-type">Add Eco-Friendly Reminders:</label>
         <select id="reminder-type" v-model="event.reminderType" @change="onReminderTypeChange">
           <option disabled value="">Please select one</option>
           <option>Bring a reusable bag along!</option>

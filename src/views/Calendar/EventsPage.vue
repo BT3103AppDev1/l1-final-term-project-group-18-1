@@ -1,28 +1,35 @@
 <template>
     <div>
-      <h1>Events Page</h1>
+      <h1 class="main-title">
+        Stay Organised, Live Sustainably: Your Eco-Friendly Calendar
+      </h1>
       <button @click="showAddEventModal = true">Add Event</button>
       <AddEvent v-if="showAddEventModal" @close="showAddEventModal = false" @save="handleSave" />
-  
-      <FullCalendar :options="calendarOptions" />
+      <EditEvent v-if="showEditEventModal" @close="showEditEventModal = false" @save="handleEditSave" :event="selectedEvent" />
+      <FullCalendar :options="calendarOptions" @eventClick="handleEventClick" />
     </div>
   </template>
   
   <script>
   import { auth, db } from '@/firebaseConfig';
-  import { collection, query, onSnapshot } from 'firebase/firestore';
+  import { collection, query, onSnapshot, doc, getDoc } from 'firebase/firestore';
+  import { getAuth, onAuthStateChanged } from 'firebase/auth';
   import AddEvent from './AddEvent.vue';
+  import EditEvent from './EditEvent.vue';
   import FullCalendar from '@fullcalendar/vue3';
   import dayGridPlugin from '@fullcalendar/daygrid';
-
+  
   export default {
     components: {
       AddEvent,
+      EditEvent,
       FullCalendar
     },
     data() {
       return {
         showAddEventModal: false,
+        showEditEventModal: false,
+        selectedEvent: null,
         events: [],
         calendarOptions: {
           plugins: [dayGridPlugin],
@@ -37,27 +44,68 @@
       };
     },
     methods: {
+      async handleEventClick(info) {
+        console.log('clicked');
+        try {
+          const eventDoc = await getDoc(doc(db, 'users', auth.currentUser.uid, 'events', info.event.id));
+          if (eventDoc.exists()) {
+            this.selectedEvent = { id: eventDoc.id, ...eventDoc.data() };
+            this.showEditEventModal = true;
+          } else {
+            console.error('Event document not found');
+          }
+        } catch (error) {
+          console.error('Error fetching event:', error);
+        }
+      },
       handleSave(eventData) {
         console.log('Event saved', eventData);
         this.showAddEventModal = false; // Close modal after saving
+      },
+      handleEditSave(eventData) {
+        console.log('Event edited', eventData);
+        this.showEditEventModal = false; // Close modal after saving
+      },
+      initializeDataWithUserCheck() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            console.log("User is signed in, initializing data.");
+            await this.initializeUserData();
+          } else {
+            console.error("No user is signed in. Redirecting to login.");
+            // Optionally redirect to login or show a login prompt
+          }
+        });
+      },
+      async initializeUserData() {
+        const user = auth.currentUser;
+        if (user) {
+          const q = query(collection(db, 'users', user.uid, 'events'));
+          this.unsubscribe = onSnapshot(q, (snapshot) => {
+            this.events = snapshot.docs.map(doc => ({
+              id: doc.id,
+              title: doc.data().title,
+              start: doc.data().start,
+              end: doc.data().end
+            }));
+            this.calendarOptions.events = this.events;
+          });
+        } else {
+          console.error('User not logged in');
+        }
       }
     },
-    async mounted() {
-      const user = auth.currentUser;
-      if (user) {
-        const q = query(collection(db, 'users', user.uid, 'events'));
-        this.unsubscribe = onSnapshot(q, (snapshot) => {
-          this.events = snapshot.docs.map(doc => ({
-            title: doc.data().title,
-            start: doc.data().start,
-            end: doc.data().end
-          }));
-          this.calendarOptions.events = this.events;
-        });
-      } else {
-        console.error('User not logged in');
-      }
+    mounted() {
+      this.initializeDataWithUserCheck();
     }
   };
   </script>
+  
+  <style>
+  .main-title {
+    font-size: 2rem;
+    color: #457247;
+  }
+  </style>
   
