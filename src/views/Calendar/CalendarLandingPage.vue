@@ -16,21 +16,21 @@ export default {
     const router = useRouter();
 
     onMounted(async () => {
+      console.log(new Date().getTime())
       const user = auth.currentUser;
       // Calendar collections within individual users document
       console.log(user)
       const userDocRef = doc(db, 'users', user.uid, 'calendar', user.uid);
       const docSnap = await getDoc(userDocRef);
-      
-      if (docSnap.exists() && docSnap.data().calendarSynced) {
-        const GoogleAuth = getGoogleAuth();
+      const GoogleAuth = getGoogleAuth();
+
+      if (GoogleAuth && docSnap.exists() && docSnap.data().calendarSynced) {
         const googleUser = GoogleAuth.currentUser.get();
         if (googleUser.getBasicProfile().getEmail() == docSnap.data().userEmail) {
 
           // Check if access token needs refreshing
           const accessTokenExpirationTime = docSnap.data().calendar.accessTokenExpirationTime;
           const now = new Date().getTime();
-          
           if (!accessTokenExpirationTime || accessTokenExpirationTime < now) {
             // Access token has expired or not set, redirect to sign-in
             await signInAgain();
