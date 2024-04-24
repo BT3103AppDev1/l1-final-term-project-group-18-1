@@ -8,14 +8,11 @@
         <p class="description">Please check your inbox for verification link sent to ilovemotherearth@gmail.com</p>
         <p class="small-text">Can't find it? Please check your spam folder.</p>
         <button @click="loginpage">I've Verified My Email</button>
-
-
-
-        <!-- Banner Image Section -->
-        <div class="banner-section">
-            <img src="@/assets/Banner.png" alt="EcoHarbour Banner" class="banner-image" />
-        </div>
     </div>
+    <!-- Banner Image Section -->
+    <div class="banner-section">
+    <img src="@/assets/Banner.png" alt="EcoHarbour Banner" class="banner-image" />
+  </div>
 </template>
 
 <script>
@@ -24,18 +21,15 @@ import {reload} from 'firebase/auth'
 
 export default {
     name: 'EmailVerification',
-    methods: {
-        loginpage() {
-            this.$router.push({ path: '/login' });
-        }
-    }
 };
 </script>
 
 <style scoped>
 .email-verification-container {
     height: 90vh;
-    padding-top: 10vh
+    padding-top: 10vh;
+    position: relative;
+    z-index: 2;
 }
 
 .main-title {
@@ -73,6 +67,7 @@ button {
   bottom: 0;
   left: 0;
   width: 100vw;
+  z-index: 1;
 }
 
 .banner-image {
