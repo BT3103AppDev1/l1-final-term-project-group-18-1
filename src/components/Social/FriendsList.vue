@@ -273,6 +273,7 @@ export default {
 }
 
 .friend-info {
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
 }
