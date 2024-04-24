@@ -95,6 +95,38 @@ export default {
       .then(() => {
         alert('Event successfully added!');
         this.$emit('close');
+
+        // Schedule desktop notification for reminder
+        if (this.event.reminderType && this.event.reminderTime) {
+          const notificationTime = new Date(this.event.start);
+          notificationTime.setMinutes(notificationTime.getMinutes() - this.event.reminderTime);
+          
+          if (Notification.permission === "granted") {
+            let reminderMessage = '';
+            if (this.event.reminderType === 'custom') {
+              reminderMessage = this.event.reminderDescription;
+            } else {
+              reminderMessage = this.event.reminderType;
+            }
+            new Notification(`Reminder: ${reminderMessage}`, {
+              body: `For Event: ${this.event.title}`,
+            });
+          } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+              if (permission === "granted") {
+                let reminderMessage = '';
+                if (this.event.reminderType === 'custom') {
+                  reminderMessage = this.event.reminderDescription;
+                } else {
+                  reminderMessage = this.event.reminderType;
+                }
+                new Notification(`Reminder: ${reminderMessage}`, {
+                  body: `For Event: ${this.event.title}`,
+                });
+              }
+            });
+          }
+        }
       })
       .catch(error => {
         console.error('Error adding document: ', error);

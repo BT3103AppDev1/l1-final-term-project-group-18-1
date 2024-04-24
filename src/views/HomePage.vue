@@ -7,15 +7,7 @@
         <div class="events-container">
           <h2 class="second-heading">Upcoming Events</h2>
           <div class="events-list">
-            <div class="event" v-for="event in formattedUpcomingEvents" :key="event.id">
-              <div class="event-box">
-                <strong>{{ event.title }}</strong><br>
-                {{ event.start }} to {{ event.end }}
-              </div>
-            </div>
-            <div v-if="formattedUpcomingEvents.length === 0" style="margin-top: 20px;">
-              <p>No upcoming events</p>
-            </div>
+            <UpcomingEvents/>
           </div>
         </div>
         <!-- Friend requests section -->
@@ -57,6 +49,7 @@ import numberDisplay from '@/components/Home/numberDisplay.vue';
 import weeklyAverage from '@/components/Home/weeklyAverage.vue';
 import barChart from '@/components/Home/barChart.vue';
 import FriendRequests from '@/components/Social/FriendRequests.vue'
+import UpcomingEvents from '@/components/UpcomingEvents.vue';
 
 export default {
   components: {
@@ -65,12 +58,10 @@ export default {
     numberDisplay,
     weeklyAverage,
     barChart,
-    FriendRequests
+    FriendRequests,
+    UpcomingEvents
   },
   computed: {
-    upcomingEvents() {
-      return this.$store.state.upcomingEvents;
-    },
     formattedUpcomingEvents() {
       return this.upcomingEvents.map(event => ({
         ...event,
