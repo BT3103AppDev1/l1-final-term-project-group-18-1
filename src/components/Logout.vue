@@ -3,8 +3,7 @@
 </template>
 
 <script>
-import { getAuth, signOut } from "firebase/auth";
-import { getGoogleAuth } from "@/utils/googleApi";  // Import getGoogleAuth
+import { getAuth } from "firebase/auth";
 
 export default {
   name: 'Logout',
@@ -23,11 +22,6 @@ export default {
     async logout() {
       const auth = getAuth();
       try {
-        const GoogleAuth = getGoogleAuth(); // Get Google Auth instance
-        if (GoogleAuth && GoogleAuth.isSignedIn.get()) {
-          await GoogleAuth.signOut();  // Sign out from Google
-        }
-        await signOut(auth);  // Sign out from Firebase
         this.$router.push({name: 'Login'});
       } catch (error) {
         console.error('Logout error:', error.message);

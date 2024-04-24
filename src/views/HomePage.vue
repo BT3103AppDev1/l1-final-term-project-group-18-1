@@ -7,15 +7,7 @@
         <div class="events-container">
           <h2 class="second-heading">Upcoming Events</h2>
           <div class="events-list">
-            <div class="event" v-for="event in formattedUpcomingEvents" :key="event.id">
-              <div class="event-box">
-                <strong>{{ event.title }}</strong><br>
-                {{ event.start }} to {{ event.end }}
-              </div>
-            </div>
-            <div v-if="formattedUpcomingEvents.length === 0" style="margin-top: 20px;">
-              <p>No upcoming events</p>
-            </div>
+            <UpcomingEvents/>
           </div>
         </div>
         <!-- Friend requests section -->
@@ -55,6 +47,7 @@ import pieChart from '../components/Home/pieChart.vue'
 import numberDisplay from '@/components/Home/numberDisplay.vue';
 import weeklyAverage from '@/components/Home/weeklyAverage.vue';
 import barChart from '@/components/Home/barChart.vue';
+import UpcomingEvents from '@/components/UpcomingEvents.vue';
 import FriendRequests from '@/components/Social/FriendRequests.vue';
 import communityPie from '@/components/Home/communityPie.vue';
 
@@ -66,12 +59,10 @@ export default {
     weeklyAverage,
     barChart,
     FriendRequests,
+    UpcomingEvents
     communityPie,
   },
   computed: {
-    upcomingEvents() {
-      return this.$store.state.upcomingEvents;
-    },
     formattedUpcomingEvents() {
       return this.upcomingEvents.map(event => ({
         ...event,
@@ -123,20 +114,12 @@ main {
 }
 
 .events-container {
-  background-color: #ffe1b0;
+  background-color: #F2D74A;
+  padding-bottom: 10px;
 }
 .friend-requests {
   background-color: #95e1f1;
   padding-bottom: 10px;
-}
-
-.event-box {
-  padding: 10px;
-  background-color: #ffffff; /* White background */
-  border-radius: 8px; /* Rounded corners */
-  margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
-  color: #333333; /* Dark grey text color */
 }
 
 .second-heading {
