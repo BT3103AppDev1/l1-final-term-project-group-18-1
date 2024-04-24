@@ -179,7 +179,8 @@
                     username: this.username,
                     [dayField]: this.itemCount, 
                     [monthField]: this.itemCount, 
-                    currWeeklyAvg: 1,
+                    currWeekCount: 1, 
+                    currWeeklyAvgSum:0,
                 });
                 console.log("created document for user to store in recycledDataSummary");
             } else {
