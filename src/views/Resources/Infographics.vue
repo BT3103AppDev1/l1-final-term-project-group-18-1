@@ -1,5 +1,6 @@
 <template>
   <div>
+    <br><br>
     <!-- Breadcrumbs -->
     <nav aria-label="breadcrumb">
       <router-link to="/resources/ResourcesPage">Resources</router-link>
@@ -62,6 +63,8 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+  margin: 0 auto;
 }
 
 .poster-item {
