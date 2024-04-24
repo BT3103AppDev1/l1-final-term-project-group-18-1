@@ -203,6 +203,7 @@ main {
 .friend-requests {
   background-color: #95e1f1;
   padding-bottom: 10px;
+  margin: 0 auto;
 }
 
 .second-heading {
