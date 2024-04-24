@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div class="regularText">You have beaten {{ percentageOfUsersBeaten }}% of users in your recycling efforts</div>
+      <div class="regularText">You have beaten {{ percentageOfUsersBeaten.toFixed(2) }}% of users in your recycling efforts</div>
       <div v-if="percentageOfUsersBeaten" class="pieChartContainer">
         <canvas id="communityChart"></canvas>
       </div>
@@ -91,14 +91,6 @@ export default {
                 } else {
                     console.error('Total users count is zero, cannot calculate percentage.');
                     this.percentageOfUsersBeaten = 0; // Optionally set to 0 or keep undefined based on your needs
-                }
-
-
-                //debugging
-                if (this.sortedUsers.length > 0) {
-                    console.log("Username at index 0:", this.sortedUsers[0].username);
-                } else {
-                    console.log("No users in the sorted array.");
                 }
 
                 this.$nextTick(() => {

@@ -100,7 +100,7 @@
         console.log("Received item as:", this.item);
 
         const now = new Date();
-        //const now = new Date('2024-12-25'); //testing
+        //const now = new Date('2024-05-23'); //testing
         const day = now.toLocaleDateString('en-US', { weekday: 'long' }); // Get the day of the week as a string
         const month = now.toLocaleString('default', { month: 'long' }); // Get the current month as a string
         const dayField = day + 'Count'; // Create the field name, e.g., 'MondayCount'
@@ -205,6 +205,7 @@
 
             //get the currentAvgSum across the whole database
             const totalAvg = await this.sumUserWeeklyAverages(this.username,dayField);
+            let initAvgSum = totalAvg === 0 ? 1 : totalAvg;
 
             // query to find existing document in recycledDataSummary collection by week
             const summaryRef = collection(db, "recycledDataSummary");
@@ -224,7 +225,7 @@
                     [monthField]: this.itemCount, 
                     currWeekCount: currWeekCount, 
                     currWeekAvg: 1,
-                    currWeeklyAvgSum: totalAvg,
+                    currWeeklyAvgSum: initAvgSum,
             });
             console.log("Created new document for the week.");
             } else {     

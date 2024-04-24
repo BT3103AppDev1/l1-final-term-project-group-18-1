@@ -70,8 +70,8 @@
             
             async fetchData() {
                 try {
-                    //const now = new Date('2024-11-25'); // For testing
                     const now = new Date();
+                    //const now = new Date('2024-05-23'); //testing
                     const [year, weekNumber] = this.getWeekNumber(now);
                     const weekDocId = `${this.username}_${year}_week_${weekNumber}`;
 
