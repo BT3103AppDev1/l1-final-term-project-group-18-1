@@ -130,7 +130,7 @@ import { db } from '../firebaseConfig.js'; // imports the firebase configuration
 .search-input{
   width: 800px;
   padding: 1.2rem;
-  border: 1px solid #ccc;
+  border: 2px solid black;
   border-radius: 20px;
   border-right: none;
   background: white url('@/assets/searchIcon.png');
@@ -138,12 +138,13 @@ import { db } from '../firebaseConfig.js'; // imports the firebase configuration
   background-position: 10px center;
   background-size: 40px 40px;
   text-align:center;
+  z-index: 1001;
 }
 
 .suggestions-dropdown {
   display:block;
   top: 100%;; /*set top offset to 100% of the height of the search bar container */
-  width: 800px; /*match the width of the search-bar container */
+  width: 850px; /*match the width of the search-bar container */
   left: 0; /* align the left edge of the search-bar container */
   list-style: none;
   padding: 0;
@@ -166,10 +167,6 @@ import { db } from '../firebaseConfig.js'; // imports the firebase configuration
 
 .suggestions-dropdown li:last-child {
   border-bottom: none;
-}
-
-.suggestions-dropdown li:hover {
-  background-color: #f9f9f9;
 }
 
 ul.suggestions-dropdown li.no-results {
