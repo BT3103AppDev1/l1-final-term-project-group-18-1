@@ -27,7 +27,8 @@ export default {
 
       if (docSnap.exists() && docSnap.data().calendarSynced && GoogleAuth) {
         const googleUser = GoogleAuth.currentUser.get();
-        
+        console.log(googleUser.getBasicProfile().getEmail())
+        console.log(docSnap.data().userEmail)
         if (googleUser && googleUser.getBasicProfile().getEmail() === docSnap.data().userEmail) {
           const accessTokenExpirationTime = docSnap.data().calendar?.accessTokenExpirationTime;
           const now = new Date().getTime();
@@ -39,6 +40,7 @@ export default {
           router.push({ name: 'Events' });
         }
       } else {
+        GoogleAuth.signOut()
         router.push({ name: 'Calendar' });
       }
     });

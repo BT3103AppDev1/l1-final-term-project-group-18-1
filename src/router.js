@@ -6,7 +6,6 @@ import SignUp from './views/SignUpPage.vue'
 import ForgetPassword from './views/ForgetPasswordPage.vue'
 import Farm from './views/FarmPage.vue';
 import Shop from './components/ShopModal.vue'
-import CalendarPage from './views/Calendar/CalendarPage.vue';
 import EventsPage from './views/Calendar/EventsPage.vue'
 import Infographics from './views/Resources/Infographics.vue'
 import ThriftLocator from './views/Resources/ThriftLocator.vue'
@@ -20,7 +19,6 @@ import CreateEventModal from '@/components/CreateEventModal.vue'
 import EditEventModal from '@/components/EditEventModal.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 import EmailVerification from './views/EmailVerificationPage.vue'
-import CalendarLandingPage from './views/Calendar/CalendarLandingPage.vue'
 
 const routes = [
     {
@@ -75,16 +73,6 @@ const routes = [
         component: Shop,
     },
     {
-        path: '/CalendarLanding',
-        name: 'CalendarLanding',
-        component: CalendarLandingPage
-    },
-    {
-        path: '/Calendar',
-        name: 'Calendar',
-        component: CalendarPage,
-    },
-    {
         path: '/Events',
         name: 'Events',
         component: EventsPage,
@@ -94,11 +82,6 @@ const routes = [
                 name: 'CreateEvent',
                 component: CreateEventModal,
             },
-            {
-                path: 'edit-event',
-                name: 'EditEvent',
-                component: EditEventModal,
-            }
         ]
     },
     {
