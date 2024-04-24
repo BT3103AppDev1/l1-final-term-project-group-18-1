@@ -70,6 +70,11 @@ export default {
         return;
       }
 
+      if (this.username.length > 10) {
+        alert("Username must be 10 characters or less.");
+        return;
+      }
+
       const unique = await this.isUsernameUnique(this.username);
       if (!unique) {
         alert("This username is already taken. Please choose another one.");

@@ -16,6 +16,7 @@ import SearchPage from './views/home/SearchPage.vue'
 import SocialPage from './views/SocialPage.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 import EmailVerification from './views/EmailVerificationPage.vue'
+import FarmPage from './views/FarmPage.vue'
 
 
 const routes = [
@@ -64,6 +65,12 @@ const routes = [
         path: '/Farm',
         name: 'Farm',
         component: Farm,
+    },
+
+    {
+        path: '/FarmPage/:userId',
+        name: 'FarmPage',
+        component: FarmPage,
     },
     {
         path: '/SocialPage',
