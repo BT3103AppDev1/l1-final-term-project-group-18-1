@@ -18,8 +18,7 @@
         </div>
 
         <!-- Default farm background -->
-        <p class="instruction-text">Grow your farm!</p><br>
-        <p class="instruction-text">Drag items to move. Click to set position.</p>
+        <p class="instruction-text">Grow your farm! Drag then click to move farm elements.</p>
         <div class="background"></div>
 
     </div>
