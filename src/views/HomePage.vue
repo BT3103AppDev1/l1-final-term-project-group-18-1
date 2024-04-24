@@ -12,6 +12,7 @@
         </div>
         <!-- Friend requests section -->
         <div class="friend-requests">
+          <h2 class="second-heading">Incoming Friend Requests</h2>
           <FriendRequests />
         </div>
       </div>
@@ -203,6 +204,7 @@ main {
 
 .second-heading {
   color: #333333;
+  align-self: center;
 }
 
 .weeklyAvg{
