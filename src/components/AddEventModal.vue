@@ -22,9 +22,7 @@
         <label for="reminder-type">Add Eco-Friendly Reminders:</label>
         <select id="reminder-type" v-model="event.reminderType" @change="onReminderTypeChange">
           <option disabled value="">Please select one</option>
-          <option>Bring a reusable bag along!</option>
-          <option>Leave now to catch the bus!</option>
-          <option>Bring my meal container</option>
+          <option v-for="reminder in reminders" :key="reminder.id" :value="reminder.message">{{ reminder.message }}</option>
           <option value="custom">Create a custom reminder</option>
         </select>
       </div>
@@ -57,7 +55,7 @@
 
 <script>
 import { auth, db } from '@/firebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 
 export default {
   name: 'CreateEventModal',
@@ -72,8 +70,12 @@ export default {
         reminderDescription: '',
         reminderTime: null
       },
-      isReminderRequired: false
+      isReminderRequired: false,
+      reminders: []
     };
+  },
+  mounted() {
+    this.fetchReminders(); // Fetch reminders when component is mounted
   },
   computed: {
     isEndTimeValid() {
@@ -92,6 +94,16 @@ export default {
     }
   },
   methods: {
+    fetchReminders() {
+      const reminderRef = collection(db, 'reminders');
+      getDocs(reminderRef)
+        .then(querySnapshot => {
+          this.reminders = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        })
+        .catch(error => {
+          console.error("Error fetching reminders:", error);
+        });
+    },
     onReminderTypeChange() {
       if (this.event.reminderType !== 'custom') {
         this.event.reminderDescription = '';
