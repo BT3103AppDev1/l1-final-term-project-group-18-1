@@ -1,8 +1,11 @@
 <template>
     <div class = "container">
-            <div class = "pageHeader">Thank you for making the Earth a better place!</div>
-            <div class = "subheader">Key in your item here</div>          
-        <SearchBar @update-query="updateSearchQuery"/>
+            <div class = "topPart">
+                <div class = "pageHeader">Thank you for making the Earth a better place!</div>
+                <div class = "subheader">Key in your item here</div>          
+                <SearchBar @update-query="updateSearchQuery"/>
+            </div>
+   
         <div v-if="hasSearchQuery">
             <div v-if="isLoading">Loading...</div>
             <div v-if="error">{{ error }}</div>
@@ -120,10 +123,16 @@
         width:100%;
         display: flex;
         flex-direction: column; /* Stack children vertically */
-        align-items: center;    /* Center children horizontally */
+        align-items: left;    /* Center children horizontally */
         justify-content: center; /* Center children vertically if needed */
         height: 100vh; /* Full viewport height, adjust as needed */
         text-align: center; /* Ensures text inside the container is also centered */
+    }
+
+    .topPart {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .pageHeader{
@@ -162,8 +171,8 @@
 
     .information{
         text-align: left;
-        max-width: 2000px;
-        padding-left: 50px; 
+        max-width: 60%;
+        margin-left: 400px; 
     }
 
     .information-list {
