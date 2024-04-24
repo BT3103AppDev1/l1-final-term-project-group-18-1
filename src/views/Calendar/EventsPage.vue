@@ -6,7 +6,7 @@
       <button class = "add-event-button" @click="showAddEventModal = true">
         Add Event
         </button>
-      <AddEvent v-if="showAddEventModal" @close="showAddEventModal = false" @save="handleSave" />
+      <AddEventModal v-if="showAddEventModal" @close="showAddEventModal = false" @save="handleSave" />
       <FullCalendar :options="calendarOptions"/>
     </div>
   </template>
@@ -15,13 +15,13 @@
   import { auth, db } from '@/firebaseConfig';
   import { collection, query, onSnapshot, doc, getDoc } from 'firebase/firestore';
   import { getAuth, onAuthStateChanged } from 'firebase/auth';
-  import AddEvent from './AddEvent.vue';
+  import AddEventModal from '@/components/AddEventModal.vue';
   import FullCalendar from '@fullcalendar/vue3';
   import dayGridPlugin from '@fullcalendar/daygrid';
   
   export default {
     components: {
-      AddEvent,
+      AddEventModal,
       FullCalendar
     },
     data() {
@@ -46,10 +46,6 @@
       handleSave(eventData) {
         console.log('Event saved', eventData);
         this.showAddEventModal = false; // Close modal after saving
-      },
-      handleEditSave(eventData) {
-        console.log('Event edited', eventData);
-        this.showEditEventModal = false; // Close modal after saving
       },
       initializeDataWithUserCheck() {
         const auth = getAuth();

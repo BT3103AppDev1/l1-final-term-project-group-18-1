@@ -121,16 +121,6 @@ main {
   padding-bottom: 10px;
 }
 
-.event-box {
-  background-color: --vt-c-white-soft;
-  border-radius: 8px; /* Rounded corners */
-  margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
-  color: #333333; /* Dark grey text color */
-  width: 50%; /* or any other value that suits your layout */
-  margin: 0 auto; /* This will center the box if you've reduced the width */
-}
-
 .second-heading {
   color: #333333;
 }
