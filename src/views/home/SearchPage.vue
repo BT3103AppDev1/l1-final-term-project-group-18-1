@@ -15,14 +15,12 @@
                         <p class ="text">{{ item.recyclable ? 'Yes' : 'No' }}</p> 
                         <p class = "text">it</p> 
                         <p class ="text">{{ item.recyclable ? 'can' : 'can\'t' }}</p> 
-                        <p class = "text">recycled</p>
+                        <p class = "text">be recycled</p>
                     </div>
 
                     <div v-if="item.recyclable" class = "inline-texts">
                         You can recycle it at the <span class ="bold">{{ item.place }}</span>.
                     </div>
-
-                    <p class = "labels">Information: </p>
                     <ul class = "information-list">
                     <li v-for="(sentence, index) in informationSentences" :key="index">
                         {{ sentence.trim() }}
@@ -189,17 +187,4 @@
         margin-left: 1em;
     }
 
-    .breadcrumb {
-    padding: 10px 0;
-    font-size: 16px;
-    }
-
-    .breadcrumb a {
-    color: #457247; /* Adjust color as needed */
-    text-decoration: none;
-    }
-
-    .breadcrumb a:hover {
-    text-decoration: underline;
-    }
 </style>
