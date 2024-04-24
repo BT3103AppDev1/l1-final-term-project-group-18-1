@@ -17,6 +17,7 @@ import SocialPage from './views/SocialPage.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 import EmailVerification from './views/EmailVerificationPage.vue'
 
+
 const routes = [
     {
         path: '/',
@@ -48,6 +49,11 @@ const routes = [
         name: 'Home',
         component: HomePage,
     },
+    // {
+    //     path: '/Logout',
+    //     name: 'Logout',
+    //     component: Logout
+    // },
     {
         path: '/ForgetPassword',
         name: 'ForgetPassword',
