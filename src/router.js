@@ -92,7 +92,7 @@ const routes = [
             {
                 path: 'create-event',
                 name: 'CreateEvent',
-                component: CreateEventModal, 
+                component: CreateEventModal,
             },
             {
                 path: 'edit-event',
