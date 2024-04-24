@@ -17,7 +17,7 @@
   
 <script>
     import { getAuth, onAuthStateChanged } from 'firebase/auth';
-    import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+    import { doc, getDoc, collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
     import { db } from '@/firebaseConfig';
     import treeIcon from '@/assets/treeIcon.png';
 
@@ -32,6 +32,11 @@
         mounted() {
             this.initialiseDataWithDelay();
         },
+        // beforeDestroy() {
+        //     if (this.unsubscribe) {
+        //         this.unsubscribe(); // Call the unsubscribe function on component destroy
+        //     }
+        // },
         methods: {
             initialiseDataWithDelay() {
             const auth = getAuth();
@@ -65,45 +70,57 @@
             
             async fetchData() {
                 try {
-                const queryRef = collection(db, 'recycledDataSummary'); // Reference to the collection
-                const q = query(queryRef, where('username', '==', this.username)); // Create a query against the collection
-                const querySnapshot = await getDocs(q); // Execute the query
+                    //const now = new Date('2024-11-25'); // For testing
+                    const now = new Date();
+                    const [year, weekNumber] = this.getWeekNumber(now);
+                    const weekDocId = `${this.username}_${year}_week_${weekNumber}`;
 
-                let totalDaysRecycled = 0;
-                let totalWeeks = 0;
+                    let docRef = doc(db, 'recycledDataSummary', weekDocId);
+                    let docSnapshot = await getDoc(docRef);
 
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const daysRecycledThisWeek = [
-                        'MondayCount',
-                        'TuesdayCount',
-                        'WednesdayCount',
-                        'ThursdayCount',
-                        'FridayCount',
-                        'SaturdayCount',
-                        'SundayCount'
-                    ].reduce((count, day) => {
-                        // Count each day where the value is greater than 0
-                        return count + (data[day] > 0 ? 1 : 0);
-                    }, 0);
+                    if (!docSnapshot.exists()) {
+                        console.log("Current week's document does not exist. Fetching the most recent available document.");
+                        const queryRef = query(
+                            collection(db, 'recycledDataSummary'),
+                            where('username', '==', this.username),
+                            orderBy('year', 'desc'),
+                            orderBy('weekNumber', 'desc'),
+                            limit(1)
+                        );
+                        const querySnapshot = await getDocs(queryRef);
+                        if (!querySnapshot.empty) {
+                            docSnapshot = querySnapshot.docs[0];
+                            console.log("Found a recent document instead." + docSnapshot.id);
+                        }
+                    }
 
-                    totalDaysRecycled += daysRecycledThisWeek;
-                    totalWeeks += 1; // Increase for each document processed
-                });
-
-                    // Calculate the average if totalWeeks is greater than zero
-                    if (totalWeeks > 0) {
-                        this.averageDays = Math.round(totalDaysRecycled / totalWeeks);
+                    if (docSnapshot.exists()) {
+                        const documentData = docSnapshot.data();
+                        const totalWeeksRecycled = documentData.currWeekCount || 0;
+                        const totalWeeklyAvgSum = documentData.currWeeklyAvgSum || 0;
+                        this.averageDays = totalWeeksRecycled > 0 ? Math.round(totalWeeklyAvgSum / totalWeeksRecycled) : 0;
                     } else {
+                        console.log("No recent documents available.");
                         this.averageDays = 0;
                     }
                 } catch (error) {
                     console.error("Error fetching recycled data:", error);
-                    // Handle your error state here
+                    this.averageDays = 0;
                 }
-                    
             },
-       
+            getWeekNumber(d) {
+                // Copy date so don't modify original
+                d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+                // Set to nearest Thursday: current date + 4 - current day number
+                // Make Sunday's day number 7
+                d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+                // Get first day of year
+                const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+                // Calculate full weeks to nearest Thursday
+                const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+                // Return array of year and week number
+                return [d.getUTCFullYear(), weekNo];
+            },
         },
 
     }

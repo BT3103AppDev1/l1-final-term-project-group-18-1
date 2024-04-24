@@ -14,6 +14,12 @@
       </label>
       <span class="required-text"><span class="required-asterisk">*</span> Required</span>
       <button @click="logItem">Let's Recycle</button>
+      <br>
+      <label class="checkbox-label">
+        <input type="checkbox" v-model="loggingMore" />
+        <span class="checkbox-custom"></span>
+            Logging More
+       </label>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> <!-- Error message will show up if it exists -->   
       <div v-if="loading" class="loading-spinner">
             Loading...
@@ -25,6 +31,7 @@
   import { db } from '../firebaseConfig'; 
   import { collection, addDoc, doc, getDoc, setDoc, query, updateDoc, where, getDocs, increment } from 'firebase/firestore'; 
   import { getAuth } from 'firebase/auth';  // Import getAuth function to access authentication
+  import { resolveTransitionHooks } from 'vue';
 
   
   export default {
@@ -34,7 +41,8 @@
         errorMessage: '', // Initialize error message as empty
         isClean: false, // Tracks the state of the checkbox
         username: '',
-        loading: false
+        loading: false,
+        loggingMore: false
       };
     },
     props: {
@@ -90,14 +98,14 @@
         this.loading = true;
         console.log("Received item as:", this.item);
 
-        //const now = new Date();
-        const now = new Date('2024-05-09');//testing
+        const now = new Date();
+        //const now = new Date('2024-12-25'); //testing
         const day = now.toLocaleDateString('en-US', { weekday: 'long' }); // Get the day of the week as a string
         const month = now.toLocaleString('default', { month: 'long' }); // Get the current month as a string
         const dayField = day + 'Count'; // Create the field name, e.g., 'MondayCount'
         const monthField = month + 'Count'; // Create the field name for the month, e.g., 'JanuaryCount'
 
-         const [year, weekNumber] = this.getWeekNumber(now);
+        const [year, weekNumber] = this.getWeekNumber(now);
 
         // Basic validation for item details
         if (!this.item || !this.item.name) {
@@ -179,29 +187,6 @@
                 await updateDoc(doc.ref, updateData);
                 console.log("Fertilizer count updated successfully for user:", this.username);
             });
-
-
-            //logging into recycledDataSummary
-            // const querySnapshotSummary = await getDocs(r);
-            // if (querySnapshotSummary.empty) {
-            //     await addDoc(summaryRef, {
-            //         username: this.username,
-            //         [dayField]: this.itemCount, 
-            //         [monthField]: this.itemCount, 
-            //         currWeekCount: 1, 
-            //         currWeeklyAvgSum:0,
-            //     });
-            //     console.log("created document for user to store in recycledDataSummary");
-            // } else {
-            //     querySnapshotSummary.forEach(async (doc) => {
-            //         await updateDoc(doc.ref, {
-            //             [dayField]: increment(this.itemCount),  
-            //             [monthField]: increment(this.itemCount),  
-            //         });
-            //     });
-            //     console.log("Item quantity updated successfully for each day.");
-            // }
-
             
             //get currentWeekCount for user 
 
@@ -222,9 +207,7 @@
             const weeklyDocSnap = await getDoc(weeklyDocRef);
 
             if (!weeklyDocSnap.exists()) {
-                console.log("updating week count from" + currWeekCount)
                 currWeekCount++
-                console.log("updated to" + currWeekCount)
                 await setDoc(weeklyDocRef, {
                     username: this.username,
                     year: year,
@@ -245,8 +228,12 @@
                 });
                 console.log("Updated document for the week.");
             }
-            
-        this.resetInputs();
+
+            if(!this.loggingMore) {
+                this.$router.push('/Home');
+            } else {
+                this.resetInputs();
+            }   
         alert("Item logged and fertilisers updated successfully!");
         } catch (error) {
             console.error("Error logging item:", error);
@@ -262,6 +249,7 @@
         this.itemCount = ''; // Reset to default value
         this.isClean = false; // Reset checkbox
         this.errorMessage = ''; // Clear any error messages
+        this.loggingMore = false; //reset checkbox
     },
     async countLoggedDays(username, year, weekNumber, currentDayField) {
         const weekDocId = `${username}_${year}_week_${weekNumber}`;
@@ -313,7 +301,7 @@
                     toAdd = true;
                     console.log(`Accounting new activity for current log, totalAverageSum now ${totalAverage}.`);
                 } else {
-                    console.log(`${totalAverage} not affected by current log.`);
+                    console.log(`average still ${totalAverage} not affected by current log.`);
                 }
             });
 
