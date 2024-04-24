@@ -130,9 +130,8 @@ import { db } from '../firebaseConfig.js'; // imports the firebase configuration
 .search-input{
   width: 800px;
   padding: 1.2rem;
-  border: 2px solid black;
+  border: 2px solid #ccc;
   border-radius: 20px;
-  border-right: none;
   background: white url('@/assets/searchIcon.png');
   background-repeat:no-repeat;
   background-position: 10px center;
