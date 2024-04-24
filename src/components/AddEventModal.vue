@@ -1,7 +1,7 @@
 <template>
   <div class="modal">
     <form @submit.prevent="saveEvent">
-      <h2>Create New Event</h2>
+      <h2 class="modaltitle">Create New Event</h2>
       
       <div class="form-group">
         <label for="title">Event Title:</label>
@@ -21,7 +21,7 @@
       <div class="form-group">
         <label for="reminder-type">Add Eco-Friendly Reminders:</label>
         <select id="reminder-type" v-model="event.reminderType" @change="onReminderTypeChange">
-          <option disabled value="">Please select one</option>
+          <option class="placeholder" disabled value="">Please select one</option>
           <option v-for="reminder in reminders" :key="reminder.id" :value="reminder.message">{{ reminder.message }}</option>
           <option value="custom">Create a custom reminder</option>
         </select>
@@ -46,8 +46,8 @@
       </div>
 
       <div class="form-group action-buttons">
-        <button type="submit" :disabled="!isEndTimeValid || !isReminderValid">Save Event</button>
-        <button type="button" @click="$emit('close')">Cancel</button>
+        <button class="button1" type="submit" :disabled="!isEndTimeValid || !isReminderValid">Save Event</button>
+        <button class="button2" type="button" @click="$emit('close')">Cancel</button>
       </div>
     </form>
   </div>
@@ -127,11 +127,8 @@ export default {
 
         // Schedule desktop notification for reminder
         if (this.event.reminderType && this.event.reminderTime) {
-          // Calculate the event start time in milliseconds
           const eventStartTime = new Date(this.event.start).getTime();
-          // Calculate the current time in milliseconds
           const currentTime = Date.now();
-          // Calculate the notification time by subtracting the reminder time from the event start time
           const notificationTime = eventStartTime - (this.event.reminderTime * 60000); // Convert minutes to milliseconds
           
           // Check if the notification time is in the future
@@ -204,6 +201,11 @@ export default {
   border-radius: 4px;
   box-sizing: border-box;
 }
+.button1,
+.button2 {
+  width: 60%;
+  align-self: center;
+}
 .form-group select {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -216,7 +218,8 @@ export default {
   display: block;
 }
 .form-group input::placeholder,
-.form-group select::placeholder {
+.form-group select::placeholder,
+.placeholder {
   color: grey;
 }
 .form-group input:valid {
@@ -234,4 +237,5 @@ export default {
   margin-top: -10px;
   margin-bottom: 10px;
 }
+
 </style>

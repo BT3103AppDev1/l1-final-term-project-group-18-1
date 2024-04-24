@@ -152,8 +152,8 @@ export default {
 
 .button-container {
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  justify-content: center; 
+  align-items: center; 
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -164,13 +164,13 @@ export default {
 }
 
 .noneGraph {
-  display: flex; /* This enables Flexbox */
-  justify-content: center; /* This centers the flex items horizontally */
-  align-items: center; /* This centers the flex items vertically */
+  display: flex; 
+  justify-content: center;
+  align-items: center; 
 }
 
 .flex-item {
-  flex: 1; /* This ensures that each flex item takes up an equal amount of space */
+  flex: 1; 
 }
 
 main {
@@ -180,13 +180,15 @@ main {
 .sectionHeader{
   margin-top: 10px;
 }
+
 .notifs {
   display: flex;
   justify-content: center; /* Center the children horizontally */
-  align-items: flex-start; /* Align the children to the top */
-  gap: 20px; /* Optional: Adds space between the children */
+  align-items: flex-start; 
+  gap: 20px; 
   width: 80vw;
 }
+
 .events-container, .friend-requests {
   flex: 1; /* Both children will take equal width */
   width: 600px;

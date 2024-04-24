@@ -34,7 +34,7 @@
           initialView: 'dayGridMonth',
           events: this.events,
           eventColor: '#457247',
-          eventTimeFormat: { // like '14:30', for 2:30pm
+          eventTimeFormat: { // in 24h format
             hour: '2-digit',
             minute: '2-digit',
             hour12: false
@@ -45,7 +45,8 @@
     methods: {
       handleSave(eventData) {
         console.log('Event saved', eventData);
-        this.showAddEventModal = false; // Close modal after saving
+        this.showAddEventModal = false; 
+        // Close showAddEventModal after saving
       },
       initializeDataWithUserCheck() {
         const auth = getAuth();
@@ -55,7 +56,6 @@
             await this.initializeUserData();
           } else {
             console.error("No user is signed in. Redirecting to login.");
-            // Optionally redirect to login or show a login prompt
           }
         });
       },
