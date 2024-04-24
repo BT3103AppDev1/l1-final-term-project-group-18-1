@@ -81,8 +81,8 @@ export default {
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
-  padding-bottom: 20px;
-  padding-top: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .main-title {
@@ -91,12 +91,12 @@ export default {
 } 
 
 main {
-  padding-top: 60px;
+  margin-top: 60px;
 }
 
 .sectionHeader{
   display:flex;
-  padding-top: 10px;
+  margin-top: 10px;
 }
 .events-container {
   margin-top: 20px;

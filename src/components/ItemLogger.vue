@@ -15,6 +15,9 @@
       <span class="required-text"><span class="required-asterisk">*</span> Required</span>
       <button @click="logItem">Let's Recycle</button>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> <!-- Error message will show up if it exists -->   
+      <div v-if="loading" class="loading-spinner">
+            Loading...
+       </div>
      </div>
   </template>
   
@@ -30,7 +33,8 @@
         itemCount: '', 
         errorMessage: '', // Initialize error message as empty
         isClean: false, // Tracks the state of the checkbox
-        username: ''
+        username: '',
+        loading: false
       };
     },
     props: {
@@ -70,6 +74,7 @@
      },
      
      async logItem() {
+        this.loading = true;
         console.log("Received item as:", this.item);
 
         const now = new Date();
@@ -82,22 +87,26 @@
         // Basic validation for item details
         if (!this.item || !this.item.name) {
             this.errorMessage = 'Item details are not available. Please try again.';
+            this.loading = false;
             return; // Stop further execution if no item or item name
         }
 
         // Validation for user inputs
         if (!this.isClean) {
             this.errorMessage = 'Please ensure that all items are clean/rinsed.';
+            this.loading = false;
             return;
         }
 
         if (this.itemCount === '' || this.itemCount === null) {
             this.errorMessage = 'Please do not leave the quantity field empty.';
+            this.loading = false;
             return;
         }
 
         if (this.itemCount <= 0) {
             this.errorMessage = 'Please enter a quantity more than 0.';
+            this.loading = false;
             return;
         }
 
@@ -189,6 +198,9 @@
         } catch (error) {
             console.error("Error logging item:", error);
             this.errorMessage = 'Failed to log the item. Please try again.';
+            this.loading = false;
+        } finally {
+            this.loading = false;
         }
     },
 
@@ -211,5 +223,28 @@
     .required-asterisk{
         color: red;
     }
+    .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 10px;
+        height: 100px;  
+    }
+
+    .loading-spinner::after {
+        content: '';
+        width: 20px;
+        height: 20px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
   </style>
   
