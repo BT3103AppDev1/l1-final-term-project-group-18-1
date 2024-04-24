@@ -4,8 +4,8 @@
 
 <script>
 import { initGoogleAPI } from '@/utils/googleApi';
-import { doc, setDoc } from 'firebase/firestore'; // Import the needed functions from the firestore module
 import { auth, db } from '@/firebaseConfig';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default {
   name: 'GoogleLoginButton',
@@ -21,25 +21,34 @@ export default {
           });
         }
 
-        // Get the Firebase user's ID from the authentication state
+        // Get the Firebase user's info
         const firebaseUser = auth.currentUser;
         if (!firebaseUser) {
           throw new Error('Not authenticated with Firebase.');
         }
 
-        // Assuming the user is now signed in, get the Google user's info
+        // Get the Google user's info
         const googleUser = GoogleAuth.currentUser.get();
         const authResponse = googleUser.getAuthResponse(true);
 
-        // Prepare the data to be stored, checking for undefined refresh token
+        // Check if userEmail exists and is valid
+        const userEmail = googleUser.getBasicProfile().getEmail();
+        if (!userEmail) {
+          throw new Error('User email is undefined or invalid.');
+        }
+
+        // Prepare the data to be stored
         const userData = {
-          googleAccessToken: authResponse.access_token,
+          userEmail: userEmail,
+          calendarSynced: true,
+          accessToken: authResponse.access_token,
+          accessTokenExpirationTime: new Date().getTime() + (60 * 60 * 1000), 
           // Include the refresh token only if it's provided
           ...(authResponse.refresh_token ? { googleRefreshToken: authResponse.refresh_token } : {}),
         };
 
         // Store the tokens in Firebase Firestore under the user's document
-        const userRef = doc(db, 'users', firebaseUser.uid);
+        const userRef = doc(db, 'users', firebaseUser.uid, 'calendar', firebaseUser.uid);
         await setDoc(userRef, userData, { merge: true });
 
         this.$emit('authenticated'); // Emit an event on successful authentication

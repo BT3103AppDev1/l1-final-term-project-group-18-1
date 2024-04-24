@@ -104,12 +104,12 @@ export default {
       if (firebaseUser) {
         try {
           // Fetch the Firestore document for the current user
-          const userDocRef = doc(db, 'users', firebaseUser.uid);
+          const userDocRef = doc(db, 'users', firebaseUser.uid, 'calendar', firebaseUser.uid);
           const userDocSnap = await getDoc(userDocRef);
-
+          
           // Check if the document exists and contains a googleAccessToken
-          if (userDocSnap.exists() && userDocSnap.data().googleAccessToken) {
-            const googleAccessToken = userDocSnap.data().googleAccessToken;
+          if (userDocSnap.exists() && userDocSnap.data().accessToken) {
+            const googleAccessToken = userDocSnap.data().accessToken;
             // Set the access token for the Google API client
             window.gapi.client.setToken({ access_token: googleAccessToken });
 
