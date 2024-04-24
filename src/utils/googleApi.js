@@ -25,6 +25,30 @@ export async function initGoogleAPI() {
     });
 }
 
+export async function signInToGoogle() {
+    await loadGapiInsideDOM();
+  
+    return new Promise((resolve, reject) => {
+      window.gapi.load('auth2', async () => {
+        try {
+          const auth2 = await window.gapi.auth2.init({
+            client_id: clientId,
+            scope: scope
+          });
+  
+          const GoogleUser = await auth2.signIn();
+  
+          const authResponse = GoogleUser.getAuthResponse();
+          const accessToken = authResponse.access_token;
+  
+          resolve({ accessToken });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+}
+
 export function getGoogleAuth() {
     return googleAuthInstance;
 }

@@ -47,7 +47,7 @@
         align-items: center;
         width: 60%;
         margin: 0 auto;
-        height: 60vh;
+        margin-top: 10vh;
     }
     input {
         margin: 5px;

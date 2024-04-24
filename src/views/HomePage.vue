@@ -2,23 +2,32 @@
   <div class="page">
     <main>
       <h1 class="main-title">Thank you for making the Earth a better place!</h1>
-      <!-- Events display section -->
-      <div class="events-container">
-        <h2 class="second-heading">Upcoming Events</h2>
-        <div class="events-list">
-          <div class="event" v-for="event in formattedUpcomingEvents" :key="event.id">
-            <div class="event-box">
-              <strong>{{ event.title }}</strong><br>
-              {{ event.start }} to {{ event.end }}
+      <div class="notifs">
+        <!-- Events display section -->
+        <div class="events-container">
+          <h2 class="second-heading">Upcoming Events</h2>
+          <div class="events-list">
+            <div class="event" v-for="event in formattedUpcomingEvents" :key="event.id">
+              <div class="event-box">
+                <strong>{{ event.title }}</strong><br>
+                {{ event.start }} to {{ event.end }}
+              </div>
+            </div>
+            <div v-if="formattedUpcomingEvents.length === 0" style="margin-top: 20px;">
+              <p>No upcoming events</p>
             </div>
           </div>
+        </div>
+        <!-- Friend requests section -->
+        <div class="friend-requests">
+          <FriendRequests />
         </div>
       </div>
       <div class = "button-container">
           <searchButton />
-      </div>  
+      </div>
       <div class="sectionHeader">
-          <p class="regularText">Statistics</p>      
+          <p class="regularText" style="font-size:xx-large;">Statistics</p>
       </div>
        <div>
         <p class="regularText">You have recycled</p>
@@ -34,9 +43,9 @@
       <div class ="weeklyAvg">
         <weeklyAverage />
       </div>
-      <div class ="barChart">     
+      <div class ="barChart">
         <barChart />
-      </div>    
+      </div>
     </main>
   </div>
 </template>
@@ -47,6 +56,7 @@ import pieChart from '../components/Home/pieChart.vue'
 import numberDisplay from '@/components/Home/numberDisplay.vue';
 import weeklyAverage from '@/components/Home/weeklyAverage.vue';
 import barChart from '@/components/Home/barChart.vue';
+import FriendRequests from '@/components/Social/FriendRequests.vue'
 
 export default {
   components: {
@@ -54,7 +64,8 @@ export default {
     pieChart,
     numberDisplay,
     weeklyAverage,
-    barChart
+    barChart,
+    FriendRequests
   },
   computed: {
     upcomingEvents() {
@@ -86,27 +97,36 @@ export default {
 }
 
 .main-title {
-  font-weight: bold; 
+  font-weight: bold;
   color: #457247;
-} 
+}
 
 main {
   margin-top: 60px;
 }
 
 .sectionHeader{
-  display:flex;
   margin-top: 10px;
 }
-.events-container {
-  margin-top: 20px;
-  background-color: #ffe1b0;
-  padding: 20px;
+.notifs {
+  display: flex;
+  justify-content: center; /* Center the children horizontally */
+  align-items: flex-start; /* Align the children to the top */
+  gap: 20px; /* Optional: Adds space between the children */
+  width: 80vw;
+}
+.events-container, .friend-requests {
+  flex: 1; /* Both children will take equal width */
+  width: 600px;
   border-radius: 10px; /* Rounded corners */
 }
 
-.events-container h2 {
-  margin-top: 0;
+.events-container {
+  background-color: #ffe1b0;
+}
+.friend-requests {
+  background-color: #95e1f1;
+  padding-bottom: 10px;
 }
 
 .event-box {
