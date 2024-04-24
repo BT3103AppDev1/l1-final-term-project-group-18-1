@@ -23,7 +23,6 @@ export default createStore({
     },
     logout({ commit }) {
       commit('resetState');
-      // Additional logout operations, like redirecting the user or clearing local storage
     }
   }
 });
