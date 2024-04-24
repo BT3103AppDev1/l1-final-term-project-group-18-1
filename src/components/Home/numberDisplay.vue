@@ -1,4 +1,5 @@
 <template>
+    <p class="regularText">You have recycled</p>
     <div class="counter">
       <transition-group name="fade" tag="div" class="counter-container">
         <div v-for="(digit, index) in formattedCount" :key="index" class="counter-digit">
@@ -6,6 +7,7 @@
         </div>
       </transition-group>
     </div>
+    <p class="regularText">items so far.</p>
   </template>
   
   <script>
@@ -122,5 +124,12 @@
     display: flex;
     justify-content: center;
   }
+
+  .regularText{
+  font-size: 25px;
+  text-align: center;
+  color:#457247;
+  font-weight:bold
+}
 
   </style>
