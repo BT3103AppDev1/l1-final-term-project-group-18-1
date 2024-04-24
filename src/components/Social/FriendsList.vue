@@ -59,7 +59,8 @@
 <script>
 import { db } from '@/firebaseConfig';
 import { getAuth } from 'firebase/auth';
-import { collection, query, where, getDocs, doc, deleteDoc, runTransaction } from 'firebase/firestore';
+import { collection, query, where, getDoc, getDocs, doc, deleteDoc, runTransaction } from 'firebase/firestore';
+
 
 export default {
   data() {
@@ -80,6 +81,7 @@ export default {
     auth.onAuthStateChanged((user) => {
       if (user) {
         this.fetchFriends();
+        this.fetchFertiliser();
       } else {
         console.log('User logged out');
       }
@@ -153,42 +155,66 @@ export default {
       this.showGiftModal = true;
     },
 
-    async confirmGift() {
-      const auth = getAuth();
-      const currentUserUid = auth.currentUser ? auth.currentUser.uid : null;
-      const currentUserDocRef = doc(db, 'users', currentUserUid);
-      const friendDocRef = doc(db, 'users', this.friendToGiftId);
+    async fetchFertiliser() {
+    const auth = getAuth();
+    if (!auth.currentUser) {
+      console.log('No user logged in');
+      return;
+    }
 
-      try {
-        await runTransaction(db, async (transaction) => {
-          const currentUserDoc = await transaction.get(currentUserDocRef);
-          const friendDoc = await transaction.get(friendDocRef);
-          
-          if (!currentUserDoc.exists || !friendDoc.exists) {
-            throw new Error("One of the documents does not exist!");
-          }
+    const userId = auth.currentUser.uid;
+    const userDocRef = doc(db, 'users', userId);
+    
+    try {
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        this.fertiliser = userDoc.data().fertiliser || 0;
+      } else {
+        console.log('No such document!');
+        this.fertiliser = 0; // Reset or handle as needed
+      }
+    } catch (error) {
+      console.error('Error fetching fertiliser data:', error);
+    }
+  },
 
-          const currentUserFertilisers = currentUserDoc.data().fertiliser;
-          const friendFertilisers = friendDoc.data().fertiliser;
+  async confirmGift() {
+  const auth = getAuth();
+  const currentUserUid = auth.currentUser ? auth.currentUser.uid : null;
+  const currentUserDocRef = doc(db, 'users', currentUserUid);
+  const friendDocRef = doc(db, 'users', this.friendToGiftId);
 
-          if (this.fertiliserAmount > currentUserFertilisers) {
-            throw new Error("Insufficient fertilisers to gift.");
-          }
+  try {
+    await runTransaction(db, async (transaction) => {
+      const currentUserDoc = await transaction.get(currentUserDocRef);
+      const friendDoc = await transaction.get(friendDocRef);
 
-          transaction.update(currentUserDocRef, { fertiliser: currentUserFertilisers - this.fertiliserAmount });
-          transaction.update(friendDocRef, { fertiliser: friendFertilisers + this.fertiliserAmount });
-        });
-
-        this.giftSuccessMessage = 'Fertilisers sent successfully!';
-        this.showGiftSuccessNotification = true;
-      } catch (error) {
-        console.error('Transaction failed: ', error);
-        alert('Failed to send fertilisers. Please try again.');
+      if (!currentUserDoc.exists() || !friendDoc.exists()) {
+        throw new Error("Document does not exist!");
       }
 
-      this.showGiftModal = false;
-      this.fertiliserAmount = 1; // reset to default
-    },
+      const currentUserFertilisers = currentUserDoc.data().fertiliser;
+      const friendFertilisers = friendDoc.data().fertiliser;
+
+      if (this.fertiliserAmount > currentUserFertilisers) {
+        throw new Error("Insufficient fertiliser.");
+      }
+
+      transaction.update(currentUserDocRef, { fertiliser: currentUserFertilisers - this.fertiliserAmount });
+      transaction.update(friendDocRef, { fertiliser: friendFertilisers + this.fertiliserAmount });
+    });
+
+
+    this.showGiftSuccessNotification = true;
+  } catch (error) {
+    console.error('Transaction failed: ', error);
+    alert('Failed to send fertiliser.');
+  }
+
+  this.showGiftModal = false;
+  this.fertiliserAmount = 1; // Reset to default after the operation
+},
+
 
 
     cancelGift() {
@@ -198,12 +224,14 @@ export default {
     closeGiftSuccessNotification() {
       this.showGiftSuccessNotification = false;
     },
+
   },
 };
 </script>
 
 
 <style scoped>
+
 .friends-list {
   display: flex;
   flex-direction: column;
@@ -213,6 +241,8 @@ export default {
 
 .friends-list h2 {
   color: #457247;
+  font-weight: bold;
+  margin-bottom: 15px;
 }
 
 .friends-list ul {
@@ -241,6 +271,7 @@ export default {
   font-weight: bold;
   color: #333333;
   font-size: 20px;
+  text-align: left;
 }
 
 .friend-username {
@@ -306,6 +337,10 @@ export default {
 .delete-confirmation-modal p {
   margin-bottom: 20px;
   color: #47525E;
+}
+
+.delete-confirmation-modal h3 {
+  font-weight: bold;
 }
 
 .delete-confirm-btn {
@@ -378,6 +413,9 @@ export default {
   text-align: center;
   font-size: 20px;
   color: #47525E;
+}
+.gift-success-notification h3 {
+  font-weight: bold;
 }
 
 

@@ -137,12 +137,16 @@ export default {
 .friend-requests {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   max-width: 350px; 
 }
 
 .friend-requests h2 {
   color: #333;
+  font-weight: 500;
+  font-size: 18px;
+  margin-bottom: 10px;
+  align-self: flex-start;
 }
 
 .friend-requests ul {
@@ -171,6 +175,7 @@ export default {
   font-weight: bold;
   color: #333333;
   font-size: 20px;
+  align-self: flex-start;
 }
 .request-username {
   color: #333333;
