@@ -34,7 +34,6 @@
         errorMessage: '', // Initialize error message as empty
         isClean: false, // Tracks the state of the checkbox
         username: '',
-        userid: '',
         loading: false
       };
     },
@@ -55,13 +54,6 @@
     },
     mounted() {
         this.fetchUsername();
-        async () => {
-            const auth = getAuth();
-            const user = auth.currentUser;
-            if (user) {
-                this.userid = user.uid;
-            }
-        }
     },
     methods: {
       async fetchUsername() {
@@ -177,6 +169,7 @@
                     updateData.ewasteRecycled = increment(this.itemCount); // Increment metalRecycled count if item category is metal
                 }
                 await updateDoc(doc.ref, updateData);
+                //update global state for fertiliser
                 this.$store.commit(
                     'updateFertiliser',
                     this.$store.state.fertiliser + fertiliserIncrementBy);
