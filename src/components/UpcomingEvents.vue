@@ -8,7 +8,7 @@
         <div>{{ formatDateTime(event.start) + ' to ' + formatDateTime(event.end)}}</div>
       </li>
     </ul>
-    <div v-if="upcomingEvents.length === 0">
+    <div v-if="upcomingEvents.length === 0" style="margin-top: 40px;">
       No upcoming events in the next 24 hours.
     </div>
   </div>
@@ -83,7 +83,7 @@ export default {
 }
 
 .event-item {
-  background-color: white; 
+  background-color: white;
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 10px;
