@@ -19,24 +19,26 @@
       <div class = "button-container">
           <searchButton />
       </div>
+      
+      <!-- Adding line to divide statistics section -->
+      <div class="horizontal-line"></div>
+
       <div class="sectionHeader">
           <p class="regularText" style="font-size:xx-large;">Statistics</p>
       </div>
-       <div>
-          <numberDisplay/>
+      <div class = "noneGraph">
+        <numberDisplay class="flex-item"/>
+        <weeklyAverage class="flex-item"/>
       </div>
-      <br>
+       
       <div>
-          <pieChart />
+        <pieChart v-if="hasRecycledDataSummary"/>
       </div>
       <div class ="communityPie">
-        <communityPie />
-      </div>
-      <div class ="weeklyAvg">
-        <weeklyAverage />
+        <communityPie v-if="hasRecycledDataSummary"/>
       </div>
       <div class ="barChart">
-        <barChart />
+        <barChart v-if="hasRecycledDataSummary"/>
       </div>
     </main>
   </div>
@@ -51,6 +53,11 @@ import barChart from '@/components/Home/barChart.vue';
 import UpcomingEvents from '@/components/UpcomingEvents.vue';
 import FriendRequests from '@/components/Social/FriendRequests.vue';
 import communityPie from '@/components/Home/communityPie.vue';
+
+//for verifying if there are already data
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '@/firebaseConfig';
 
 export default {
   components: {
@@ -71,8 +78,70 @@ export default {
         end: new Date(event.end).toLocaleString() // Format 'end' date
       }));
     }
-  }
-};
+  }, 
+  data() {
+    return {
+      username: '',
+      hasRecycledDataSummary: false, //flag to see if user has recycled something
+    };
+  },
+  mounted() {
+      this.initialiseDataWithDelay();
+  },
+  methods: {
+    initialiseDataWithDelay() {
+    const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log("User is signed in, fetching data.");
+          this.fetchUsername();
+        } else {
+          console.error("No user is signed in.");
+        }
+      });
+    },
+    async fetchUsername() {
+      console.log("fetching username")
+      const auth = getAuth();
+      const user = auth.currentUser;
+        if (user) {
+          console.log("user exists")
+          const userRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          this.username = userSnap.data().username;
+          this.checkUserRecycledDataSummary();
+        } else {
+          console.error("No such user!");
+        }
+        } else {
+          console.error("No user is signed in.");
+        }
+      },
+      async checkUserRecycledDataSummary() {
+          // Reference to the 'recycledDataSummary' collection
+          const recycledDataSummaryCollection = collection(db, 'recycledDataSummary');
+          
+          // Create a query against the collection for the username
+          const q = query(recycledDataSummaryCollection, where('username', '==', this.username));
+          try {
+            const querySnapshot = await getDocs(q);
+
+            // Check if the querySnapshot has any documents
+            if (querySnapshot.empty) {
+              // No document for the user
+              this.hasRecycledDataSummary = false;
+            } else {
+              // There is at least one document for the user
+              this.hasRecycledDataSummary = true;
+            }
+          } catch (error) {
+            console.error('Error checking recycledDataSummary:', error);
+            this.hasRecycledDataSummary = false;
+          }
+      },    
+  },
+}
 </script>
 
 <style scoped>
@@ -92,6 +161,16 @@ export default {
 .main-title {
   font-weight: bold;
   color: #457247;
+}
+
+.noneGraph {
+  display: flex; /* This enables Flexbox */
+  justify-content: center; /* This centers the flex items horizontally */
+  align-items: center; /* This centers the flex items vertically */
+}
+
+.flex-item {
+  flex: 1; /* This ensures that each flex item takes up an equal amount of space */
 }
 
 main {
@@ -142,4 +221,11 @@ main {
   color:#457247;
   font-weight:bold
 }
+
+.horizontal-line {
+  border-top: 1.5px solid #333; /* Creates a line at the top of the element */
+  margin-top: 70px;
+  
+}
+
 </style>

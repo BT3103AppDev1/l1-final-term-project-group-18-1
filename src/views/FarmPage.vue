@@ -6,7 +6,7 @@
             <router-link to="/SocialPage" class="button">Social</router-link>
             <button @click="openModal" class="button">Shop</button>
         </div>
-        <ShopModal v-if="showModal" @close="closeModal" />
+        <ShopModal v-if="showModal" @close="closeModal" @item-purchased="handleItemPurchased"/>
 
         <!-- Display farm items -->
         <div class="farm-items">
@@ -42,16 +42,29 @@
       };
     },
     mounted() {
-      this.initialiseDataWithDelay();
+      const userId = this.$route.params.userId; 
+      if (userId) {
+        this.fetchFarmItems(userId); 
+      } else {
+        this.initialiseDataWithDelay(); 
+      }
     },
     methods: {
+      handleItemPurchased(newItem) {
+        // Add the new item to the farmItems array
+        this.farmItems.push({
+          ...newItem,
+          top: 0,  // Default positions, or handle dynamically
+          left: 0
+        });
+      },
       initialiseDataWithDelay() {
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
           if (user) {
             console.log("User is signed in, fetching data.");
-            this.currentUser = user; // Set the currentUser
-            this.fetchFarmItems(); // Fetch farm items
+            this.currentUser = user; 
+            this.fetchFarmItems(); 
           } else {
             console.error("No user is signed in.");
           }
@@ -63,26 +76,33 @@
       closeModal() {
         this.showModal = false;
       },
-      async fetchFarmItems() {
+      async fetchFarmItems(userId = null) {
+        const userToFetch = userId || this.currentUser?.uid;
+        if (!userToFetch) {
+          console.error("No user ID available to fetch farm items.");
+          return;
+        }
+
         try {
-          const userId = this.currentUser.uid; // Use UID instead of username
-          const userFarmDocRef = doc(collection(db, 'farm'), userId);
+          const userFarmDocRef = doc(db, 'farm', userToFetch);
           const userFarmDocSnapshot = await getDoc(userFarmDocRef);
-  
+
           if (userFarmDocSnapshot.exists()) {
             const farmItemsData = userFarmDocSnapshot.data().items || [];
-            // Extract imageURL from each farm item
             this.farmItems = farmItemsData.map(item => ({
               id: item.id,
               imageURL: item.imageURL,
               quantity: item.quantity,
-              top: item.top || 0, // Default to 0 if top is not defined
-              left: item.left || 0 // Default to 0 if left is not defined
+              top: item.top || 0, 
+              left: item.left || 0 
             }));
-            console.log('Farm items fetched successfully');
+            console.log('Farm items fetched successfully for user:', userToFetch);
+          } else {
+            console.error('Farm data does not exist for user:', userToFetch);
+            this.farmItems = []; 
           }
         } catch (error) {
-          console.error('Error fetching farm items:', error);
+          console.error('Error fetching farm items for user:', userToFetch, error);
         }
       },
   

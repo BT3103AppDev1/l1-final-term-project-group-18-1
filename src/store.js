@@ -9,4 +9,4 @@ export default createStore({
       state.fertiliser = newValue;
     },
   },
-});
+})
