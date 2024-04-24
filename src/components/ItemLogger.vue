@@ -1,19 +1,36 @@
 <template>
     <div class="item-logger">
-      <input
-        type="number"
-        v-model.number="itemCount"
-        placeholder="Enter quantity..."
-        class="item-count-input"
-        min="1"
-      />
+      <div>
+        <input
+            type="number"
+            v-model.number="itemCount"
+            placeholder="Enter quantity..."
+            class="item-count-input"
+            min="1"
+        />
+        <button @click="logItem">Let's Recycle</button>
+      </div>
       <label class ="checkbox-label">
             <input type="checkbox" v-model="isClean" />
             <span class="checkbox-custom"></span>
-            Item is clean/rinsed <span class="required-asterisk">*</span>
+            <span class="required-asterisk">*</span> Item is clean/rinsed
+            <span class="required-asterisk">*Required</span>
       </label>
+<<<<<<< Updated upstream
       <span class="required-text"><span class="required-asterisk">*</span> Required</span>
       <button @click="logItem">Let's Recycle</button>
+=======
+
+
+
+
+      <br>
+      <label class="checkbox-label">
+        <input type="checkbox" v-model="loggingMore" />
+        <span class="checkbox-custom"></span>
+            Logging More
+       </label>
+>>>>>>> Stashed changes
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> <!-- Error message will show up if it exists -->
       <div v-if="loading" class="loading-spinner">
             Loading...
@@ -22,8 +39,14 @@
   </template>
 
   <script>
+<<<<<<< Updated upstream
   import { db } from '../firebaseConfig';
   import { collection, addDoc, doc, getDoc, query, updateDoc, where, getDocs, increment } from 'firebase/firestore';
+=======
+
+  import { db } from '../firebaseConfig';
+  import { collection, addDoc, doc, getDoc, setDoc, query, updateDoc, where, getDocs, increment } from 'firebase/firestore';
+>>>>>>> Stashed changes
   import { getAuth } from 'firebase/auth';  // Import getAuth function to access authentication
 
 
@@ -71,8 +94,12 @@
             } else {
                 console.log("No user is signed in.");
             }
+<<<<<<< Updated upstream
      },
 
+=======
+       },
+>>>>>>> Stashed changes
      async logItem() {
         this.loading = true;
         console.log("Received item as:", this.item);
@@ -110,6 +137,7 @@
             return;
         }
 
+<<<<<<< Updated upstream
 
           // construct a query to find existing document of user and item in database
             const itemsRef = collection(db, "recycledDatabase");
@@ -125,6 +153,14 @@
 
         try {
             //logging item in recycledDatabase
+=======
+        try {
+            //logging item in recycledDatabase
+            // construct a query to find existing document of user and item in database
+            const itemsRef = collection(db, "recycledDatabase");
+            const q = query(itemsRef, where("username", "==", this.username), where("itemName", "==", this.item.name));
+
+>>>>>>> Stashed changes
             const querySnapshot = await getDocs(q);
             if (querySnapshot.empty) {
                 await addDoc(itemsRef, {
@@ -176,6 +212,7 @@
                 console.log("Fertilizer count incremented by", fertiliserIncrementBy);
                 console.log("Fertilizer count updated successfully for user:", this.username);
             });
+<<<<<<< Updated upstream
 
             //logging into recycledDataSummary
             const querySnapshotSummary = await getDocs(r);
@@ -185,9 +222,52 @@
                     [dayField]: this.itemCount,
                     [monthField]: this.itemCount,
                     currWeeklyAvg: 1,
+=======
+
+            //get currentWeekCount for user
+
+
+            let currWeekCount = await this.retrieveCurrWeekCount(this.username);
+
+            //get the days logged for this week
+            const daysLogged = await this.countLoggedDays(this.username, year, weekNumber, dayField);
+
+            //get the currentAvgSum across the whole database
+            const totalAvg = await this.sumUserWeeklyAverages(this.username,dayField);
+            let initAvgSum = totalAvg === 0 ? 1 : totalAvg;
+
+            // query to find existing document in recycledDataSummary collection by week
+            const summaryRef = collection(db, "recycledDataSummary");
+            //const r = query(summaryRef, where("username", "==", this.username));
+            const weekDocId = `${this.username}_${year}_week_${weekNumber}`;
+            const weeklyDocRef = doc(summaryRef, weekDocId);
+
+            const weeklyDocSnap = await getDoc(weeklyDocRef);
+
+            if (!weeklyDocSnap.exists()) {
+                currWeekCount++
+                await setDoc(weeklyDocRef, {
+                    username: this.username,
+                    year: year,
+                    weekNumber: weekNumber,
+                    [dayField]: this.itemCount,
+                    [monthField]: this.itemCount,
+                    currWeekCount: currWeekCount,
+                    currWeekAvg: 1,
+                    currWeeklyAvgSum: initAvgSum,
+            });
+            console.log("Created new document for the week.");
+            } else {
+                await updateDoc(weeklyDocRef, {
+                    [dayField]: increment(this.itemCount),
+                    [monthField]: increment(this.itemCount),
+                    currWeekAvg:daysLogged,
+                    currWeeklyAvgSum: totalAvg,
+>>>>>>> Stashed changes
                 });
                 console.log("created document for user to store in recycledDataSummary");
             } else {
+<<<<<<< Updated upstream
                 querySnapshotSummary.forEach(async (doc) => {
                     await updateDoc(doc.ref, {
                         [dayField]: increment(this.itemCount),
@@ -199,6 +279,10 @@
 
 
         this.resetInputs();
+=======
+                this.resetInputs();
+            }
+>>>>>>> Stashed changes
         alert("Item logged and fertilisers updated successfully!");
         } catch (error) {
             console.error("Error logging item:", error);
@@ -216,11 +300,96 @@
         this.errorMessage = ''; // Clear any error messages
     },
 
+<<<<<<< Updated upstream
+=======
+        try {
+            const docSnap = await getDoc(weeklyDocRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const dayFields = [
+                    'MondayCount', 'TuesdayCount', 'WednesdayCount',
+                    'ThursdayCount', 'FridayCount', 'SaturdayCount', 'SundayCount'
+                ];
+                let daysLogged = dayFields.filter(day => data[day] && data[day] > 0).length;
+
+                // Check if the current day is being logged for the first time
+                if (currentDayField && (!data[currentDayField] || data[currentDayField] === 0)) {
+                    daysLogged += 1;  // Increment to account for the new day being logged
+                    console.log(`Logging new activity for ${currentDayField}, total days logged this week now ${daysLogged}.`);
+                } else {
+                    console.log(`${daysLogged} days logged this week including today.`);
+                }
+                return daysLogged;
+            } else {
+                // If the document doesn't exist, today's logging would be the first day.
+                console.log("No activity logged this week. Starting with today as the first day.");
+                return 1;  // Return 1 since today is being logged
+            }
+        } catch (error) {
+            console.error("Failed to retrieve the week's log:", error);
+            return -1;  // Indicate an error
+        }
+    },
+    async sumUserWeeklyAverages(username, currentDayField ) {
+        const summaryRef = collection(db, "recycledDataSummary");
+        const queryRef = query(summaryRef, where("username", "==", username));
+        try {
+            const querySnapshot = await getDocs(queryRef);
+            let totalAverage = 0;
+            let toAdd = false;
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+
+                if (data.currWeekAvg) {
+                    totalAverage += data.currWeekAvg; // Sum up all currWeekAvg values
+                }
+
+                if (currentDayField && (!data[currentDayField] || data[currentDayField] === 0)) {
+                    toAdd = true;
+                    console.log(`Accounting new activity for current log, totalAverageSum now ${totalAverage}.`);
+                } else {
+                    console.log(`average still ${totalAverage} not affected by current log.`);
+                }
+            });
+
+            if(toAdd){
+                totalAverage+=1;
+            }
+
+            console.log(`Total average for ${username}: ${totalAverage}`);
+            return totalAverage;
+        } catch (error) {
+            console.error("Failed to calculate total average:", error);
+            return -1;  // Indicate an error
+        }
+    },
+    async retrieveCurrWeekCount(username){
+        // Query the user's summary document and see if they have already started logging items to initialise week counter
+            const queryRef = query(collection(db, "recycledDataSummary"), where("username", "==", this.username));
+            let currWeekCount = 0;
+            try{
+                const querySnapshotWeekCount = await getDocs(queryRef);
+                if(querySnapshotWeekCount) {
+                    currWeekCount = querySnapshotWeekCount.size;
+                }
+                console.log("Current week count:", currWeekCount);
+                return currWeekCount;
+            } catch (error) {
+                console.error("Error fetching documents:", error);
+            }
+    },
+>>>>>>> Stashed changes
     },
   };
   </script>
 
   <style scoped>
+    .item-logger {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
     .error-message {
         color: red;
     }
