@@ -113,7 +113,8 @@ main {
 }
 
 .events-container {
-  background-color: #ffe1b0;
+  background-color: #F2D74A;
+  padding-bottom: 10px;
 }
 .friend-requests {
   background-color: #95e1f1;
@@ -121,12 +122,13 @@ main {
 }
 
 .event-box {
-  padding: 10px;
-  background-color: #ffffff; /* White background */
+  background-color: --vt-c-white-soft;
   border-radius: 8px; /* Rounded corners */
   margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
   color: #333333; /* Dark grey text color */
+  width: 50%; /* or any other value that suits your layout */
+  margin: 0 auto; /* This will center the box if you've reduced the width */
 }
 
 .second-heading {

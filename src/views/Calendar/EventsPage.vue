@@ -3,7 +3,9 @@
       <h1 class="main-title">
         Stay Organised, Live Sustainably: Your Eco-Friendly Calendar
       </h1>
-      <button @click="showAddEventModal = true">Add Event</button>
+      <button class = "add-event-button" @click="showAddEventModal = true">
+        Add Event
+        </button>
       <AddEvent v-if="showAddEventModal" @close="showAddEventModal = false" @save="handleSave" />
       <FullCalendar :options="calendarOptions"/>
     </div>
@@ -31,6 +33,7 @@
           plugins: [dayGridPlugin],
           initialView: 'dayGridMonth',
           events: this.events,
+          eventColor: '#457247',
           eventTimeFormat: { // like '14:30', for 2:30pm
             hour: '2-digit',
             minute: '2-digit',
@@ -84,10 +87,15 @@
   };
   </script>
   
-  <style>
-  .main-title {
-    font-size: 2rem;
-    color: #457247;
-  }
-  </style>
+<style>
+.main-title {
+font-size: 2rem;
+color: #457247;
+}
+
+.add-event-button {
+width: 30%;
+}
+
+</style>
   

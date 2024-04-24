@@ -86,6 +86,10 @@ export default {
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 10px;
+  width: 80%;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .upcoming-events li {

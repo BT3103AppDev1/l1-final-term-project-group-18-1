@@ -11,7 +11,6 @@ import Infographics from './views/Resources/Infographics.vue'
 import ThriftLocator from './views/Resources/ThriftLocator.vue'
 import Settings from './views/Settings/Settings.vue'
 import Profile from './views/Settings/Profile.vue'
-import Notifications from './views/Settings/Notifications.vue'
 import ContactUs from './views/Settings/ContactUs.vue'
 import SearchPage from './views/home/SearchPage.vue'
 import SocialPage from './views/SocialPage.vue'
@@ -107,10 +106,6 @@ const routes = [
               path: '/Profile',
               component: Profile,
             },
-            {
-                path: '/Notifications',
-                component: Notifications,
-              },
             {
             path: '/ContactUs',
             component: ContactUs,
