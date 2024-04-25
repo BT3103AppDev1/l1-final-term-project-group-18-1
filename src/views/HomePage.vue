@@ -152,8 +152,8 @@ export default {
 
 .button-container {
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -163,14 +163,14 @@ export default {
   color: #457247;
 }
 
-.nonGraph {
-  display: flex; 
+.noneGraph {
+  display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: stretch;
 }
 
 .flex-item {
-  flex: 1; 
+  flex: 1;
 }
 
 main {
@@ -184,8 +184,8 @@ main {
 .notifs {
   display: flex;
   justify-content: center; /* Center the children horizontally */
-  align-items: flex-start; 
-  gap: 20px; 
+  align-items: stretch; /* Stretch the children vertically */
+  gap: 20px;
   width: 80vw;
 }
 
