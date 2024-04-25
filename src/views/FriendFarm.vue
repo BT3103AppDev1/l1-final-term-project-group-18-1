@@ -19,7 +19,8 @@
 
       <!-- Default farm background -->
       <div class = instruction-text>
-        {{ farmUsername }}'s farm
+        @{{ farmUsername }}'s farm
+        <span class ="disclaimer">(You are free to move items around your friend's farm it would not affect it on their end!)</span>
       </div>
       <div class="background"></div>
 
@@ -55,11 +56,11 @@ export default {
   },
   methods: {
     async fetchUserData(userId) {
-    const userDocRef = doc(db, 'users', userId);  // Assuming 'users' is your collection
+    const userDocRef = doc(db, 'users', userId); 
     try {
       const docSnap = await getDoc(userDocRef);
       if (docSnap.exists()) {
-        this.farmUsername = docSnap.data().name; // Assume the username is stored under the 'username' field
+        this.farmUsername = docSnap.data().username; 
       } else {
         console.log('No such user document!');
         this.farmUsername = 'Unknown'; // Handle the case where the document does not exist
@@ -205,6 +206,10 @@ export default {
       top: 0%;
       left: 1%;
       font-weight: bold;
+  }
+
+  .disclaimer{
+    font-weight: normal;
   }
 
   .background {
