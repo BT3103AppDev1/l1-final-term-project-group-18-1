@@ -1,3 +1,4 @@
+User
 <template>
   <div class="farm">
 
@@ -18,7 +19,7 @@
       </div>
 
       <!-- Default farm background -->
-      <p class="instruction-text">{{ instructionText }}</p>
+      <p class="instruction-text">Grow your farm! Drag then click to move farm elements.</p>
       <div class="background"></div>
 
   </div>
@@ -38,25 +39,17 @@ export default {
     return {
       showModal: false,
       farmItems: [],
-      currentUser: null,
-      instructionText: 'Grow your farm! Drag then click to move farm elements'
+      currentUser: null
     };
   },
   mounted() {
-  const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      this.currentUser = user;
-      const userId = this.$route.params.userId; 
-      const username = this.$route.params.username;
-      if (userId) {
-        this.fetchFarmItems(userId, username); 
-      }
+    const userId = this.$route.params.userId; 
+    if (userId) {
+      this.fetchFarmItems(userId); 
     } else {
-      console.error("No user is signed in.");
+      this.initialiseDataWithDelay(); 
     }
-  });
-},
+  },
   methods: {
     handleItemPurchased(newItem) {
       // Add the new item to the farmItems array
@@ -84,49 +77,36 @@ export default {
     closeModal() {
       this.showModal = false;
     },
-    async fetchFarmItems(userId = null, userName = null) {
-  const userToFetch = userId || this.currentUser?.uid;
-  const usernameToFetch = userName || this.currentUser?.displayName; 
+    async fetchFarmItems(userId = null) {
+      const userToFetch = userId || this.currentUser?.uid;
+      if (!userToFetch) {
+        console.error("No user ID available to fetch farm items.");
+        return;
+      }
 
-  if (!this.currentUser) {
-    console.error("No current user available.");
-    return;
-  }
+      try {
+        const userFarmDocRef = doc(db, 'farm', userToFetch);
+        const userFarmDocSnapshot = await getDoc(userFarmDocRef);
 
-  if (userToFetch !== this.currentUser.uid) {
-    this.instructionText = "Friend's farm";
-  } else {
-    this.instructionText = 'Grow your farm! Drag then click to move farm elements';
-  }
-
-  if (!userToFetch) {
-    console.error("No user ID available to fetch farm items.");
-    return;
-  }
-
-  try {
-    const userFarmDocRef = doc(db, 'farm', userToFetch);
-    const userFarmDocSnapshot = await getDoc(userFarmDocRef);
-
-    if (userFarmDocSnapshot.exists()) {
-      const farmItemsData = userFarmDocSnapshot.data().items || [];
-      this.farmItems = farmItemsData.map(item => ({
-        id: item.id,
-        imageURL: item.imageURL,
-        top: item.top || 0, 
-        left: item.left || 0,
-        width: item.width,
-        height: item.height
-      }));
-      console.log('Farm items fetched successfully for user:', userToFetch);
-    } else {
-      console.error('Farm data does not exist for user:', userToFetch);
-      this.farmItems = []; 
-    }
-  } catch (error) {
-    console.error('Error fetching farm items for user:', userToFetch, error);
-  }
-},
+        if (userFarmDocSnapshot.exists()) {
+          const farmItemsData = userFarmDocSnapshot.data().items || [];
+          this.farmItems = farmItemsData.map(item => ({
+            id: item.id,
+            imageURL: item.imageURL,
+            top: item.top || 0, 
+            left: item.left || 0,
+            width: item.width,
+            height: item.height
+          }));
+          console.log('Farm items fetched successfully for user:', userToFetch);
+        } else {
+          console.error('Farm data does not exist for user:', userToFetch);
+          this.farmItems = []; 
+        }
+      } catch (error) {
+        console.error('Error fetching farm items for user:', userToFetch, error);
+      }
+    },
 
     async startDrag(event, index) {
       console.log('startDrag called with item:', this.farmItems[index]);
@@ -190,81 +170,80 @@ export default {
 </script>
 
 <style>
-    .farm {
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      top: 8%;
-      right: 0;
-      width: 100vw;
-      height: 92vh;
-      overflow: hidden;
-    }
+  .farm {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 8%;
+    right: 0;
+    width: 100vw;
+    height: 92vh;
+    overflow: hidden;
+  }
 
-    .instruction-text {
-        position: absolute;
-        top: 0%;
-        left: 1%;
-    }
-  
-    .background {
-      background-image: url('src/assets/defaultFarm.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
-  
-    .buttons-menu {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 1%;
-      margin-right: 1%;
-    }
-  
-    .farm-button {
-      display: flex;
-      justify-content: center; /* Center the content horizontally */
-      align-items: center;
-      width: 100px;
-      height: 40px;
-      background-color: #357B9A;
-      border: none;
-      border-radius: 4px;
-      color: white;
-      cursor: pointer;
-      padding: 0px;
-      border: 0px;
-      margin: 0px;
-      text-decoration: none;
-    }
-  
-    .button:hover {
-      background-color: #357B9A; /* Keep the same color as default */
-    }
-  
-    .farm-items {
-      display: flex;
-      justify-content: space-evenly;
-      flex-direction: row;
-    }
-  
-    .item {
-      width: calc(20% - 10px); /* Adjust item width*/
-      margin-top: 0%;
-      z-index: 1;
-      position: absolute; /* Position items absolutely for dragging */
-    }
-  
-    .item-image {
-      width: 100%;
-      height: auto;
-    } 
-  </style>
-  
+  .instruction-text {
+      position: absolute;
+      top: 0%;
+      left: 1%;
+  }
+
+  .background {
+    background-image: url('src/assets/defaultFarm.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+
+  .buttons-menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 1%;
+    margin-right: 1%;
+  }
+
+  .farm-button {
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center;
+    width: 100px;
+    height: 40px;
+    background-color: #357B9A;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    padding: 0px;
+    border: 0px;
+    margin: 0px;
+    text-decoration: none;
+  }
+
+  .button:hover {
+    background-color: #357B9A; /* Keep the same color as default */
+  }
+
+  .farm-items {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+  }
+
+  .item {
+    width: calc(20% - 10px); /* Adjust item width*/
+    margin-top: 0%;
+    z-index: 1;
+    position: absolute; /* Position items absolutely for dragging */
+  }
+
+  .item-image {
+    width: 100%;
+    height: auto;
+  } 
+</style>
