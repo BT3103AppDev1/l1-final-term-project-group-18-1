@@ -172,7 +172,7 @@ export default {
   .farm {
     display: flex;
     flex-direction: column;
-    position: relative;
+    position: fixed;
     top: 8%;
     right: 0;
     width: 100vw;
@@ -181,7 +181,7 @@ export default {
   }
 
   .instruction-text {
-      position: absolute;
+      position: fixed;
       top: 0%;
       left: 1%;
   }
