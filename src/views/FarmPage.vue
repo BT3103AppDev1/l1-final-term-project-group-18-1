@@ -18,7 +18,7 @@
       </div>
 
       <!-- Default farm background -->
-      <p class="instruction-text">Grow your farm! Drag then click to move farm elements.</p>
+      <p class="instruction-text">{{ instructionText }}</p>
       <div class="background"></div>
 
   </div>
@@ -38,17 +38,25 @@ export default {
     return {
       showModal: false,
       farmItems: [],
-      currentUser: null
+      currentUser: null,
+      instructionText: 'Grow your farm! Drag then click to move farm elements'
     };
   },
   mounted() {
-    const userId = this.$route.params.userId; 
-    if (userId) {
-      this.fetchFarmItems(userId); 
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      this.currentUser = user;
+      const userId = this.$route.params.userId; 
+      const username = this.$route.params.username;
+      if (userId) {
+        this.fetchFarmItems(userId, username); 
+      }
     } else {
-      this.initialiseDataWithDelay(); 
+      console.error("No user is signed in.");
     }
-  },
+  });
+},
   methods: {
     handleItemPurchased(newItem) {
       // Add the new item to the farmItems array
@@ -76,36 +84,49 @@ export default {
     closeModal() {
       this.showModal = false;
     },
-    async fetchFarmItems(userId = null) {
-      const userToFetch = userId || this.currentUser?.uid;
-      if (!userToFetch) {
-        console.error("No user ID available to fetch farm items.");
-        return;
-      }
+    async fetchFarmItems(userId = null, userName = null) {
+  const userToFetch = userId || this.currentUser?.uid;
+  const usernameToFetch = userName || this.currentUser?.displayName; 
 
-      try {
-        const userFarmDocRef = doc(db, 'farm', userToFetch);
-        const userFarmDocSnapshot = await getDoc(userFarmDocRef);
+  if (!this.currentUser) {
+    console.error("No current user available.");
+    return;
+  }
 
-        if (userFarmDocSnapshot.exists()) {
-          const farmItemsData = userFarmDocSnapshot.data().items || [];
-          this.farmItems = farmItemsData.map(item => ({
-            id: item.id,
-            imageURL: item.imageURL,
-            top: item.top || 0, 
-            left: item.left || 0,
-            width: item.width,
-            height: item.height
-          }));
-          console.log('Farm items fetched successfully for user:', userToFetch);
-        } else {
-          console.error('Farm data does not exist for user:', userToFetch);
-          this.farmItems = []; 
-        }
-      } catch (error) {
-        console.error('Error fetching farm items for user:', userToFetch, error);
-      }
-    },
+  if (userToFetch !== this.currentUser.uid) {
+    this.instructionText = "Friend's farm";
+  } else {
+    this.instructionText = 'Grow your farm! Drag then click to move farm elements';
+  }
+
+  if (!userToFetch) {
+    console.error("No user ID available to fetch farm items.");
+    return;
+  }
+
+  try {
+    const userFarmDocRef = doc(db, 'farm', userToFetch);
+    const userFarmDocSnapshot = await getDoc(userFarmDocRef);
+
+    if (userFarmDocSnapshot.exists()) {
+      const farmItemsData = userFarmDocSnapshot.data().items || [];
+      this.farmItems = farmItemsData.map(item => ({
+        id: item.id,
+        imageURL: item.imageURL,
+        top: item.top || 0, 
+        left: item.left || 0,
+        width: item.width,
+        height: item.height
+      }));
+      console.log('Farm items fetched successfully for user:', userToFetch);
+    } else {
+      console.error('Farm data does not exist for user:', userToFetch);
+      this.farmItems = []; 
+    }
+  } catch (error) {
+    console.error('Error fetching farm items for user:', userToFetch, error);
+  }
+},
 
     async startDrag(event, index) {
       console.log('startDrag called with item:', this.farmItems[index]);
