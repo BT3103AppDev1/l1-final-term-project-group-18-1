@@ -1,7 +1,7 @@
 <template>
     <div>
       <div class="regularText">You have beaten {{ percentageOfUsersBeaten.toFixed(2) }}% of users in your recycling efforts</div>
-      <div v-if="percentageOfUsersBeaten" class="pieChartContainer">
+      <div v-if="totalUsers" class="pieChartContainer">
         <canvas id="communityChart"></canvas>
       </div>
     </div>
@@ -79,12 +79,16 @@ export default {
 
                 // Find index of your document
                 this.myDocumentIndex = this.sortedUsers.findIndex(user => user.username === this.username);
-                console.log("my index" + this.myDocumentIndex)
+                console.log("my index" + this.myDocumentIndex);
 
                 // Calculate total count of users and users beaten
-                this.totalUsers = this.sortedUsers.length;
+                this.totalUsers = this.sortedUsers.length - 2; //-1 because there is always the sample document and -1 again because i don't want to count myself 
+                                                                    //this is data for num users beaten and num users not beaten
                 this.totalUsersBeaten = this.totalUsers - this.myDocumentIndex; // Index already accounts for zero indexing
-                this.totalUsersNotBeaten = this.myDocumentIndex;
+                console.log("total number of users" + this.totalUsers)
+                console.log("number of users beaten" + this.totalUsersBeaten);
+                this.totalUsersNotBeaten = this.myDocumentIndex; 
+                console.log("number of users not beaten" + this.totalUsersNotBeaten);
 
                 if (this.totalUsers > 0) {
                     this.percentageOfUsersBeaten = (this.totalUsersBeaten / this.totalUsers) * 100;

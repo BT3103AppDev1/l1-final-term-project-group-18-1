@@ -18,7 +18,10 @@
       </div>
 
       <!-- Default farm background -->
-      <p class="instruction-text">Grow your farm! Drag then click to move farm elements.</p>
+      <div class = instruction-text>
+        @{{ farmUsername }}'s farm
+        <span class ="disclaimer">(You are free to move items around your friend's farm it would not affect it on their end!)</span>
+      </div>
       <div class="background"></div>
 
   </div>
@@ -38,18 +41,35 @@ export default {
     return {
       showModal: false,
       farmItems: [],
-      currentUser: null
+      currentUser: null,
+      farmUsername: '',
     };
   },
   mounted() {
     const userId = this.$route.params.userId; 
     if (userId) {
       this.fetchFarmItems(userId); 
+      this.fetchUserData(userId);
     } else {
       this.initialiseDataWithDelay(); 
     }
   },
   methods: {
+    async fetchUserData(userId) {
+    const userDocRef = doc(db, 'users', userId); 
+    try {
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        this.farmUsername = docSnap.data().username; 
+      } else {
+        console.log('No such user document!');
+        this.farmUsername = 'Unknown'; // Handle the case where the document does not exist
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      this.farmUsername = 'Error'; // Handle errors
+    }
+  },
     handleItemPurchased(newItem) {
       // Add the new item to the farmItems array
       this.farmItems.push({
@@ -78,6 +98,7 @@ export default {
     },
     async fetchFarmItems(userId = null) {
       const userToFetch = userId || this.currentUser?.uid;
+      this.name = this.currentUser?.username;
       if (!userToFetch) {
         console.error("No user ID available to fetch farm items.");
         return;
@@ -172,7 +193,7 @@ export default {
   .farm {
     display: flex;
     flex-direction: column;
-    position: fixed;
+    position: relative;
     top: 8%;
     right: 0;
     width: 100vw;
@@ -181,9 +202,14 @@ export default {
   }
 
   .instruction-text {
-      position: fixed;
+      position: absolute;
       top: 0%;
       left: 1%;
+      font-weight: bold;
+  }
+
+  .disclaimer{
+    font-weight: normal;
   }
 
   .background {

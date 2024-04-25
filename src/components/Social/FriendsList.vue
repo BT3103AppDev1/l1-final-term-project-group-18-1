@@ -8,7 +8,7 @@
     <div class="friend-username">@{{ friend.username }}</div>
   </div>
   <div class="friend-buttons">
-    <button @click="visitFriendFarm(friend.id, friend.username)" class="visit-farm-btn">
+    <button @click="visitFriendFarm(friend.id)" class="visit-farm-btn">
       <img src="@/assets/door.png" alt="Visit Farm">
     </button>
     <button @click="promptGiftFertiliser(friend.id, friend.username)" class="gift-btn">
@@ -162,8 +162,8 @@ export default {
       this.showGiftModal = true;
     },
 
-    visitFriendFarm(userId, username) {
-    this.$router.push({ name: 'FarmPage', params: { userId: userId, username: username }});
+    visitFriendFarm(userId) {
+    this.$router.push({ name: 'FriendFarm', params: { userId: userId }});
   },
 
   async confirmGift() {

@@ -17,6 +17,7 @@ import SocialPage from './views/SocialPage.vue'
 import ResourcesPage from './views/Resources/ResourcesPage.vue'
 import EmailVerification from './views/EmailVerificationPage.vue'
 import FarmPage from './views/FarmPage.vue'
+import FriendFarm from './views/FriendFarm.vue'
 
 
 const routes = [
@@ -60,6 +61,11 @@ const routes = [
         name: 'ForgetPassword',
         component: ForgetPassword,
     },
+    {
+        path: '/FarmPage',
+        name: 'FarmPage',
+        component: FarmPage,
+    },
 
     {
         path: '/Farm',
@@ -68,9 +74,9 @@ const routes = [
     },
 
     {
-        path: '/FarmPage/:userId',
-        name: 'FarmPage',
-        component: FarmPage,
+        path: '/FriendFarm/:userId',
+        name: 'FriendFarm',
+        component: FriendFarm,
     },
     {
         path: '/SocialPage',
