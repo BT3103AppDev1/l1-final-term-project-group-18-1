@@ -45,9 +45,41 @@ export default {
         }
         })
         .catch((error) => {
-          alert(error.message);
+          alert(this.handleAuthError(error.code));
+          console.log("error" + error.message)
         });
+    },
+    handleAuthError(errorCode) {
+    switch (errorCode) {
+      case 'auth/email-already-in-use':
+        return 'This email is already in use by another account.';
+      case 'auth/invalid-email':
+        return 'The email address is not valid.';
+      case 'auth/operation-not-allowed':
+        return 'Email/password accounts are not enabled.';
+      case 'auth/weak-password':
+        return 'The password is too weak.';
+      case 'auth/user-disabled':
+        return 'This user has been disabled.';
+      case 'auth/user-not-found':
+        return 'No user found with this email.';
+      case 'auth/wrong-password':
+        return 'Incorrect password. Try again.';
+      case 'auth/too-many-requests':
+        return 'Too many attempts. Please try again later.';
+      case 'auth/account-exists-with-different-credential':
+        return 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.';
+      case 'auth/network-request-failed':
+        return 'A network error has occurred. Check your internet connection and try again.';
+      case 'auth/operation-not-allowed':
+        return 'Sign-in with email and password is not enabled.';
+      case 'auth/invalid-credential':
+        return 'Invalid credentials. Please check that you have entered every field correctly.'
+      default:
+        return 'An unexpected error occurred. Please try again.';
     }
+  }
+
   }
 }
 </script>

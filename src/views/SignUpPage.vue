@@ -99,6 +99,7 @@ export default {
         });
 
         alert("Signup successful. Please check your email for verification.");
+        
         if (!user.emailVerified) {
           // Sign out the user
           await auth.signOut();
@@ -108,6 +109,7 @@ export default {
           // wait for email to be verified redirect to the home or dashboard page
           this.$router.push({ name: 'Home' });
         }
+
       } catch (error) {
         console.error("Error signing up:", error);
         alert(this.handleAuthError(error.code));
