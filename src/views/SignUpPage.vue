@@ -98,7 +98,6 @@ export default {
           userId: user.uid
         });
 
-        alert("Signup successful. Please check your email for verification.");
         if (!user.emailVerified) {
           // Sign out the user
           await auth.signOut();
@@ -115,6 +114,8 @@ export default {
     },
     handleAuthError(errorCode) {
       switch (errorCode) {
+        case 'auth/missing-email':
+          return 'All fields must be filled.'
         case 'auth/email-already-in-use':
           return 'This email is already in use by another account.';    
         case 'auth/invalid-email':
@@ -125,10 +126,6 @@ export default {
           return 'The password is too weak.';   
         case 'auth/user-disabled':
           return 'This user has been disabled.';  
-        case 'auth/user-not-found':
-          return 'No user found with this email.';     
-        case 'auth/wrong-password':
-          return 'Wrong password. Try again.';   
         case 'auth/too-many-requests':
           return 'Too many attempts. Please try again later.';
         case 'auth/timeout':

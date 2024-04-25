@@ -3,18 +3,21 @@
     <h2>Your Friends</h2>
     <ul v-if="friends.length > 0">
       <li v-for="friend in friends" :key="friend.id" class="friend-item">
-        <div class="friend-info">
-          <div class="friend-name">{{ friend.name }}</div>
-          <div class="friend-username">@{{ friend.username }}</div>
-        </div>
-        <button @click="visitFriendFarm(friend.id, friend.username)" class="visit-farm-btn">
-          <img src="@/assets/door.png" alt="Visit Farm">
-        </button>
-        <button @click="promptGiftFertiliser(friend.id, friend.username)" class="gift-btn">
-          <img src='@/assets/fertiliser.png' alt="Gift Fertiliser">
-        </button>
-        <button @click="promptDeleteConfirmation(friend.id, friend.username)" class="delete-friend-btn">×</button>
-      </li>
+  <div class="friend-info">
+    <div class="friend-name">{{ friend.name }}</div>
+    <div class="friend-username">@{{ friend.username }}</div>
+  </div>
+  <div class="friend-buttons">
+    <button @click="visitFriendFarm(friend.id, friend.username)" class="visit-farm-btn">
+      <img src="@/assets/door.png" alt="Visit Farm">
+    </button>
+    <button @click="promptGiftFertiliser(friend.id, friend.username)" class="gift-btn">
+      <img src='@/assets/fertiliser.png' alt="Gift Fertiliser">
+    </button>
+    <button @click="promptDeleteConfirmation(friend.id, friend.username)" class="delete-friend-btn">×</button>
+  </div>
+</li>
+
     </ul>
     <div v-else class="no-friends">
       You have no friends added.
@@ -249,7 +252,7 @@ export default {
 }
 
 .friend-info {
-  margin-top: 8px;
+  margin-top: 0px;
   display: flex;
   flex-direction: column;
 }
@@ -263,6 +266,7 @@ export default {
 
 .friend-username {
   color: #333333;
+  text-align: left;
 }
 
 .delete-friend-btn {
@@ -424,5 +428,53 @@ export default {
   align-items: center; 
   justify-content: right;
 }
+
+.friends-list ul {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+}
+
+.friend-item {
+  display: flex;
+  justify-content: space-between; /* Distributes space between info and buttons */
+  align-items: center; /* Vertical alignment of the contents */
+  background-color: #79BCD9;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  padding: 10px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.friend-info {
+  flex: 1; /* Allows the friend info to take up the remaining space */
+}
+
+.friend-buttons {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+}
+
+/* Styles for buttons */
+.visit-farm-btn, .gift-btn, .delete-friend-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center; /* Center items inside the button */
+  justify-content: center;
+}
+
+.visit-farm-btn img, .gift-btn img {
+  height: 40px; /* Adjust size as necessary */
+  width: auto; /* Maintain aspect ratio */
+}
+
+.delete-friend-btn {
+  font-size: 1.5em;
+  color: black;
+}
+
+
 
 </style> 

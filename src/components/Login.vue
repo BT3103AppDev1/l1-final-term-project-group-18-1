@@ -45,9 +45,26 @@ export default {
         }
         })
         .catch((error) => {
-          alert(error.message);
+          console.log(error.message);
+          alert(this.handleAuthError(error.code));
         });
-    }
+    },
+    handleAuthError(errorCode) {
+      switch (errorCode) {  
+        case 'auth/invalid-credential':
+          return 'Invalid credentials'
+        case 'auth/user-not-found':
+          return 'No user found with this email.';     
+        case 'auth/wrong-password':
+          return 'Wrong password. Try again.';   
+        case 'auth/too-many-requests':
+          return 'Too many attempts. Please try again later.';
+        case 'auth/timeout':
+          return 'The operation has timed out. Please try again.';
+        default:
+          return 'An unexpected error occurred. Please try again.';
+      }
+    },
   }
 }
 </script>

@@ -37,19 +37,12 @@
         <input type="number" id="reminder-time" v-model="event.reminderTime" placeholder="Minutes before event">
       </div>
       
-      <div v-if="attemptedSave && !isEndTimeValid" class="error">
-        End time must be after start time.
-      </div>
-
-      <div v-if="attemptedSave && !isReminderValid" class="error">
-        Please fill in both reminder-related fields.
-      </div>
       <div v-if="!isEndTimeValid" class="error">
         End time must be after start time.
       </div>
 
       <div v-if="!isReminderValid" class="error">
-        Please fill in both reminder-related fields.
+        Please fill in all reminder-related fields.
       </div>
 
       <div class="form-group action-buttons">
@@ -236,19 +229,11 @@ export default {
   cursor: pointer;
   display: block;
 }
-.form-group input::placeholder,
-.form-group select::placeholder,
-#remindertype .placeholder {
-  color: grey !important;
-}
-.reminder-type-form-group input::placeholder,
-.reminder-type-form-group select::placeholder {
-  color: grey !important;
-}
+
 .reminder-type-form-group {
   padding-left: 10px; /* Adjust this value to suit your layout */
 }
-.form-group input:valid {
+.form-group input {
   color: black;
 }
 .form-group select::-ms-expand {
@@ -257,7 +242,14 @@ export default {
 .form-group select:hover {
   border-color: #888;
 }
+.form-group input::placeholder,
+.form-group select::placeholder {
+  color: black; 
+}
 
+.input {
+  color: black;
+}
 .error {
   color: #457247;
   margin-top: -10px;

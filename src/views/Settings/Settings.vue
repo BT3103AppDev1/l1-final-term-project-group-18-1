@@ -101,7 +101,7 @@
   .contactUs button:hover,
   .profile:hover,
   .contactUs:hover{
-    color: #457247; /* Change to the color you want on hover */
+    color: #457247; 
   }
   
   .logout-button {
