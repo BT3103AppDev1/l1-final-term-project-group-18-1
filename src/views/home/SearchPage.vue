@@ -172,7 +172,7 @@
     .information{
         text-align: left;
         max-width: 60%;
-        margin-left: 400px; 
+        margin-left: 280px; 
     }
 
     .information-list {
