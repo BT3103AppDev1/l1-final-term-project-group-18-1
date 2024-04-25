@@ -5,7 +5,7 @@
         </div>
 
         <h1 class="main-title">One final step! We need to verify your email.</h1>
-        <p class="description">Please check your inbox for verification link sent to ilovemotherearth@gmail.com</p>
+        <p class="description">Please check your inbox for verification link.</p>
         <p class="small-text">Can't find it? Please check your spam folder.</p>
         <button @click="loginpage">I've Verified My Email</button>
     </div>
