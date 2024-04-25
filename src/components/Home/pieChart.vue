@@ -72,13 +72,14 @@ export default {
                     querySnapshot.forEach((doc) => {
                         const userData = doc.data();
                         this.recycledData = {
-                            labels: ['Metal', 'Plastic', 'Paper', 'E-Waste', 'Glass'],
+                            labels: ['Metal', 'Plastic', 'Paper', 'E-Waste', 'Glass', 'Textile'],
                             values: [
                                 userData.metalRecycled || 0,
                                 userData.plasticRecycled || 0,
                                 userData.paperRecycled || 0,
                                 userData.ewasteRecycled || 0,
-                                userData.glassRecycled || 0
+                                userData.glassRecycled || 0,
+                                userData.textileRecycled || 0
                             ]
                         };
                         console.log('Fetched data:', this.recycledData);
@@ -116,14 +117,16 @@ export default {
                             'rgba(69,114,71,255)',
                             'rgba(242,215,74,255)',
                             'rgba(240,160,87,255)',
-                            'rgba(207,112,30,255)'
+                            'rgba(207,112,30,255)',
+                            'rgba(88,30,16,255)',
                         ],
                         borderColor: [
                             'rgba(121,188,217,255)',
                             'rgba(69,114,71,255)',
                             'rgba(242,215,74,255)',
                             'rgba(240,160,87,255)',
-                            'rgba(207,112,30,255)'
+                            'rgba(207,112,30,255)',
+                            'rgba(88,30,16,255)',
                         ],
                         borderWidth: 1
                     }]
@@ -147,8 +150,8 @@ export default {
                                 font: {
                                     size:15,
                                 },
-                                boxWidth:17,
-                                padding:10,
+                                boxWidth:10,
+                                padding:25,
                                 generateLabels: function(chart) {
                                     const data = chart.data;
                                     if (data.labels.length && data.datasets.length) {
