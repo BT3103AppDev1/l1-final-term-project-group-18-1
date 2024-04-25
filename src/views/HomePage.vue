@@ -152,8 +152,8 @@ export default {
 
 .button-container {
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -164,13 +164,13 @@ export default {
 }
 
 .noneGraph {
-  display: flex; 
+  display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
 }
 
 .flex-item {
-  flex: 1; 
+  flex: 1;
 }
 
 main {
@@ -184,8 +184,8 @@ main {
 .notifs {
   display: flex;
   justify-content: center; /* Center the children horizontally */
-  align-items: flex-start; 
-  gap: 20px; 
+  align-items: stretch;
+  gap: 20px;
   width: 80vw;
 }
 
