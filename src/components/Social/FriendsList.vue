@@ -7,7 +7,7 @@
           <div class="friend-name">{{ friend.name }}</div>
           <div class="friend-username">@{{ friend.username }}</div>
         </div>
-        <button @click="visitFriendFarm(friend.id)" class="visit-farm-btn">
+        <button @click="visitFriendFarm(friend.id, friend.username)" class="visit-farm-btn">
           <img src="@/assets/door.png" alt="Visit Farm">
         </button>
         <button @click="promptGiftFertiliser(friend.id, friend.username)" class="gift-btn">
@@ -86,7 +86,6 @@ export default {
     auth.onAuthStateChanged((user) => {
       if (user) {
         this.fetchFriends();
-        this.fetchFertiliser();
       } else {
         console.log('User logged out');
       }
@@ -160,31 +159,8 @@ export default {
       this.showGiftModal = true;
     },
 
-    async fetchFertiliser() {
-    const auth = getAuth();
-    if (!auth.currentUser) {
-      console.log('No user logged in');
-      return;
-    }
-
-    const userId = auth.currentUser.uid;
-    const userDocRef = doc(db, 'users', userId);
-    
-    try {
-      const userDoc = await getDoc(userDocRef);
-      if (userDoc.exists()) {
-        this.fertiliser = userDoc.data().fertiliser || 0;
-      } else {
-        console.log('No such document!');
-        this.fertiliser = 0;
-      }
-    } catch (error) {
-      console.error('Error fetching fertiliser data:', error);
-    }
-  },
-
-  visitFriendFarm(friendId) {
-    this.$router.push({ name: 'FarmPage', params: { userId: friendId } });
+    visitFriendFarm(userId, username) {
+    this.$router.push({ name: 'FarmPage', params: { userId: userId, username: username }});
   },
 
   async confirmGift() {
