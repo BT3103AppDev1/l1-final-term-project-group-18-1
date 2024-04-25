@@ -26,7 +26,7 @@
       <div class="sectionHeader">
           <p class="regularText" style="font-size:xx-large;">Statistics</p>
       </div>
-      <div class = "noneGraph">
+      <div class = "nonGraph">
         <numberDisplay class="flex-item"/>
         <weeklyAverage class="flex-item"/>
       </div>
@@ -163,7 +163,7 @@ export default {
   color: #457247;
 }
 
-.noneGraph {
+.nonGraph {
   display: flex; 
   justify-content: center;
   align-items: center; 
