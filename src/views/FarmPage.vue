@@ -172,7 +172,7 @@ export default {
   .farm {
     display: flex;
     flex-direction: column;
-    position: relative;
+    position: absolute;
     top: 8%;
     right: 0;
     width: 100vw;
