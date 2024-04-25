@@ -187,7 +187,7 @@ export default {
   }
 
   .background {
-    background-image: url('src/assets/DefaultFarm.png');
+    background-image: url('@/assets/DefaultFarm.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
