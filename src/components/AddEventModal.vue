@@ -36,7 +36,14 @@
         <label for="reminder-time">Reminder Time Before Event (minutes):</label>
         <input type="number" id="reminder-time" v-model="event.reminderTime" placeholder="Minutes before event">
       </div>
+      
+      <div v-if="attemptedSave && !isEndTimeValid" class="error">
+        End time must be after start time.
+      </div>
 
+      <div v-if="attemptedSave && !isReminderValid" class="error">
+        Please fill in both reminder-related fields.
+      </div>
       <div v-if="!isEndTimeValid" class="error">
         End time must be after start time.
       </div>
