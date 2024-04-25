@@ -163,7 +163,7 @@ export default {
   color: #457247;
 }
 
-.noneGraph {
+.nonGraph {
   display: flex;
   justify-content: center;
   align-items: stretch;
