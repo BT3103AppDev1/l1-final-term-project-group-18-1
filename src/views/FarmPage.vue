@@ -197,7 +197,8 @@ export default {
     top: 8%;
     right: 0;
     width: 100vw;
-    height: 92vh;
+    min-height: 80vh;
+    max-height: 100vh;
     overflow: hidden;
   }
 
