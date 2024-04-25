@@ -21,8 +21,10 @@
 
 <script>
 import { db } from '@/firebaseConfig';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, query, where, onSnapshot, updateDoc, doc, getDoc, writeBatch } from 'firebase/firestore';
+
+
 
 export default {
   data() {
@@ -31,8 +33,17 @@ export default {
     };
   },
   created() {
-    this.listenForFriendRequests();
-  },
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, set up the listener.
+      this.listenForFriendRequests();
+    } else {
+      // User is not signed in.
+      console.log('No user logged in');
+    }
+  });
+},
   methods: {
     listenForFriendRequests() {
       const auth = getAuth();
