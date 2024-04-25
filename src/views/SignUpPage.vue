@@ -20,6 +20,7 @@
   <div class="banner-section">
     <img src="@/assets/Banner.png" alt="EcoHarbour Banner" class="banner-image" />
   </div>
+
 </template>
 
 <script>
@@ -109,7 +110,31 @@ export default {
         }
       } catch (error) {
         console.error("Error signing up:", error);
-        alert("Error signing up. Please try again.");
+        alert(this.handleAuthError(error.code));
+      }
+    },
+    handleAuthError(errorCode) {
+      switch (errorCode) {
+        case 'auth/email-already-in-use':
+          return 'This email is already in use by another account.';    
+        case 'auth/invalid-email':
+          return 'The email address is not valid.';
+        case 'auth/operation-not-allowed':
+          return 'Email/password accounts are not enabled.';  
+        case 'auth/weak-password':
+          return 'The password is too weak.';   
+        case 'auth/user-disabled':
+          return 'This user has been disabled.';  
+        case 'auth/user-not-found':
+          return 'No user found with this email.';     
+        case 'auth/wrong-password':
+          return 'Wrong password. Try again.';   
+        case 'auth/too-many-requests':
+          return 'Too many attempts. Please try again later.';
+        case 'auth/timeout':
+          return 'The operation has timed out. Please try again.';
+        default:
+          return 'An unexpected error occurred. Please try again.';
       }
     },
   }
