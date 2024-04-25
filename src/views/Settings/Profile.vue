@@ -1,23 +1,9 @@
 <template>
   <div class="profile-page">
     <h1>Profile</h1>
-    <form @submit.prevent="updateProfile">
-      <div class="form-group">
-        <label for="email">Registered Email:</label>
-        <input id="email" type="email" v-model="user.email" disabled class="input-disabled" />
-      </div>
-      <div class="form-group">
-        <label for="name" class="sr-only">Name:</label>
-        <input id="name" type="text" v-model="user.name" :maxlength="20" placeholder="Name" disabled class="input-disabled" />
-      </div>
-      <div class="form-group">
-        <label for="username" class="sr-only">Username:</label>
-        <input id="username" type="text" v-model="user.username" :maxlength="20" placeholder="Username" disabled class="input-disabled" />
-      </div>
-      <button type="submit" class="btn">Update Profile</button>
-      <p v-if="showSuccessMessage" class="message">Profile updated successfully!</p>
-      <p v-if="showFailedMessage" class="message">Please ensure name and username are filled in.</p>
-    </form>
+      <text class="content"><span class="label">Email:</span> {{ user.email }}</text>
+      <text class="content"><span class="label">Name:</span> {{ user.name }}</text>
+      <text class="content"><span class="label">Username:</span> {{ user.username }}</text>
   </div>
 </template>
 
@@ -36,8 +22,6 @@ export default {
       name: '',
       username: ''
     });
-    const showSuccessMessage = ref(false); 
-    const showFailedMessage = ref(false);
 
     const fetchUserData = async (uid) => {
       const docRef = doc(db, 'users', uid);
@@ -60,65 +44,28 @@ export default {
       });
     });
 
-    const updateProfile = async () => {
-      console.error('Profile updates are not allowed.');
-    };
-
-    return { user, updateProfile, showSuccessMessage, showFailedMessage }; 
+    return { user }; 
   }
 };
 </script>
 
 <style>
-.settings-wrapper h1 {
+.profile-page {
+  margin-left: 20px;
+}
+.profile-page h1 {
   margin-right: 1150px;
-  margin-bottom: 30px;
   font-weight: bold;
 }
 
-.user-email {
+.content {
   padding: 10px 0;
-  font-size: 0.9rem;
-  font-size: 18px;
+  font-size: 16px;
   display: flex;
 }
 
-.form-group {
-  display: flex;
-  margin-bottom: 1rem;
-  flex-direction: column;
-  font-size: 16px;
+.label {
+  font-weight: bold;
+  margin-right: 5px; /* Add spacing between label and content */
 }
-
-.form-group label {
-  display: flex;
-}
-
-.form-group input, .form-group textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px
-}
-
-.btn {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.message {
-  margin-top: 0.3rem;
-  color: var(--primary-color);
-  font-size: 16px;
-}
-
-.input-disabled {
-  background-color: #e7e7e7; 
-  color: #6c757d;
-} 
 </style>

@@ -4,11 +4,11 @@
     <h2>Get in touch!</h2>
     <div class="email"> 
       <font-awesome-icon icon="envelope" class="emailicon" />
-      <h3>ecoharbour@gmail.com</h3>
+      <text class="contact-info">ecoharbour@gmail.com</text>
     </div>
     <div class="telegram">
       <font-awesome-icon icon="fa-brands fa-telegram" class="telegramicon"/>
-      <h3>@ecoharbour</h3>
+      <text class="contact-info">@ecoharbour</text>
     </div>
   </div>
 </template>
@@ -35,9 +35,11 @@
   margin-right: 960px;
 }
 
+
 .settings-wrapper h2 {
-  margin-right: 900px;
-  margin-bottom: 30px
+  margin-right: 920px;
+  margin-bottom: 30px;
+  font-weight: normal;
 }
 
 .settings-wrapper .email,
@@ -45,6 +47,7 @@
     display: flex;
     align-items: center;
     margin-left: 50px;
+    margin-top: 10px;
   }
   
 .settings-wrapper .emailicon {
@@ -60,4 +63,8 @@
     color: #24A1DE;
     font-size: 20px;
   }
+
+  .settings-wrapper .contact-info {
+    font-weight: normal; 
+}
 </style>

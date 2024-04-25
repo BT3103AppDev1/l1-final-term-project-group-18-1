@@ -67,13 +67,14 @@
   
   /* specific style for the buttons */ 
   .settings-menu {
-    margin-top: 82px;
+    margin-top: 20px;
+    margin-left: 50px;
     display: flex;
     flex-direction: column;
     width: 200px;
-    padding: 20px;
     border-right: 2px solid #bebebe; /* Border between menu and content */
     height: 500px;
+    flex-shrink: 0;
   }
   
   .profile,
@@ -86,7 +87,7 @@
   .contactUs button {
     background: none;
     border: none;
-    color: #000; /* Set to your preferred text color */
+    color: #000; 
     padding: 10px 0;
     text-align: left;
     width: 100%;
