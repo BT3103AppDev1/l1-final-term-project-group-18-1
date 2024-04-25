@@ -1,6 +1,6 @@
 <template>
   <div class="profile-page">
-    <h1>Profile</h1>
+    <h1 class="title">Profile</h1>
       <text class="content"><span class="label">Email:</span> {{ user.email }}</text>
       <text class="content"><span class="label">Name:</span> {{ user.name }}</text>
       <text class="content"><span class="label">Username:</span> {{ user.username }}</text>
@@ -50,6 +50,9 @@ export default {
 </script>
 
 <style>
+.title {
+  color:#457247;
+}
 .profile-page {
   margin-left: 20px;
 }

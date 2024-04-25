@@ -1,6 +1,6 @@
 <template>
     <div class="resources-page">
-      <h1>Resources</h1>
+      <h1 class="title">Resources</h1>
       <!-- Infographics Button -->
       <router-link to="/resources/Infographics" class="resource-button">Infographics</router-link>
       <!-- Blue Bin Locator Button -->
@@ -9,6 +9,9 @@
   </template>
 
   <style>
+  .title{
+    color:#457247;
+  }
   .resource-button {
     display: inline-block;
     background-color: var(--primary-color); /* Green background */

@@ -67,7 +67,7 @@
   
   /* specific style for the buttons */ 
   .settings-menu {
-    margin-top: 20px;
+    margin-top: 110px;
     margin-left: 50px;
     display: flex;
     flex-direction: column;
