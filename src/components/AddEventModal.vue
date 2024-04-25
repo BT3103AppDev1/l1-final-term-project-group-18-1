@@ -23,7 +23,7 @@
         <select id="reminder-type" v-model="event.reminderType" @change="onReminderTypeChange">
           <option class="placeholder" disabled value="">Please select one</option>
           <option v-for="reminder in reminders" :key="reminder.id" :value="reminder.message">{{ reminder.message }}</option>
-          <option value="custom">Create a custom reminder</option>
+          <option class="custom-reminder-option" value="custom">Create a custom reminder</option>
         </select>
       </div>
 
@@ -71,7 +71,7 @@ export default {
         reminderTime: null
       },
       isReminderRequired: false,
-      reminders: []
+      reminders: [],
     };
   },
   mounted() {
@@ -86,8 +86,15 @@ export default {
       }
     },
     isReminderValid() {
-      if (this.event.reminderType || this.event.reminderTime) {
-        return this.event.reminderType && this.event.reminderTime;
+      // suggested reminders
+      if (this.event.reminderType && this.event.reminderType != 'custom') {
+        return this.event.reminderTime;
+      }
+      // custom type chosen
+      else if (this.event.reminderType == 'custom') {
+        if (this.event.reminderDescription || this.event.reminderTime) {
+          return this.event.reminderDescription && this.event.reminderTime;
+        }
       } else {
         return true
       }
@@ -112,7 +119,7 @@ export default {
     },
     saveEvent() {
       // Ensure all necessary fields are filled in
-      if (!this.event.title || !this.event.start || !this.event.end) {
+      if (!this.event.title || !this.event.start || !this.event.end || !this.isReminderValid) {
         alert("Please fill in all required fields.");
         return;
       }
@@ -183,8 +190,8 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  padding: 30px;
-  z-index: 1000;
+  padding: 20px;
+  z-index: 100001;
   border: 1px solid #ccc;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   display: flex;
@@ -200,6 +207,10 @@ export default {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+}
+.modaltitle,
+.custom-reminder-option {
+  color:#457247;
 }
 .button1,
 .button2 {
@@ -219,8 +230,15 @@ export default {
 }
 .form-group input::placeholder,
 .form-group select::placeholder,
-.placeholder {
-  color: grey;
+#remindertype .placeholder {
+  color: grey !important;
+}
+.reminder-type-form-group input::placeholder,
+.reminder-type-form-group select::placeholder {
+  color: grey !important;
+}
+.reminder-type-form-group {
+  padding-left: 10px; /* Adjust this value to suit your layout */
 }
 .form-group input:valid {
   color: black;
