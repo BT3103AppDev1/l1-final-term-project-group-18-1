@@ -210,10 +210,11 @@ export default {
 .form-group .action-buttons button {
   width: 100%;
   padding: 10px;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+  margin-top: 10px;
 }
 .modaltitle,
 .custom-reminder-option {
