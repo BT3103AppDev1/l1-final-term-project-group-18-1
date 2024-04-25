@@ -42,7 +42,7 @@
       </div>
 
       <div v-if="attemptedSave && !isReminderValid" class="error">
-        Please fill in both reminder-related fields.
+        Please fill in all reminder-related fields.
       </div>
       <div v-if="!isEndTimeValid" class="error">
         End time must be after start time.
