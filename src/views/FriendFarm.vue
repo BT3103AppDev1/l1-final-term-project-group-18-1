@@ -46,21 +46,21 @@ export default {
     };
   },
   mounted() {
-    const userId = this.$route.params.userId; 
+    const userId = this.$route.params.userId;
     if (userId) {
-      this.fetchFarmItems(userId); 
+      this.fetchFarmItems(userId);
       this.fetchUserData(userId);
     } else {
-      this.initialiseDataWithDelay(); 
+      this.initialiseDataWithDelay();
     }
   },
   methods: {
     async fetchUserData(userId) {
-    const userDocRef = doc(db, 'users', userId); 
+    const userDocRef = doc(db, 'users', userId);
     try {
       const docSnap = await getDoc(userDocRef);
       if (docSnap.exists()) {
-        this.farmUsername = docSnap.data().username; 
+        this.farmUsername = docSnap.data().username;
       } else {
         console.log('No such user document!');
         this.farmUsername = 'Unknown'; // Handle the case where the document does not exist
@@ -83,8 +83,8 @@ export default {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           console.log("User is signed in, fetching data.");
-          this.currentUser = user; 
-          this.fetchFarmItems(); 
+          this.currentUser = user;
+          this.fetchFarmItems();
         } else {
           console.error("No user is signed in.");
         }
@@ -113,7 +113,7 @@ export default {
           this.farmItems = farmItemsData.map(item => ({
             id: item.id,
             imageURL: item.imageURL,
-            top: item.top || 0, 
+            top: item.top || 0,
             left: item.left || 0,
             width: item.width,
             height: item.height
@@ -121,7 +121,7 @@ export default {
           console.log('Farm items fetched successfully for user:', userToFetch);
         } else {
           console.error('Farm data does not exist for user:', userToFetch);
-          this.farmItems = []; 
+          this.farmItems = [];
         }
       } catch (error) {
         console.error('Error fetching farm items for user:', userToFetch, error);
@@ -213,7 +213,7 @@ export default {
   }
 
   .background {
-    background-image: url('src/assets/defaultFarm.png');
+    background-image: url('@/assets/DefaultFarm.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -270,5 +270,5 @@ export default {
   .item-image {
     width: 100%;
     height: auto;
-  } 
+  }
 </style>
