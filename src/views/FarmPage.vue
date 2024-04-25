@@ -190,81 +190,81 @@ export default {
 </script>
 
 <style>
-  .farm {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 8%;
-    right: 0;
-    width: 100vw;
-    min-height: 80vh;
-    max-height: 100vh;
-    overflow: hidden;
-  }
+    .farm {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      top: 8%;
+      right: 0;
+      width: 100vw;
+      height: 92vh;
+      overflow: hidden;
+    }
 
-  .instruction-text {
-      position: absolute;
-      top: 0%;
-      left: 1%;
-  }
-
-  .background {
-    background-image: url('src/assets/defaultFarm.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-  }
-
-  .buttons-menu {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 1%;
-    margin-right: 1%;
-  }
-
-  .farm-button {
-    display: flex;
-    justify-content: center; /* Center the content horizontally */
-    align-items: center;
-    width: 100px;
-    height: 40px;
-    background-color: #357B9A;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    cursor: pointer;
-    padding: 0px;
-    border: 0px;
-    margin: 0px;
-    text-decoration: none;
-  }
-
-  .button:hover {
-    background-color: #357B9A; /* Keep the same color as default */
-  }
-
-  .farm-items {
-    display: flex;
-    justify-content: space-evenly;
-    flex-direction: row;
-  }
-
-  .item {
-    width: calc(20% - 10px); /* Adjust item width*/
-    margin-top: 0%;
-    z-index: 1;
-    position: absolute; /* Position items absolutely for dragging */
-  }
-
-  .item-image {
-    width: 100%;
-    height: auto;
-  } 
-</style>
+    .instruction-text {
+        position: absolute;
+        top: 0%;
+        left: 1%;
+    }
+  
+    .background {
+      background-image: url('src/assets/defaultFarm.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+  
+    .buttons-menu {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 1%;
+      margin-right: 1%;
+    }
+  
+    .farm-button {
+      display: flex;
+      justify-content: center; /* Center the content horizontally */
+      align-items: center;
+      width: 100px;
+      height: 40px;
+      background-color: #357B9A;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      padding: 0px;
+      border: 0px;
+      margin: 0px;
+      text-decoration: none;
+    }
+  
+    .button:hover {
+      background-color: #357B9A; /* Keep the same color as default */
+    }
+  
+    .farm-items {
+      display: flex;
+      justify-content: space-evenly;
+      flex-direction: row;
+    }
+  
+    .item {
+      width: calc(20% - 10px); /* Adjust item width*/
+      margin-top: 0%;
+      z-index: 1;
+      position: absolute; /* Position items absolutely for dragging */
+    }
+  
+    .item-image {
+      width: 100%;
+      height: auto;
+    } 
+  </style>
+  
