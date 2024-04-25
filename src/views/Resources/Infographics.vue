@@ -1,7 +1,7 @@
 <template>
   <div>
     <br><br>
-    <h1>Infographics</h1>
+    <h1 class="title">Infographics</h1>
   <div class="poster-container">
     <div v-for="poster in posters" :key="poster.id" class="poster-item">
       <button @click="goToPosterDetail(poster.id)" class="poster-button">
@@ -50,6 +50,9 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  color: #457247;
+}
 .poster-container {
   margin: 10px;
   width: 90vw;
