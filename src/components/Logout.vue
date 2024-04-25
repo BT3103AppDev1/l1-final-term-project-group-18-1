@@ -1,28 +1,32 @@
 <template>
-  <button @click="logout" v-if="user">Logout</button>
+  <button @click="logout" v-if="isAuthenticated">Logout</button>
 </template>
 
 <script>
-import { getAuth } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 
 export default {
   name: 'Logout',
+
   data() {
     return {
-      user: null,
+      isAuthenticated: false,
     };
   },
 
   mounted() {
     const auth = getAuth();
-    this.user = auth.currentUser;
+    auth.onAuthStateChanged(user => {
+      this.isAuthenticated = !!user;
+    });
   },
 
   methods: {
     async logout() {
       const auth = getAuth();
       try {
-        this.$router.push({name: 'Login'});
+        await signOut(auth);
+        this.$router.push({ name: 'Login' });
       } catch (error) {
         console.error('Logout error:', error.message);
       }
