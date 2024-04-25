@@ -86,15 +86,16 @@ export default {
     },
     async fetchFarmItems(userId = null, userName = null) {
   const userToFetch = userId || this.currentUser?.uid;
-  const usernameToFetch = userName || this.currentUser?.displayName; 
 
   if (!this.currentUser) {
     console.error("No current user available.");
     return;
   }
 
+  console.log("userToFetch:", userToFetch, "currentUser.uid:", this.currentUser.uid);
+
   if (userToFetch !== this.currentUser.uid) {
-    this.instructionText = "Friend's farm";
+    this.instructionText =  "Friend's farm";
   } else {
     this.instructionText = 'Grow your farm! Drag then click to move farm elements';
   }
@@ -205,6 +206,7 @@ export default {
       position: absolute;
       top: 0%;
       left: 1%;
+      font-weight: bold;
   }
 
   .background {
