@@ -129,7 +129,26 @@ export default {
 
     async deleteFriend(friendId) {
       try {
-        await deleteDoc(doc(db, 'friends', friendId));
+        const querySnapshot1 = await getDocs(
+          query(
+            collection(db, 'friends'),
+            where('userId1', '==', friendId)
+          )
+        );
+
+        const querySnapshot2 = await getDocs(
+          query(
+            collection(db, 'friends'),
+            where('userId2', '==', friendId)
+          )
+        );
+
+        const combinedSnapshot = [...querySnapshot1.docs, ...querySnapshot2.docs];
+
+        combinedSnapshot.forEach(doc => {
+          deleteDoc(doc.ref);
+        });
+
         this.friends = this.friends.filter(friend => friend.id !== friendId);
       } catch (error) {
         console.error('Error deleting friend:', error);
