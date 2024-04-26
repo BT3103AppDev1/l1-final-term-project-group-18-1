@@ -1,12 +1,19 @@
+<!-- 
+  FriendsList component: 
+  - displays the user's full list of existing friends
+  - supports the function of gifting fertilisers, visiting friends' farms and deleting friends
+-->
 <template>
   <div class="friends-list">
     <h2>Your Friends</h2>
     <ul v-if="friends.length > 0">
       <li v-for="friend in friends" :key="friend.id" class="friend-item">
+  <!-- display each friend's name and username -->
   <div class="friend-info">
     <div class="friend-name">{{ friend.name }}</div>
     <div class="friend-username">@{{ friend.username }}</div>
   </div>
+  <!-- for each friend, buttons to allow visiting, gifting and deletion-->
   <div class="friend-buttons">
     <button @click="visitFriendFarm(friend.id)" class="visit-farm-btn">
       <img src="@/assets/door.png" alt="Visit Farm">
@@ -50,6 +57,7 @@
       </div>
     </teleport>
 
+    <!-- Success Notification for Gifting -->
     <teleport to="body">
       <div v-if="showGiftSuccessNotification" class="overlay" @click="closeGiftSuccessNotification"></div>
       <div v-if="showGiftSuccessNotification" class="gift-success-notification">
@@ -144,7 +152,7 @@ export default {
         );
 
         const combinedSnapshot = [...querySnapshot1.docs, ...querySnapshot2.docs];
-
+        // delete from firebase
         combinedSnapshot.forEach(doc => {
           deleteDoc(doc.ref);
         });
@@ -181,6 +189,9 @@ export default {
       this.showGiftModal = true;
     },
 
+    // function to allow visiting of friends' farms
+    // launches the FriendFarm page using the friend's user id
+    // firebase rules would prevent write access for friends' farms
     visitFriendFarm(userId) {
     this.$router.push({ name: 'FriendFarm', params: { userId: userId }});
   },
