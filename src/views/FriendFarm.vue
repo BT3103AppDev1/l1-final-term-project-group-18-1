@@ -1,3 +1,6 @@
+<!-- to allow friends' farms to display the owner's name 
+instead of instructions for editing farm -->
+
 <template>
   <div class="farm">
 

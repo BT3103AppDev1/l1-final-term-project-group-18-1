@@ -1,3 +1,9 @@
+<!-- 
+  FriendRequests component: 
+  - displays the user's full list of current friend requests
+  - supports the function of accepting and rejecting friend requests
+-->
+
 <template>
   <div class="friend-requests">
     <ul v-if="requests.length > 0">

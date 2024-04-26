@@ -1,3 +1,4 @@
+<!-- contains the FindFriends, FriendsList and FriendRequests components -->
 <template>
   <div class="social-page-container">
     <div class="row">
