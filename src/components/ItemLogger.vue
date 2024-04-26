@@ -109,7 +109,7 @@
         console.log("Received item as:", this.item);
 
         const now = new Date();
-        //const now = new Date('2024-02-29'); //testing
+        //const now = new Date('2024-12-29'); //testing
         const day = now.toLocaleDateString('en-US', { weekday: 'long' }); // Get the day of the week as a string
         const month = now.toLocaleString('default', { month: 'long' }); // Get the current month as a string
         const dayField = day + 'Count'; // Create the field name, e.g., 'MondayCount'

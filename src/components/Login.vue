@@ -52,7 +52,7 @@ export default {
     handleAuthError(errorCode) {
       switch (errorCode) {  
         case 'auth/invalid-credential':
-          return 'Invalid credentials'
+          return 'Invalid credentials. Please check that you have signed up and filled in all fields properly.'
         case 'auth/user-not-found':
           return 'No user found with this email.';     
         case 'auth/wrong-password':
