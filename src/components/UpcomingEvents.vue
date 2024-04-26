@@ -17,6 +17,8 @@
 <script>
 import { auth, db } from '@/firebaseConfig';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
 
 export default {
   name: 'UpcomingEvents',
@@ -26,8 +28,17 @@ export default {
     };
   },
   created() {
-    this.fetchUpcomingEvents();
-  },
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, set up the listener.
+      this.fetchUpcomingEvents();
+    } else {
+      // User is not signed in.
+      console.log('No user logged in');
+    }
+  });
+},
   methods: {
     async fetchUpcomingEvents() {
       const now = new Date();
