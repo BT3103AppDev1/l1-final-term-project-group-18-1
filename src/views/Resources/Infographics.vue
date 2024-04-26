@@ -1,15 +1,19 @@
 <template>
   <div>
     <br><br>
+    <!-- title of page -->
     <h1 class="title">Infographics</h1>
-  <div class="poster-container">
-    <div v-for="poster in posters" :key="poster.id" class="poster-item">
-      <button @click="goToPosterDetail(poster.id)" class="poster-button">
-        {{ poster.title }}
-      </button>
+
+    <!-- display all infographics' respective title buttons -->
+    <div class="poster-container">
+      <div v-for="poster in posters" :key="poster.id" class="poster-item">
+        <button @click="goToPosterDetail(poster.id)" class="poster-button">
+          {{ poster.title }}
+        </button>
+      </div>
     </div>
+
   </div>
-</div>
 </template>
 
 <script>
@@ -23,12 +27,13 @@ export default {
     const posters = ref([]);
     const router = useRouter();
 
+    //fetch infographic posters from firebase
     onMounted(async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "infographics"));
         posters.value = querySnapshot.docs.map(doc => {
           const posterData = { id: doc.id, ...doc.data() };
-          console.log(posterData); // Log to see the structure of posterData
+          console.log(posterData); 
           return posterData;
         });
       } catch (error) {
@@ -36,7 +41,7 @@ export default {
       }
     });
 
-
+    //title button logic 
     function goToPosterDetail(id) {
       router.push({ name: 'PosterDetail', params: { id } });
     }
@@ -74,7 +79,7 @@ export default {
   width: 200px;
   height: 200px;
   background-color: var(--primary-color); /* Green background */
-  color: white; /* Text color */
+  color: white; 
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;

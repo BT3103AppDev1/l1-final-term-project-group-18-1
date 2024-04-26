@@ -1,9 +1,12 @@
 <template>
+
+  <!-- once poster is fetched successfully from firebase, display it -->
   <div v-if="poster">
     <h2>{{ poster.title }}</h2>
     <img :src="poster.imageURL" :alt="poster.title" class="poster-image" />
   </div>
 
+  <!-- meanwhile, show "Loading..." -->
   <div v-else>
     Loading...
   </div>
@@ -21,6 +24,7 @@ export default {
     const route = useRoute();
     const poster = ref(null);
 
+    //fetch poster data 
     onMounted(async () => {
       try {
         const docRef = doc(db, "infographics", route.params.id);
@@ -45,19 +49,18 @@ export default {
 
 <style scoped>
 .poster-image {
-  width: 100%; /* Make the image responsive to its container's width */
-  max-width: 800px; /* Maximum width the image can grow to */
-  max-height: 600px; /* Maximum height the image can grow to, helps with very tall images */
-  height: auto; /* Maintain the aspect ratio */
-  object-fit: contain; /* Cover the frame; can use 'contain' to avoid cropping */
-  display: block; /* Remove inline element spacing */
-  margin: 0 auto; /* Center the image horizontally */
+  width: 100%; 
+  max-width: 800px; 
+  max-height: 600px; 
+  height: auto; 
+  object-fit: contain; 
+  display: block; 
+  margin: 0 auto; 
 }
 
-/* Style for the title */
 h2 {
-  text-align: center; /* Centers the title text */
-  margin-top: 20px; /* Adds space above the title */
+  text-align: center; 
+  margin-top: 20px; 
 }
 
 

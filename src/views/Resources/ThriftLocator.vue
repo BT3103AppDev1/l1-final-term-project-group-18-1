@@ -44,13 +44,13 @@ export default {
 
 .tips-list li {
   position: relative;
-  padding-left: 20px; /* Adjust as needed for the bullet point or icon */
+  padding-left: 20px; 
 }
 
 .tips-list li::before {
-  content: '•'; /* Custom bullet point */
+  content: '•'; 
   position: absolute;
-  left: 0; /* Align with the start of the text */
-  color: black; /* Or any other color */
+  left: 0; 
+  color: black; 
 }
 </style>

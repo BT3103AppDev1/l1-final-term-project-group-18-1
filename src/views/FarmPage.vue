@@ -8,7 +8,7 @@
       </div>
       <ShopModal v-if="showModal" @close="closeModal" @item-purchased="handleItemPurchased"/>
 
-      <!-- Display farm items -->
+      <!-- Display farm items according to their height and width, and in their saved positions -->
       <div class="farm-items">
         <div v-for="(item, index) in farmItems" :key="index" class="item"
           :style="{ top: item.top + 'px', left: item.left + 'px', width: item.width + 'px', height: item.height + 'px' }"
@@ -70,12 +70,16 @@ export default {
         }
       });
     },
+
+    //for opening and closing of shop modal view 
     openModal() {
       this.showModal = true;
     },
     closeModal() {
       this.showModal = false;
     },
+
+    //fetch farm items from firebase to display on the farm 
     async fetchFarmItems(userId = null) {
       const userToFetch = userId || this.currentUser?.uid;
       if (!userToFetch) {
@@ -107,6 +111,7 @@ export default {
       }
     },
 
+    //for moving the farm items 
     async startDrag(event, index) {
       console.log('startDrag called with item:', this.farmItems[index]);
       const item = this.farmItems[index];
@@ -133,6 +138,7 @@ export default {
       document.addEventListener('mouseup', endDrag);
     },
 
+    //need to save the new positions on firebase
     async updateItemPosition(item) {
       try {
           const userId = this.currentUser.uid;

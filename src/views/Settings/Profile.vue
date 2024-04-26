@@ -1,5 +1,6 @@
 <template>
   <div class="profile-page">
+    <!-- just display the user's email, name and username (they can't edit these fields) -->
     <h1 class="title">Profile</h1>
       <text class="content"><span class="label">Email:</span> {{ user.email }}</text>
       <text class="content"><span class="label">Name:</span> {{ user.name }}</text>
@@ -23,6 +24,7 @@ export default {
       username: ''
     });
 
+    //fetch user data from "users" collection 
     const fetchUserData = async (uid) => {
       const docRef = doc(db, 'users', uid);
       const docSnap = await getDoc(docRef);
@@ -33,6 +35,7 @@ export default {
       }
     };
 
+    //check if user is signed in 
     onMounted(() => {
       onAuthStateChanged(auth, (userAuth) => {
         if (userAuth) {
@@ -69,6 +72,6 @@ export default {
 
 .label {
   font-weight: bold;
-  margin-right: 5px; /* Add spacing between label and content */
+  margin-right: 5px; 
 }
 </style>

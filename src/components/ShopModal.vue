@@ -1,9 +1,13 @@
 <template>
   <div class="modal">
+    <!-- close button -->
     <span class="close-btn" @click="close">&times;</span>
+    <!-- shop title -->
     <h2>Shop</h2>
-      
+    
+    
     <div class="items-container"> 
+      <!-- display all the farm items (imageURL, funfact and cost in terms of fertilisers) -->
       <div class="item-container" v-for="item in shopItems" :key="item.id">
         <div class="item-box">
           <img :src="item.imageURL" :alt="item.name" class="item-image"/>
@@ -13,18 +17,23 @@
             <span class="fertiliser-number">{{ item.fertiliser }}</span>
           </div>
         </div>
+
+        <!-- buy farm item button -->
         <div class="buy-item">
           <input type="radio" :id="'item_' + item.id" :value="item" v-model="selectedItem" class="item-radio">
         </div>
+
       </div>
     </div>
 
+    <!-- pop up msg -->
     <div>
       <p v-if="noItemsChosen" class="message">Please select an item to purchase.</p>
       <p v-if="notEnoughFertilisers" class="message">You do not have enough fertilisers to buy this item.</p>
       <p v-if="successfulPurchase" class="message">Successful purchase!</p>
     </div>
 
+    <!-- confirm button -->
     <button type="confirm" class="confirm-btn" @click="confirmPurchase">Confirm</button>
 
   </div>
@@ -46,6 +55,7 @@
         }
     },
     methods: {
+        // close button 
         async close() {
             this.$emit("close");
         },
@@ -112,10 +122,10 @@
                 const farmDocSnapshot = await getDoc(userFarmDocRef);
 
                 if (farmDocSnapshot.exists()) {
-                    // If user already exists, update it
+                    // If user already exists, update their document
                     const existingFarmItems = farmDocSnapshot.data().items || [];
                     const newItemRef = doc(collection(db, 'farm'));
-                    const newItemId = newItemRef.id; // Generate a unique ID for every new item bought
+                    const newItemId = newItemRef.id; // Generate a unique ID for every new item bought --> needed for moving the item later on in Farm
 
                     const updatedFarmItems = [
                         ...existingFarmItems,
@@ -123,7 +133,7 @@
                             id: newItemId,
                             name: this.selectedItem.name,
                             imageURL: this.selectedItem.imageURL,
-                            top: 0,
+                            top: 0, //default --> also for moving the item later on in Farm
                             left: 0,
                             width: this.selectedItem.width, 
                             height: this.selectedItem.height 
@@ -136,7 +146,7 @@
                     const newItemRef = doc(collection(db, 'farm'));
                     const newItemId = newItemRef.id; // Generate a unique ID for the new item
                     const farmItem = {
-                        username: this.currentUser.uid,
+                        username: this.currentUser.uid, // Remember to put the user's uid 
                         items: [{
                             id: newItemId,
                             name: this.selectedItem.name,
@@ -187,7 +197,6 @@
 </script>
 
 <style scoped>
-
 .item-box {
   position: relative;
 }
@@ -278,7 +287,7 @@ p {
 
 .confirm-btn {
   position: absolute;
-  bottom: 40px; 
+  bottom: 70px; 
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--primary-color);
@@ -294,12 +303,11 @@ p {
 }
 
 .message {
-    margin-top: 90px;
+    margin-top: 100px;
     color:var(--primary-color);
     font-size: 16px;
-  }
+}
 
-  
 
 .fertiliser-icon {
   height: auto;

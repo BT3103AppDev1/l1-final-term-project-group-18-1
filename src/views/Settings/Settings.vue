@@ -1,5 +1,7 @@
 <template>
     <div class="settings-wrapper">
+
+      <!-- have the profile, contact us and logout buttons at the side menu of Settings Page -->
         <div class="settings-menu">
             <div class="profile"> 
                 <font-awesome-icon icon="user"/>
@@ -13,6 +15,8 @@
                 <Logout/>
             </div>
         </div>
+
+      <!-- where the contents of profile and contact us pages will be displayed -->
       <div class="settings-content">
         <component :is="currentComponent"></component>
       </div>
@@ -52,7 +56,6 @@
   </script>
   
   <style scoped>
-  /* Styles for the layout of settings page  */
   .settings-wrapper {
     display: flex;
     flex-direction: row;
@@ -65,9 +68,8 @@
     align-items: center;
   }
   
-  /* specific style for the buttons */ 
   .settings-menu {
-    margin-top: 110px;
+    margin-top: 50px;
     margin-left: 50px;
     display: flex;
     flex-direction: column;
