@@ -39,9 +39,16 @@ export default {
           // User's email is verified, proceed to Home page
           this.$router.push({ path: '/Home' });
         } else {
-          // User's email is not verified, redirect to a verify-email page or show a message
-          this.$router.push({ name: 'verify-email' }); // Make sure to have a route named 'verify-email'
-          alert('Please verify your email to log in.');
+          //sign user out immediately
+          auth.signOut()
+                  .then(() => {
+                    // After signing out, redirect to verify-email page or show a message
+                    this.$router.push({ name: 'verify-email' }); // Make sure to have a route named 'verify-email'
+                    alert('Please verify your email to log in.');
+                  })
+                  .catch((signOutError) => {
+                    console.error('Sign out error:', signOutError);
+                  });
         }
         })
         .catch((error) => {
