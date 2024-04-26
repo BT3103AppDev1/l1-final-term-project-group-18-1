@@ -18,6 +18,7 @@
         <input type="datetime-local" id="end" v-model="event.end" required>
       </div>
 
+      <!-- There are 2 different kinds of reminders: pre-set reminders from firebase and custom reminders -->
       <div class="form-group">
         <label for="reminder-type">Add Eco-Friendly Reminders:</label>
         <select id="reminder-type" v-model="event.reminderType" @change="onReminderTypeChange">
@@ -27,6 +28,7 @@
         </select>
       </div>
 
+      <!--If custom reminder type is chosen, the field custom reminder description will be shown.-->
       <div class="form-group" v-if="event.reminderType === 'custom'">
         <label for="reminder-description">Custom Reminder Description:</label>
         <input type="text" id="reminder-description" v-model="event.reminderDescription" placeholder="Enter custom reminder">
@@ -37,16 +39,21 @@
         <input type="number" id="reminder-time" v-model="event.reminderTime" placeholder="Minutes before event">
       </div>
       
+      <!--Displaying of message if the time input is invalid.-->
       <div v-if="!isEndTimeValid" class="error">
         End time must be after start time.
       </div>
 
+      <!-- Displaying of message to ensure that users submit the required fields for setting of reminders.-->
+      <!--It is possible to create an event without a reminder. However, if the user fills in one of the reminder fields, they have to fill in all reminder fields.-->
       <div v-if="!isReminderValid" class="error">
         Please fill in all reminder-related fields.
       </div>
 
       <div class="form-group action-buttons">
+        <!--Prevent creation of event if there are invalid inputs or missing fields.-->
         <button class="button1" type="submit" :disabled="!isEndTimeValid || !isReminderValid">Save Event</button>
+        <!--Close the modal when user clicks on cancel-->
         <button class="button2" type="button" @click="$emit('close')">Cancel</button>
       </div>
     </form>
@@ -79,8 +86,10 @@ export default {
   },
   computed: {
     isEndTimeValid() {
+      // user will still be filling in the fields
       if (!this.event.start || !this.event.end) {
         return true
+        // both dates are filled in but the end date is before the start date
       } else {
         return this.event.start && this.event.end && new Date(this.event.end) > new Date(this.event.start);
       }
@@ -92,6 +101,7 @@ export default {
       }
       // custom type chosen
       else if (this.event.reminderType == 'custom') {
+        // if the reminder description or reminder time field is filled in, there will be a reminder for users to fill in all reminder-related fields.
         if (this.event.reminderDescription || this.event.reminderTime) {
           return this.event.reminderDescription && this.event.reminderTime;
         }
@@ -102,6 +112,7 @@ export default {
   },
   methods: {
     fetchReminders() {
+      // retrieve pre-set reminders from firebase reminders collection 
       const reminderRef = collection(db, 'reminders');
       getDocs(reminderRef)
         .then(querySnapshot => {
@@ -111,6 +122,7 @@ export default {
           console.error("Error fetching reminders:", error);
         });
     },
+    // to display the custom reminder description field if user chooses to set a custom reminder
     onReminderTypeChange() {
       if (this.event.reminderType !== 'custom') {
         this.event.reminderDescription = '';
@@ -132,7 +144,6 @@ export default {
       .then(() => {
         this.$emit('close');
 
-        // Schedule desktop notification for reminder
         if (this.event.reminderType && this.event.reminderTime) {
           const eventStartTime = new Date(this.event.start).getTime();
           const currentTime = Date.now();
@@ -146,20 +157,25 @@ export default {
               if (Notification.permission === "granted") {
                 let reminderMessage = '';
                 if (this.event.reminderType === 'custom') {
+                  // the reminder message input by user
                   reminderMessage = this.event.reminderDescription;
                 } else {
+                  // pre-set reminder
                   reminderMessage = this.event.reminderType;
                 }
                 new Notification(`Reminder: ${reminderMessage}`, {
                   body: `For Event: ${this.event.title}`,
                 });
               } else if (Notification.permission !== "denied") {
+                // ask for permission to send desktop notifcation
                 Notification.requestPermission().then(permission => {
                   if (permission === "granted") {
                     let reminderMessage = '';
                     if (this.event.reminderType === 'custom') {
+                      // custom-reminder
                       reminderMessage = this.event.reminderDescription;
                     } else {
+                      // pre-set reminder
                       reminderMessage = this.event.reminderType;
                     }
                     new Notification(`Reminder: ${reminderMessage}`, {

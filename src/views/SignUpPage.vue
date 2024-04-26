@@ -3,6 +3,7 @@
     <h1 style="color:#457247;">Welcome to EcoHarbour</h1>
     <p style="color:#457247;">Join us in protecting our environment and paving the way for a sustainable future where the well-being of our planet is at the forefront of our actions and decisions.</p>
 
+    <!--All fields must be filled in for user to sign up-->
     <form id="signupform" @submit.prevent="signup">
       <input type="text" id="name" required="" placeholder="Name" v-model="name">
       <input type="text" id="username" required="" placeholder="Username" v-model="username">
@@ -51,6 +52,7 @@ export default {
   methods: {
     async isUsernameUnique(username) {
       try {
+        // check if there is already the username in the database
         const usernameRef = doc(db, "uniqueUsernames", username);
         const docSnap = await getDoc(usernameRef);
         return !docSnap.exists();
@@ -76,6 +78,7 @@ export default {
         return;
       }
 
+      // ensure that username is unique for adding of friends subsequently
       const unique = await this.isUsernameUnique(this.username);
       if (!unique) {
         alert("This username is already taken. Please choose another one.");
@@ -83,10 +86,13 @@ export default {
       }
 
       try {
+        // create account with email and password
         const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
         const user = userCredential.user;
+        // send email verification
         await sendEmailVerification(user);
 
+        // log user profile details in firebase users collection > user document
         await setDoc(doc(db, "users", user.uid), {
           name: this.name,
           username: this.username,
@@ -112,6 +118,7 @@ export default {
         alert(this.handleAuthError(error.code));
       }
     },
+    // showing user-friendly error messages that is easily understood
     handleAuthError(errorCode) {
       switch (errorCode) {
         case 'auth/missing-email':
